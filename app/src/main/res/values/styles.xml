@@ -1,0 +1,7 @@
+<resources>
+    <!-- Base application theme. -->
+    <!-- Some styles you can not reference but in style -->
+    <style name="MyDialog" parent="android:Theme.Dialog">
+        <item name="android:height">100dp</item>
+    </style>
+</resources>

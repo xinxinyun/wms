@@ -1,0 +1,96 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/gradient_bg"
+    tools:context=".MainActivity" >
+
+    <LinearLayout
+        android:id="@+id/main_linearLayout"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:background="#FFFFFF" >
+        
+        <TextView
+            android:id="@+id/tab_index1"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+    		android:layout_marginLeft="18sp"
+            android:layout_marginTop="7.5sp"
+            android:layout_marginBottom="7.5sp"
+            android:layout_weight="1.0"
+            android:gravity="center"
+            android:text="@string/tab_title1"
+            android:textColor="#FFFFFF"
+        	android:background="@drawable/btn_select_background_select_right"
+        	android:singleLine="true"
+            android:padding="2.2sp"
+            android:textSize="18sp" />
+        
+        <TextView
+            android:id="@+id/tab_index2"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+    		android:layout_marginRight="5sp"
+            android:layout_marginTop="7.5sp"
+            android:layout_marginBottom="7.5sp"
+            android:layout_weight="1.0"
+            android:gravity="center"
+            android:text="@string/tab_title2"
+            android:textColor="#0BBBF7"
+        	android:background="@drawable/btn_select_background_select_left_down"
+            android:padding="2.2sp"
+            android:textSize="18sp" />
+        
+	    <LinearLayout
+	        android:layout_width="fill_parent"
+	        android:layout_height="wrap_content"
+	      	android:layout_weight="1.0"
+	      	android:layout_gravity="center_vertical"
+	      	android:gravity="center_vertical"
+	      	android:paddingTop ="7.5sp"
+	        android:paddingBottom ="7.5sp" >
+			<TextView
+			    android:id="@+id/refresh"
+				android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:layout_marginLeft="7.5sp"
+				android:paddingLeft ="15.0sp"
+				android:paddingRight ="15.0sp"
+				android:background="@drawable/button_selector"
+				android:text="@string/refresh"
+				android:textColor="#0BBBF7"
+				android:textSize="18.0sp"
+				android:padding="2.2sp"
+				android:clickable="true" />
+		</LinearLayout>
+        
+    </LinearLayout>
+    
+	<View
+        android:id="@+id/cursor"
+		android:layout_width="fill_parent"
+		android:layout_height="1dip"
+		android:background="#BBBBBB"
+        android:layout_below="@id/main_linearLayout" />
+
+	<ImageView
+        android:id="@+id/iv_menu"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_above="@id/cursor"
+        android:scaleType="centerInside"
+        android:src="@drawable/menu_icon"/>
+    
+    <android.support.v4.view.ViewPager
+        android:id="@+id/vPager"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_gravity="center"
+        android:background="#EEEEEE"
+        android:flipInterval="30"
+        android:persistentDrawingCache="animation"
+        android:layout_below="@id/cursor" />
+    
+</RelativeLayout>

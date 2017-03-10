@@ -1,0 +1,250 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:id="@+id/tag_real_linearLayout"
+	android:layout_width="fill_parent"
+	android:layout_height="wrap_content"
+	android:background="#EEEEEE"
+	android:paddingTop="3.7sp"
+	android:orientation="vertical" >
+
+	<TableLayout
+		android:layout_width="fill_parent"
+		android:layout_height="wrap_content"
+		android:paddingLeft="1.0dip"
+		android:shrinkColumns="0"
+		android:stretchColumns="0" >
+		<TableRow
+			android:id="@+id/table_row_tag_real"
+			android:layout_width="fill_parent"
+			android:layout_height="wrap_content"
+			android:background="@drawable/table_item_top_selector"
+			android:clickable="true" >
+
+			<LinearLayout
+				android:layout_width="fill_parent"
+				android:layout_height="wrap_content"
+				android:orientation="horizontal" >
+				<View
+					android:layout_width="7.5sp"
+					android:layout_height="30dp"
+					android:background="#0bbbf7"/>
+
+				<TextView
+				    android:id="@+id/list_text_info"
+					android:layout_width="0dp"
+					android:layout_height="match_parent"
+					android:layout_weight="2.0"
+					android:gravity="center_vertical|center_horizontal"
+					android:includeFontPadding="false"
+					android:paddingTop="7.5sp"
+			        android:paddingBottom="7.5sp"
+					android:text="@string/open_tag_list"
+					android:background="@color/transparent_background"
+			        android:textColor="#ff444444"
+			        android:textStyle="bold"
+			        android:textSize="12.0sp"/>
+						           
+						<TextView
+							android:layout_width="0dp"
+				         	android:layout_height="match_parent"
+				         	android:layout_weight="2.0"
+				         	android:gravity="center_vertical|center_horizontal"
+				         	android:text="Min RSSI: "
+				         	android:textColor="#ff444444"
+				         	android:textSize="7.5sp" />
+						
+						<TextView
+						    android:id="@+id/min_rssi_text"
+							android:layout_width="0dp"
+				         	android:layout_height="match_parent"
+				         	android:layout_weight="1.0"
+				         	android:gravity="center_vertical"
+				         	android:text="0"
+				         	android:textColor="#ff444444"
+				         	android:textSize="7.5sp" />
+				
+						<TextView
+							android:layout_width="0dp"
+				         	android:layout_height="match_parent"
+				         	android:layout_weight="2.0"
+				         	android:paddingLeft="6sp"
+				         	android:gravity="center_vertical|center_horizontal"
+				         	android:text="Max RSSI: "
+				         	android:textColor="#ff444444"
+				         	android:textSize="7.5sp" />
+						
+						<TextView
+						    android:id="@+id/max_rssi_text"
+							android:layout_width="0dp"
+				         	android:layout_height="match_parent"
+				         	android:layout_weight="1.0"
+				         	android:gravity="center_vertical"
+				         	android:text="0"
+				         	android:textColor="#ff444444"
+				         	android:textSize="7.5sp" />
+					
+				</LinearLayout>
+	
+				<ImageView
+				    android:id="@+id/image_prompt"
+					android:layout_width="wrap_content"
+				    android:layout_height="fill_parent"
+				    android:layout_gravity="right"
+				    android:gravity="center_vertical|center_horizontal"
+					android:src="@drawable/up" />
+				<View
+					android:layout_width="7.5sp"
+					android:layout_height="30dp"
+					android:background="#0bbbf7"/>
+		</TableRow>
+	</TableLayout>
+
+	<HorizontalScrollView
+	    android:id="@+id/tags_real_list_scroll_view"
+		android:layout_height="fill_parent" 
+		android:layout_width="fill_parent"
+		android:scrollbars="horizontal"
+		android:layout_marginTop="3.7dp" >
+		
+		<LinearLayout
+			android:layout_width="wrap_content"
+			android:layout_height="fill_parent"
+			android:orientation="vertical">
+
+		    <LinearLayout 
+		        android:id="@+id/tag_type"
+		        android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:paddingLeft="2.2sp"
+				android:paddingRight="2.2sp"
+				android:background="@color/transparent_background" >
+					
+  				<View
+					android:layout_width="7.5sp"
+					android:layout_height="30dp"
+					android:background="#0bbbf7"/>
+			    
+				<TextView
+				    android:id="@+id/id_text"
+					android:layout_width="37.5sp"
+					android:layout_height="30dp"
+					android:padding="1.5sp"
+					android:textSize="12sp"
+					android:textColor="#ff444444"
+					android:gravity="center_vertical|center_horizontal"
+					android:singleLine="true"
+					android:text="ID" 
+			        android:textStyle="bold"/>
+				
+				<View
+			        android:layout_width="3.7dp"
+			        android:layout_height="match_parent"
+			        android:background="#BBBBBB" />
+				
+				<TextView
+				    android:id="@+id/epc_text"
+					android:layout_width="238sp"
+					android:layout_height="30dp"
+					android:padding="1.5sp"
+					android:textSize="12sp"
+					android:textColor="#ff333333"
+					android:gravity="center"
+					android:singleLine="true"
+					android:text="EPC" 
+					android:textStyle="bold"/>
+			
+				<View
+			        android:layout_width="3.7dp"
+			        android:layout_height="match_parent"
+			        android:background="#BBBBBB" />
+				
+				<TextView
+				    android:id="@+id/pc_text"
+					android:layout_width="52.2sp"
+					android:layout_height="30dp"
+					android:padding="1.5sp"
+					android:textSize="12sp"
+					android:textColor="#ff333333"
+					android:gravity="center"
+					android:singleLine="true"
+					android:text="PC" 
+					android:textStyle="bold"/>
+			
+				<View
+			        android:layout_width="3.7dp"
+			        android:layout_height="match_parent"
+			        android:background="#BBBBBB" />
+				
+				<TextView
+				    android:id="@+id/times_text"
+					android:layout_width="60sp"
+					android:layout_height="30dp"
+					android:padding="1.5sp"
+					android:textSize="12sp"
+					android:textColor="#ff333333"
+					android:gravity="center"
+					android:singleLine="true"
+					android:text="@string/real_list_times"
+					android:textStyle="bold" />
+			
+				<View
+			        android:layout_width="3.7dp"
+			        android:layout_height="match_parent"
+			        android:background="#BBBBBB" />
+				
+				<TextView
+				    android:id="@+id/rssi_text"
+					android:layout_width="60sp"
+					android:layout_height="30dp"
+					android:padding="1.5sp"
+					android:textSize="12sp"
+					android:textColor="#ff333333"
+					android:gravity="center"
+					android:singleLine="true"
+					android:text="RSSI" 
+					android:textStyle="bold"/>
+			
+				<View
+			        android:layout_width="3.7dp"
+			        android:layout_height="match_parent"
+			        android:background="#BBBBBB" />
+				
+				<TextView
+				    android:id="@+id/freq_text"
+					android:layout_width="60sp"
+					android:layout_height="30dp"
+					android:padding="1.5sp"
+					android:textSize="12sp"
+					android:textColor="#ff333333"
+					android:gravity="center"
+					android:singleLine="true"
+					android:text="@string/real_list_freq"
+					android:textStyle="bold" />
+				
+				<View
+			        android:layout_width="3.7dp"
+			        android:layout_height="match_parent"
+			        android:background="#BBBBBB" />
+		        
+		    </LinearLayout>
+		    
+		    <View
+			    android:layout_width="fill_parent"
+				android:layout_height="1dip"
+				android:background="#ff555555" />
+		    
+			<ListView 
+				android:id="@+id/tag_real_list_view" 
+				android:layout_width="wrap_content"  
+				android:layout_height="fill_parent" 
+				android:paddingLeft="3.0sp"
+				android:paddingRight="3.0sp"
+				android:scrollbars="vertical"
+				android:dividerHeight="0.0dip"
+				android:scrollingCache="false"
+				android:transcriptMode="alwaysScroll"
+				android:fadingEdge="none"/>
+			
+		</LinearLayout>
+	</HorizontalScrollView>
+</LinearLayout>

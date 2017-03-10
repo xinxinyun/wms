@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="transparent_background_button">#11000000</color>
+    <color name="transparent_background">#ffffffff</color>
+    <color name="light_blue">#0bbbf7</color>
+</resources>

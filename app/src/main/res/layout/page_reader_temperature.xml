@@ -1,0 +1,88 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="match_parent"
+  	android:layout_height="match_parent"
+  	android:orientation="vertical"
+  	android:background="@drawable/gradient_bg">
+  	
+	<com.uhf.uhf.TitleGoToMain
+		android:id="@+id/title_goto_main"
+		android:layout_width="fill_parent"
+		android:layout_height="wrap_content" />
+	
+	<com.uhf.uhf.LogList
+		android:id="@+id/log_list"
+		android:layout_width="fill_parent"
+		android:layout_height="wrap_content"
+		android:layout_alignParentBottom="true" />
+
+	<ScrollView
+	    android:layout_width="fill_parent"
+	    android:layout_height="wrap_content"
+	    android:fadingEdge="vertical"
+	    android:background="#EEEEEE"
+	    android:fillViewport="true"
+	    android:scrollbars="vertical"
+	    android:layout_above="@id/log_list"
+	    android:layout_below="@id/title_goto_main" >
+
+		<LinearLayout
+		    android:layout_width="fill_parent"
+			android:layout_height="wrap_content"
+			android:orientation="vertical" >
+	    
+		    <TextView
+				android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:layout_marginBottom="7.5dip"
+	            android:layout_marginTop="7.5dip"
+	            android:gravity="center_vertical"
+	            android:paddingLeft="3.0dip"
+	            android:text="@string/setting_temperature"
+	            android:textColor="#ff222222"
+	            android:textSize="12.0sp" />
+		    
+			<LinearLayout 
+			    android:layout_width="fill_parent"
+				android:layout_height="wrap_content"
+				android:paddingLeft="7.5dip"
+				android:paddingTop="3.7dip"
+				android:paddingRight="7.5dip"
+				android:paddingBottom="3.7dip"
+				android:orientation="vertical" >
+	
+		        <EditText
+		            android:id="@+id/temperature_text"
+		            android:singleLine="true"
+		            android:layout_width="fill_parent"
+		            android:layout_height="22.5sp"
+		            android:background="@drawable/readonly_editbox_background"
+		            android:gravity="center_vertical|center_horizontal"
+		            android:inputType="text"
+		            android:enabled="false"
+		            android:textSize="12sp" />
+	        	
+				<TextView
+				    android:id="@+id/get"
+					android:layout_width="fill_parent"
+					android:layout_height="wrap_content"
+					android:layout_marginLeft="15.0sp"
+					android:layout_marginTop="15.0sp"
+					android:layout_marginRight="15.0sp"
+					android:layout_marginBottom="3.7sp"
+					android:paddingTop="7.5sp"
+					android:paddingBottom="7.5sp"
+					android:gravity="center_horizontal"
+					android:background="@drawable/button_selector"
+					android:text="@string/get"
+					android:textColor="#ff222222"
+					android:textStyle="bold"
+					android:textSize="12.0sp"
+					android:clickable="true" />
+		        
+	        </LinearLayout>
+		</LinearLayout>
+	</ScrollView>
+</RelativeLayout>
+
+
+	

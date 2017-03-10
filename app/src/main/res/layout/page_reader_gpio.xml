@@ -1,0 +1,295 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="fill_parent"
+  	android:layout_height="fill_parent"
+  	android:orientation="vertical"
+  	android:background="@drawable/gradient_bg">
+  	
+	<com.uhf.uhf.TitleGoToMain
+            android:id="@+id/title_goto_main"
+			android:layout_width="fill_parent"
+			android:layout_height="wrap_content" />
+	
+	<com.uhf.uhf.LogList
+           android:id="@+id/log_list"
+		android:layout_width="fill_parent"
+		android:layout_height="wrap_content"
+           android:layout_alignParentBottom="true" />
+	
+	<ScrollView
+	    android:layout_width="fill_parent"
+	    android:layout_height="wrap_content"
+	    android:fadingEdge="vertical"
+	    android:background="#EEEEEE"
+	    android:fillViewport="true"
+	    android:scrollbars="vertical"
+	    android:layout_above="@id/log_list"
+	    android:layout_below="@id/title_goto_main" >
+
+		<LinearLayout
+		    android:layout_width="fill_parent"
+			android:layout_height="wrap_content"
+			android:orientation="vertical" >
+	    
+			<LinearLayout
+			    android:id="@+id/layout_get_gpio"
+			    android:layout_width="fill_parent"
+				android:layout_height="wrap_content"
+				android:orientation="vertical" >
+			    
+			    <TextView
+					android:layout_width="wrap_content"
+		            android:layout_height="wrap_content"
+		            android:layout_marginBottom="7.5dip"
+		            android:layout_marginTop="7.5dip"
+		            android:gravity="center_vertical"
+		            android:paddingLeft="3.0dip"
+		            android:text="@string/setting_get_gpio"
+		            android:textColor="#ff222222"
+		            android:textSize="12.0sp" />
+			    
+					<RelativeLayout 
+					    android:layout_width="fill_parent"
+						android:layout_height="wrap_content"
+						android:orientation="horizontal"
+						android:gravity="center_vertical" >
+						
+				        <RadioGroup
+				            android:id="@+id/group_gpio1"
+		            		android:layout_width="wrap_content"
+				            android:layout_height="wrap_content"
+				            android:paddingLeft="7.5dip"
+							android:paddingTop="3.7dip"
+							android:paddingRight="7.5dip"
+							android:paddingBottom="3.7dip"
+							android:orientation="horizontal"
+							android:gravity="center_vertical" >
+			
+				            <RadioButton
+				                android:id="@+id/get_gpio1_1"
+				                android:layout_width="wrap_content"
+				                android:layout_height="wrap_content"
+				                android:button="@drawable/radio_button_selector"
+				                android:paddingTop="3.7sp"
+				            	android:paddingBottom="3.7sp"
+				                android:checked="true"
+				                android:text="@string/setting_gpio_1"
+				                android:textColor="#ff222222"
+				                android:textSize="12.0sp" />
+				
+				            <RadioButton
+				                android:id="@+id/get_gpio1_0"
+				                android:layout_width="wrap_content"
+				                android:layout_height="wrap_content"
+				                android:button="@drawable/radio_button_selector"
+				                android:paddingTop="3.7sp"
+				            	android:paddingBottom="3.7sp"
+				                android:layout_marginLeft="15.0sp"
+				                android:text="@string/setting_gpio_0"
+				                android:textColor="#ff222222"
+				                android:textSize="12.0sp" />
+			        	</RadioGroup>
+		        
+	
+				        <RadioGroup
+				            android:id="@+id/group_gpio2"
+		            		android:layout_width="wrap_content"
+				            android:layout_height="wrap_content"
+				            android:paddingLeft="7.5dip"
+							android:paddingTop="3.7dip"
+							android:paddingRight="7.5dip"
+							android:paddingBottom="3.7dip"
+							android:orientation="horizontal"
+							android:gravity="center_vertical"
+							android:layout_below="@id/group_gpio1" >
+			
+				            <RadioButton
+				                android:id="@+id/get_gpio2_1"
+				                android:layout_width="wrap_content"
+				                android:layout_height="wrap_content"
+				                android:button="@drawable/radio_button_selector"
+				                android:paddingTop="3.7sp"
+				            	android:paddingBottom="3.7sp"
+				                android:checked="true"
+				                android:text="@string/setting_gpio_1"
+				                android:textColor="#ff222222"
+				                android:textSize="12.0sp" />
+				
+				            <RadioButton
+				                android:id="@+id/get_gpio2_0"
+				                android:layout_width="wrap_content"
+				                android:layout_height="wrap_content"
+				                android:button="@drawable/radio_button_selector"
+				                android:paddingTop="3.7sp"
+				            	android:paddingBottom="3.7sp"
+				                android:layout_marginLeft="15sp"
+				                android:text="@string/setting_gpio_0"
+				                android:textColor="#ff222222"
+				                android:textSize="12.0sp" />
+			        	</RadioGroup>
+				        
+						<TextView
+						    android:id="@+id/get_gpio"
+							android:layout_width="wrap_content"
+							android:layout_height="wrap_content"
+							android:paddingLeft="15.0sp"
+							android:paddingTop="3.7sp"
+							android:paddingRight="15.0sp"
+							android:paddingBottom="3.7sp"
+							android:layout_marginRight="7.5sp"
+							android:gravity="center_horizontal"
+							android:background="@drawable/button_selector"
+							android:text="@string/get"
+							android:textColor="#ff222222"
+							android:textStyle="bold"
+							android:textSize="12.0sp"
+							android:clickable="true"
+							android:layout_alignParentRight="true"
+							android:layout_centerInParent="true" />
+					</RelativeLayout>
+				</LinearLayout>
+		
+			<LinearLayout 
+			    android:layout_width="fill_parent"
+				android:layout_height="wrap_content"
+				android:paddingTop="15.0sp"
+				android:orientation="vertical" >
+			    
+			    <TextView
+					android:layout_width="wrap_content"
+		            android:layout_height="wrap_content"
+		            android:layout_marginBottom="7.5dip"
+		            android:layout_marginTop="7.5dip"
+		            android:gravity="center_vertical"
+		            android:paddingLeft="3.0dip"
+		            android:text="@string/setting_set_gpio"
+		            android:textColor="#ff222222"
+		            android:textSize="12.0sp" />
+			    
+				<RelativeLayout 
+				    android:layout_width="fill_parent"
+					android:layout_height="wrap_content"
+					android:paddingLeft="7.5dip"
+					android:paddingTop="3.7dip"
+					android:paddingRight="7.5dip"
+					android:paddingBottom="3.7dip"
+					android:orientation="horizontal"
+					android:gravity="center_vertical" >
+					
+			        <RadioGroup
+			            android:id="@+id/group_gpio3"
+			            android:layout_width="wrap_content"
+			            android:layout_height="wrap_content"
+			            android:gravity="center"
+			            android:orientation="horizontal" >
+		
+			            <RadioButton
+			                android:id="@+id/set_gpio3_1"
+			                android:layout_width="wrap_content"
+			                android:layout_height="wrap_content"
+			                android:button="@drawable/radio_button_selector"
+			                android:paddingTop="3.7sp"
+			            	android:paddingBottom="3.7sp"
+			                android:checked="true"
+			                android:text="@string/setting_gpio_1"
+			                android:textColor="#ff222222"
+			                android:textSize="12.0sp" />
+			
+			            <RadioButton
+			                android:id="@+id/set_gpio3_0"
+			                android:layout_width="wrap_content"
+			                android:layout_height="wrap_content"
+			                android:button="@drawable/radio_button_selector"
+			                android:paddingTop="3.7sp"
+			            	android:paddingBottom="3.7sp"
+			                android:layout_marginLeft="15sp"
+			                android:text="@string/setting_gpio_0"
+			                android:textColor="#ff222222"
+			                android:textSize="12.0sp" />
+		        	</RadioGroup>
+		        	
+			        <TextView
+					    android:id="@+id/set_gpio3"
+						android:layout_width="wrap_content"
+						android:layout_height="wrap_content"
+						android:paddingLeft="15.0sp"
+						android:paddingTop="3.7sp"
+						android:paddingRight="15.0sp"
+						android:paddingBottom="3.7sp"
+						android:gravity="center_horizontal"
+						android:background="@drawable/button_selector"
+						android:text="@string/set"
+						android:textColor="#ff222222"
+						android:textStyle="bold"
+						android:textSize="12.0sp"
+						android:clickable="true"
+						android:layout_alignParentRight="true"
+						android:layout_centerVertical="true" />
+			        
+		        </RelativeLayout>
+		        
+				<RelativeLayout 
+				    android:layout_width="fill_parent"
+					android:layout_height="wrap_content"
+					android:paddingLeft="7.5dip"
+					android:paddingTop="3.7dip"
+					android:paddingRight="7.5dip"
+					android:paddingBottom="3.7dip"
+					android:orientation="horizontal"
+					android:gravity="center_vertical" >
+					
+			        <RadioGroup
+			            android:id="@+id/group_gpio4"
+			            android:layout_width="wrap_content"
+			            android:layout_height="wrap_content"
+			            android:gravity="center"
+			            android:orientation="horizontal" >
+		
+			            <RadioButton
+			                android:id="@+id/set_gpio4_1"
+			                android:layout_width="wrap_content"
+			                android:layout_height="wrap_content"
+			                android:button="@drawable/radio_button_selector"
+			                android:paddingTop="3.7sp"
+			            	android:paddingBottom="3.7sp"
+			                android:checked="true"
+			                android:text="@string/setting_gpio_1"
+			                android:textColor="#ff222222"
+			                android:textSize="12.0sp" />
+			
+			            <RadioButton
+			                android:id="@+id/set_gpio4_0"
+			                android:layout_width="wrap_content"
+			                android:layout_height="wrap_content"
+			                android:button="@drawable/radio_button_selector"
+			                android:paddingTop="3.7sp"
+			            	android:paddingBottom="3.7sp"
+			                android:layout_marginLeft="20sp"
+			                android:text="@string/setting_gpio_0"
+			                android:textColor="#ff222222"
+			                android:textSize="12.0sp" />
+		        	</RadioGroup>
+		        	
+			        <TextView
+					    android:id="@+id/set_gpio4"
+						android:layout_width="wrap_content"
+						android:layout_height="wrap_content"
+						android:paddingLeft="15.0sp"
+						android:paddingTop="3.7sp"
+						android:paddingRight="15.0sp"
+						android:paddingBottom="3.7sp"
+						android:gravity="center_horizontal"
+						android:background="@drawable/button_selector"
+						android:text="@string/set"
+						android:textColor="#ff222222"
+						android:textStyle="bold"
+						android:textSize="12.0sp"
+						android:clickable="true"
+						android:layout_alignParentRight="true"
+						android:layout_centerVertical="true" />
+			        
+		        </RelativeLayout>
+			</LinearLayout>
+		</LinearLayout>
+	</ScrollView>
+</RelativeLayout>
+
