@@ -1,8 +1,21 @@
 package com.uhf.uhf.tagpage;
 
 
-import java.util.ArrayList;
-import java.util.List;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.support.v4.content.LocalBroadcastManager;
+import android.util.AttributeSet;
+import android.view.KeyEvent;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.RadioGroup;
+import android.widget.TableRow;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.reader.base.CMD;
 import com.reader.base.ERROR;
@@ -11,38 +24,17 @@ import com.reader.base.StringTool;
 import com.reader.helper.ISO180006BOperateTagBuffer;
 import com.reader.helper.InventoryBuffer;
 import com.reader.helper.OperateTagBuffer;
-import com.reader.helper.OperateTagBuffer.OperateTagMap;
 import com.reader.helper.ReaderHelper;
 import com.reader.helper.ReaderSetting;
 import com.uhf.uhf.HexEditTextBox;
 import com.uhf.uhf.LogList;
 import com.uhf.uhf.R;
 import com.uhf.uhf.TagAccessList;
-import com.uhf.uhf.TagRealList;
-import com.uhf.uhf.UHFApplication;
-import com.uhf.uhf.spiner.SpinerPopWindow;
 import com.uhf.uhf.spiner.AbstractSpinerAdapter.IOnItemSelectListener;
+import com.uhf.uhf.spiner.SpinerPopWindow;
 
-import android.app.Activity;
-import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
-import android.os.Bundle;
-import android.os.Handler;
-import android.support.v4.content.LocalBroadcastManager;
-import android.util.AttributeSet;
-import android.util.Log;
-import android.view.KeyEvent;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.View.OnClickListener;
-import android.widget.EditText;
-import android.widget.LinearLayout;
-import android.widget.RadioGroup;
-import android.widget.TableRow;
-import android.widget.TextView;
-import android.widget.Toast;
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class PageTagAccess extends LinearLayout {
@@ -60,7 +52,6 @@ public class PageTagAccess extends LinearLayout {
 	private TableRow mDropDownRow;
 	
 	private List<String> mAccessList;
-	
 	private SpinerPopWindow mSpinerPopWindow;
 	
 	private HexEditTextBox mPasswordEditText;
