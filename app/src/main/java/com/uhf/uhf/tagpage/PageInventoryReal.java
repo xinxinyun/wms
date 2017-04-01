@@ -1,36 +1,9 @@
 package com.uhf.uhf.tagpage;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-
-import com.reader.base.CMD;
-import com.reader.base.ERROR;
-import com.reader.base.ReaderBase;
-import com.reader.helper.ISO180006BOperateTagBuffer;
-import com.reader.helper.InventoryBuffer;
-import com.reader.helper.InventoryBuffer.InventoryTagMap;
-import com.reader.helper.OperateTagBuffer;
-import com.reader.helper.ReaderHelper;
-import com.reader.helper.ReaderSetting;
-import com.uhf.uhf.LogList;
-import com.uhf.uhf.R;
-import com.uhf.uhf.TagRealList;
-import com.uhf.uhf.UHFApplication;
-import com.uhf.uhf.R.array;
-import com.uhf.uhf.R.id;
-import com.uhf.uhf.R.layout;
-import com.uhf.uhf.spiner.SpinerPopWindow;
-import com.uhf.uhf.spiner.AbstractSpinerAdapter.IOnItemSelectListener;
-
-import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.AttributeSet;
@@ -38,17 +11,35 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
-import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.com.tools.ExcelUtils;
+import com.reader.base.CMD;
+import com.reader.base.ERROR;
+import com.reader.base.ReaderBase;
+import com.reader.helper.ISO180006BOperateTagBuffer;
+import com.reader.helper.InventoryBuffer;
+import com.reader.helper.OperateTagBuffer;
+import com.reader.helper.ReaderHelper;
+import com.reader.helper.ReaderSetting;
+import com.uhf.uhf.LogList;
+import com.uhf.uhf.R;
+import com.uhf.uhf.R.id;
+import com.uhf.uhf.R.layout;
+import com.uhf.uhf.TagRealList;
+import com.uhf.uhf.spiner.AbstractSpinerAdapter.IOnItemSelectListener;
+import com.uhf.uhf.spiner.SpinerPopWindow;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 public class PageInventoryReal extends LinearLayout {
 	private static final String TAG = "PageInventory";
@@ -214,12 +205,26 @@ public class PageInventoryReal extends LinearLayout {
 	}
 
 	public void refresh() {
+		test();
+		/*
 		m_curInventoryBuffer.clearInventoryRealResult();
 		refreshList();
 		refreshText();
 		clearText();
-		mRealRoundEditText.setText("1");
+		mRealRoundEditText.setText("1"); */
 	}
+
+	private void test() {
+		new Thread(new Runnable() {
+			@Override
+			public void run() {
+				List<InventoryBuffer.InventoryTagMap> maps = m_curInventoryBuffer.lsTagList;
+				ExcelUtils.writeTagToExcel("test/a.xls",maps);
+				Log.d(TAG,"build finsh");
+			}
+		}).start();
+	}
+
 
 	@SuppressWarnings("deprecation")
 	private void refreshStartStop(boolean start) {

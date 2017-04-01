@@ -1,11 +1,30 @@
 package com.uhf.uhf;
 
-import java.util.ArrayList;
-import java.util.List;
+import android.app.AlertDialog;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.graphics.Color;
+import android.os.Bundle;
+import android.os.Parcelable;
+import android.support.v4.content.LocalBroadcastManager;
+import android.support.v4.view.PagerAdapter;
+import android.support.v4.view.ViewPager;
+import android.support.v4.view.ViewPager.OnPageChangeListener;
+import android.util.Log;
+import android.view.KeyEvent;
+import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.widget.ImageView;
+import android.widget.TextView;
 
+import com.com.tools.ExcelUtils;
 import com.reader.base.ERROR;
 import com.reader.base.ReaderBase;
-import com.reader.base.StringTool;
 import com.reader.helper.ControlGPIO;
 import com.reader.helper.ISO180006BOperateTagBuffer;
 import com.reader.helper.InventoryBuffer;
@@ -14,7 +33,6 @@ import com.reader.helper.ReaderHelper;
 import com.reader.helper.ReaderSetting;
 import com.uhf.uhf.PopupMenu.MENUITEM;
 import com.uhf.uhf.PopupMenu.OnItemClickListener;
-import com.uhf.uhf.R;
 import com.uhf.uhf.tagpage.PageInventoryReal;
 import com.uhf.uhf.tagpage.PageInventoryReal6B;
 import com.uhf.uhf.tagpage.PageTag6BAccess;
@@ -22,34 +40,8 @@ import com.uhf.uhf.tagpage.PageTagAccess;
 import com.ui.base.BaseActivity;
 import com.ui.base.PreferenceUtil;
 
-import android.os.Bundle;
-import android.os.Parcelable;
-import android.app.Activity;
-import android.app.AlertDialog;
-import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.content.DialogInterface;
-import android.content.Intent;
-import android.content.IntentFilter;
-import android.graphics.BitmapFactory;
-import android.graphics.Color;
-import android.graphics.Matrix;
-import android.support.v4.content.LocalBroadcastManager;
-import android.support.v4.view.PagerAdapter;
-import android.support.v4.view.ViewPager;
-import android.support.v4.view.ViewPager.OnPageChangeListener;
-import android.util.DisplayMetrics;
-import android.util.Log;
-import android.view.KeyEvent;
-import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.View;
-import android.view.View.OnClickListener;
-import android.view.animation.Animation;
-import android.view.animation.TranslateAnimation;
-import android.widget.ImageView;
-import android.widget.TextView;
-import android.widget.Toast;
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class MainActivity extends BaseActivity {
@@ -96,6 +88,9 @@ public class MainActivity extends BaseActivity {
 		setContentView(R.layout.activity_main);
 		
 		((UHFApplication) getApplication()).addActivity(this);
+
+		// Storage Permissions
+		ExcelUtils.verifyStoragePermissions(this);
 		
 		mRefreshButton = (TextView) findViewById(R.id.refresh);
 		
@@ -387,6 +382,7 @@ public class MainActivity extends BaseActivity {
 		getMenuInflater().inflate(R.menu.activity_main, menu);
 		return true;
 	}
+
 	
 	@Override
 	protected void onDestroy() {

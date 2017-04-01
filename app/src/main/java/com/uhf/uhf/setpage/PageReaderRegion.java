@@ -1,25 +1,6 @@
 package com.uhf.uhf.setpage;
 
 
-import java.util.ArrayList;
-import java.util.List;
-
-import com.reader.base.CMD;
-import com.reader.base.ERROR;
-import com.reader.base.ReaderBase;
-import com.reader.helper.ISO180006BOperateTagBuffer;
-import com.reader.helper.InventoryBuffer;
-import com.reader.helper.OperateTagBuffer;
-import com.reader.helper.ReaderHelper;
-import com.reader.helper.ReaderSetting;
-import com.uhf.uhf.LogList;
-import com.uhf.uhf.R;
-import com.uhf.uhf.UHFApplication;
-import com.uhf.uhf.spiner.SpinerPopWindow;
-import com.uhf.uhf.spiner.AbstractSpinerAdapter.IOnItemSelectListener;
-import com.ui.base.BaseActivity;
-
-import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -35,6 +16,24 @@ import android.widget.RadioGroup;
 import android.widget.RadioGroup.OnCheckedChangeListener;
 import android.widget.TableRow;
 import android.widget.TextView;
+
+import com.reader.base.CMD;
+import com.reader.base.ERROR;
+import com.reader.base.ReaderBase;
+import com.reader.helper.ISO180006BOperateTagBuffer;
+import com.reader.helper.InventoryBuffer;
+import com.reader.helper.OperateTagBuffer;
+import com.reader.helper.ReaderHelper;
+import com.reader.helper.ReaderSetting;
+import com.uhf.uhf.LogList;
+import com.uhf.uhf.R;
+import com.uhf.uhf.UHFApplication;
+import com.uhf.uhf.spiner.AbstractSpinerAdapter.IOnItemSelectListener;
+import com.uhf.uhf.spiner.SpinerPopWindow;
+import com.ui.base.BaseActivity;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class PageReaderRegion extends BaseActivity {
@@ -82,7 +81,6 @@ public class PageReaderRegion extends BaseActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.page_reader_region);
 		((UHFApplication) getApplication()).addActivity(this);
-		
 		try {
 			mReaderHelper = ReaderHelper.getDefaultHelper();
 			mReader = mReaderHelper.getReader();
