@@ -9,6 +9,12 @@
     
     <string name="app_name">UHFDemo</string>
     <string name="menu_settings">Settings</string>
+
+    <string name="connect_tcp_ip">"TCP/IP"</string>
+    <string name="connect_bluetooth">"Bluetooth"</string>
+
+    <string name="connect_tcp_ip_address">"IP:"</string>
+    <string name="connect_tcp_ip_port">"Port:"</string>
     
     <!-- new data -->
     <string name="language">English</string>
@@ -133,10 +139,16 @@
     <string name="switchwifi">切换</string>
 	<string name="alert_diag_title">提示</string>
 	<string name="are_you_sure_to_exit">确认要退出吗？</string>
-	
+    <string name="music_is_play_must_exit">盘存之前必须停止音乐播放！</string>
+
+    <!-- new -->
+    <string name="file_name">文件:</string>
+	<string name="file_dir">目录:</string>
+
     <string name="item_1">6C 标签操作</string>
     <string name="item_2">6B 标签操作</string>
     <string name="item_3">高级设置</string>
+    <string name="item_add1">导出Excel</string>
     <string name="item_4">退出</string>
     
     <string name="tab_title1">盘存标签</string>
@@ -144,6 +156,7 @@
     
 	<string name="connect_rs232">"串口连接"</string>
     <string name="connect">"立即连接"</string>
+    <string name="connect_otg">"Connect OTG"</string>
     
     <string name="com_port">串口号:</string>
     <string name="baud_rate">波特率:</string>
@@ -154,6 +167,14 @@
     <string name="error_configuration">请先配置</string>
     <string name="error_security">该串口号没有读写权限</string>
     <string name="error_unknown">打开失败，未知错误</string>
+
+    <string name="scanning">正在搜寻设备</string>
+    <string name="select_device">选择你要连接的设备</string>
+    <string name="none_paired">没有配对设备</string>
+    <string name="none_found">没有找到设备</string>
+    <string name="title_paired_devices">配对的设备</string>
+    <string name="title_other_devices">其它可用的设备</string>
+    <string name="button_scan">搜寻设备</string>
 
     <string name="back_to_main">返回</string>
 

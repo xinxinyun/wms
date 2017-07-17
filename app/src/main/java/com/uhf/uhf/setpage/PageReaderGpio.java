@@ -1,22 +1,6 @@
 package com.uhf.uhf.setpage;
 
 
-import com.reader.base.CMD;
-import com.reader.base.ERROR;
-import com.reader.base.ReaderBase;
-import com.reader.helper.ISO180006BOperateTagBuffer;
-import com.reader.helper.InventoryBuffer;
-import com.reader.helper.OperateTagBuffer;
-import com.reader.helper.ReaderHelper;
-import com.reader.helper.ReaderSetting;
-import com.uhf.uhf.LogList;
-import com.uhf.uhf.R;
-import com.uhf.uhf.UHFApplication;
-import com.uhf.uhf.R.id;
-import com.uhf.uhf.R.layout;
-import com.ui.base.BaseActivity;
-
-import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -28,6 +12,20 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.RadioGroup;
 import android.widget.TextView;
+
+import com.reader.base.CMD;
+import com.reader.base.ERROR;
+import com.reader.base.ReaderBase;
+import com.reader.helper.ISO180006BOperateTagBuffer;
+import com.reader.helper.InventoryBuffer;
+import com.reader.helper.OperateTagBuffer;
+import com.reader.helper.ReaderHelper;
+import com.reader.helper.ReaderSetting;
+import com.uhf.uhf.LogList;
+import com.uhf.uhf.R.id;
+import com.uhf.uhf.R.layout;
+import com.uhf.uhf.UHFApplication;
+import com.ui.base.BaseActivity;
 
 public class PageReaderGpio extends BaseActivity {
 	private LogList mLogList;
@@ -175,7 +173,6 @@ public class PageReaderGpio extends BaseActivity {
 	protected void onDestroy() {
 		// TODO Auto-generated method stub
 		super.onDestroy();
-		
 		if (lbm != null)
 			lbm.unregisterReceiver(mRecv);
 	}

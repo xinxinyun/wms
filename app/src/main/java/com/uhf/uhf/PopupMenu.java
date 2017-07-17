@@ -21,11 +21,12 @@ public class PopupMenu extends PopupWindow implements OnClickListener {
 	private View v_item3;
 	private View v_item4;
 	private View v_item5;
+	private View v_item_add1;
 
 	private OnItemClickListener onItemClickListener;
 
 	public enum MENUITEM {
-		ITEM1, ITEM2, ITEM3, ITEM4, ITEM5
+		ITEM1, ITEM2, ITEM3, ITEM4, ITEM5, ITEM_add1
 	}
 
 	public PopupMenu(Activity activity) {
@@ -49,6 +50,8 @@ public class PopupMenu extends PopupWindow implements OnClickListener {
 		v_item3 = popView.findViewById(R.id.ly_item3);
 		v_item4 = popView.findViewById(R.id.ly_item4);
 		v_item5 = popView.findViewById(R.id.ly_item5);
+		v_item_add1 = popView.findViewById(R.id.ly_item1_add1);
+
 		
 		
 		v_item1.setOnClickListener(this);
@@ -56,6 +59,7 @@ public class PopupMenu extends PopupWindow implements OnClickListener {
 		v_item3.setOnClickListener(this);
 		v_item4.setOnClickListener(this);
 		v_item5.setOnClickListener(this);
+		v_item_add1.setOnClickListener(this);
 
 	}
 
@@ -86,6 +90,9 @@ public class PopupMenu extends PopupWindow implements OnClickListener {
 			menuitem = MENUITEM.ITEM5;
 			str = (String) ((TextView)v_item5.findViewById(R.id.langague)).getText();
 			Log.e("debug", "biiiiiiiiiiiiiiiiiiiiiiiiiiiin + popupMenu " + str);
+		} else if (v == v_item_add1) {
+			menuitem = MENUITEM.ITEM_add1;
+			str = "itemadd";
 		}
 		if (onItemClickListener != null) {
 			onItemClickListener.onClick(menuitem, str);

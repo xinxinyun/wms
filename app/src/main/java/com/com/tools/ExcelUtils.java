@@ -3,9 +3,7 @@ package com.com.tools;
 import android.Manifest;
 import android.app.Activity;
 import android.content.pm.PackageManager;
-import android.os.Environment;
 import android.support.v4.app.ActivityCompat;
-import android.util.Log;
 
 import com.reader.helper.InventoryBuffer;
 import com.uhf.uhf.R;
@@ -44,6 +42,8 @@ public class ExcelUtils {
     private final static String[] mContent = new String[]{"ID", "EPC", "PC",
             UHFApplication.getContext().getResources().getString(R.string.real_list_times),
             "RSSI",UHFApplication.getContext().getString(R.string.real_list_freq)};
+
+    private final static String FILE_SUFFIX = ".xls";
 
     // Storage Permissions
     private static final int REQUEST_EXTERNAL_STORAGE = 1;
@@ -88,7 +88,7 @@ public class ExcelUtils {
                 file.createNewFile();
             }
             workbook = Workbook.createWorkbook(file);
-            WritableSheet sheet = workbook.createSheet("test", 0);
+            WritableSheet sheet = workbook.createSheet("tags", 0);
             sheet.addCell((WritableCell) new Label(0, 0, fileName,
                     arial14format));
             for (int col = 0; col < colName.length; col++) {
@@ -111,8 +111,8 @@ public class ExcelUtils {
     }
 
     public static void writeTagToExcel(String fileName, List<InventoryBuffer.InventoryTagMap> maps) {
-        fileName = Environment.getExternalStorageDirectory() + "/" + fileName;
-        Log.d("Dirtory",fileName);
+
+        fileName = fileName.trim() + FILE_SUFFIX;
         initExcel(fileName,mContent);
         writeObjListToExcel(maps,fileName);
     }

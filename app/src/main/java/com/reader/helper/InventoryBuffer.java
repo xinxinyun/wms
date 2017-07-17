@@ -144,6 +144,7 @@ public class InventoryBuffer {
 		btRepeat = 0x00;
 		lAntenna.clear();
 		//bLoopInventory = false;
+		lAntenna.add((byte)0x00);
 		nIndexAntenna = 0;
 		nCommond = 0;
 		bLoopInventoryReal = false;

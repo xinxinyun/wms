@@ -1,8 +1,22 @@
 package com.uhf.uhf;
 
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.os.Bundle;
+import android.support.v4.content.LocalBroadcastManager;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.widget.ArrayAdapter;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
+import android.widget.CompoundButton.OnCheckedChangeListener;
+import android.widget.ListView;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.reader.base.Converter;
 import com.reader.base.ERROR;
@@ -14,36 +28,8 @@ import com.reader.helper.InventoryBuffer;
 import com.reader.helper.OperateTagBuffer;
 import com.reader.helper.ReaderHelper;
 import com.reader.helper.ReaderSetting;
-import com.uhf.uhf.R;
 import com.ui.base.BaseActivity;
 import com.ui.base.PreferenceUtil;
-
-import android.app.Activity;
-import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
-import android.graphics.Color;
-import android.os.Bundle;
-import android.support.v4.content.LocalBroadcastManager;
-import android.text.Editable;
-import android.text.Spannable;
-import android.text.SpannableString;
-import android.text.TextWatcher;
-import android.text.style.ForegroundColorSpan;
-import android.util.AttributeSet;
-import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.View.OnClickListener;
-import android.widget.ArrayAdapter;
-import android.widget.CheckBox;
-import android.widget.CompoundButton;
-import android.widget.CompoundButton.OnCheckedChangeListener;
-import android.widget.LinearLayout;
-import android.widget.ListView;
-import android.widget.TextView;
-import android.widget.Toast;
 
 public class Monitor extends BaseActivity {
 	
@@ -74,11 +60,12 @@ public class Monitor extends BaseActivity {
     
     @Override
     protected void onResume() {
+        super.onResume();
     	if (mReader != null) {
     		if (!mReader.IsAlive())
     			mReader.StartWait();
     	}
-    	super.onResume();
+    	MainActivity.mIsMonitorOpen = true;
     };
     
 	@Override
@@ -212,6 +199,7 @@ public class Monitor extends BaseActivity {
 		
 		if (lbm != null)
 			lbm.unregisterReceiver(mRecv);
+        MainActivity.mIsMonitorOpen = false;
 	}
 		
 	public final void refreshMonitor() {

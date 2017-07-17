@@ -783,7 +783,6 @@ public abstract class ReaderBase {
 		btAryData[1] = btEpcLen;
 		System.arraycopy(btAryEpc, 0, btAryData, 2, btAryEpc.length);
 		// btAryEpc.CopyTo(btAryData, 2);
-
 		int nResult = sendMessage(btReadId, btCmd, btAryData);
 
 		return nResult;

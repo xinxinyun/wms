@@ -28,7 +28,6 @@ import java.util.List;
 
 @SuppressLint("HandlerLeak")
 /**
- * ���Ӵ�����ģ��ͨ��
  * @author Administrator
  *
  */
@@ -36,7 +35,7 @@ public class ConnectRs232 extends BaseActivity {
 	
 	//add by lei.li 2016//11/14
 	private static final String TAG = "COONECTRS232";
-	private static final String TTYS1 = "ttyS1 (rk_serial)";
+	private static final String TTYS1 = "ttyS4 (rk_serial)";
 	private static final boolean DEBUG = true;
 	//add by lei.li 2016//11/14
 	private TextView mConectButton;

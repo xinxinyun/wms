@@ -10,6 +10,14 @@
     <string name="app_name">UHFDemo</string>
     <string name="menu_settings">Settings</string>
 
+    <string name="connect_tcp_ip">"TCP/IP"</string>
+    <string name="connect_bluetooth">"Bluetooth"</string>
+
+    <string name="connect_tcp_ip_address">"IP:"</string>
+    <string name="connect_tcp_ip_port">"Port:"</string>
+
+
+
     <!--new adds data-->
     <string name="start_scan">Start scan</string>
     <string name="language">中文</string>
@@ -134,10 +142,16 @@
     <string name="switchwifi">Switch</string>
     <string name="alert_diag_title">Alert</string>
     <string name="are_you_sure_to_exit">Are you sure to exit?</string>
+    <string name="music_is_play_must_exit">Must be stop music playing before inventory</string>
+
+    <!-- new -->
+    <string name="file_name">File:</string>
+    <string name="file_dir">Directory:</string>
 
     <string name="item_1">6C TagOperator</string>
     <string name="item_2">6B TagOperator</string>
-    <string name="item_3">Edvanced Settings</string>
+    <string name="item_3">Advanced Settings</string>
+    <string name="item_add1">Export Excel</string>
     <string name="item_4">Exit</string>
 
     <string name="tab_title1">Inventory Tag</string>
@@ -145,6 +159,7 @@
 
     <string name="connect_rs232">"RS232"</string>
     <string name="connect">"Connect"</string>
+    <string name="connect_otg">"Connect OTG"</string>
 
     <string name="com_port">Serial Port:</string>
     <string name="baud_rate">Baudrate:</string>
@@ -254,7 +269,7 @@
     <string name="open_tag_list">Tag List</string>
     <string name="close_tag_list">Tag List</string>
 
-    <string name="tags_count">"Inventoried Quantity: "</string>
+    <string name="tags_count">"Inventoried:"</string>
     <string name="tags_count_unit">" PCS"</string>
     <string name="tags_total">"Total Tag: "</string>
     <string name="tags_op_time">"CMD exec time"</string>

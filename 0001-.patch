@@ -1,0 +1,131 @@
+From 2315f7fce2698a7a174c20f93d07f76fd8e6410f Mon Sep 17 00:00:00 2001
+From: "lei.li" <1058509673@qq.com>
+Date: Mon, 13 Mar 2017 09:56:35 +0800
+Subject: [PATCH] =?UTF-8?q?=E6=B7=BB=E5=8A=A0=E5=A4=A9=E7=BA=BF=E9=80=89?=
+ =?UTF-8?q?=E9=A1=B9=E7=9A=84=E8=8B=B1=E6=96=87=E8=A1=A8=E7=A4=BA?=
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+---
+ app/build.gradle                                   |  4 ++
+ .../java/com/uhf/uhf/tagpage/PageTagAccess.java    | 45 +++++++++-------------
+ app/src/main/res/values-en/array.xml               | 12 ++++++
+ 3 files changed, 34 insertions(+), 27 deletions(-)
+ create mode 100644 app/src/main/res/values-en/array.xml
+
+diff --git a/app/build.gradle b/app/build.gradle
+index 28baead..a90bde5 100644
+--- a/app/build.gradle
++++ b/app/build.gradle
+@@ -18,6 +18,10 @@ android {
+             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+         }
+     }
++    lintOptions {
++        checkReleaseBuilds false
++        abortOnError false
++    }
+ }
+ 
+ dependencies {
+diff --git a/app/src/main/java/com/uhf/uhf/tagpage/PageTagAccess.java b/app/src/main/java/com/uhf/uhf/tagpage/PageTagAccess.java
+index c3f5970..37ee787 100644
+--- a/app/src/main/java/com/uhf/uhf/tagpage/PageTagAccess.java
++++ b/app/src/main/java/com/uhf/uhf/tagpage/PageTagAccess.java
+@@ -1,8 +1,21 @@
+ package com.uhf.uhf.tagpage;
+ 
+ 
+-import java.util.ArrayList;
+-import java.util.List;
++import android.content.BroadcastReceiver;
++import android.content.Context;
++import android.content.Intent;
++import android.content.IntentFilter;
++import android.support.v4.content.LocalBroadcastManager;
++import android.util.AttributeSet;
++import android.view.KeyEvent;
++import android.view.LayoutInflater;
++import android.view.View;
++import android.widget.EditText;
++import android.widget.LinearLayout;
++import android.widget.RadioGroup;
++import android.widget.TableRow;
++import android.widget.TextView;
++import android.widget.Toast;
+ 
+ import com.reader.base.CMD;
+ import com.reader.base.ERROR;
+@@ -11,38 +24,17 @@ import com.reader.base.StringTool;
+ import com.reader.helper.ISO180006BOperateTagBuffer;
+ import com.reader.helper.InventoryBuffer;
+ import com.reader.helper.OperateTagBuffer;
+-import com.reader.helper.OperateTagBuffer.OperateTagMap;
+ import com.reader.helper.ReaderHelper;
+ import com.reader.helper.ReaderSetting;
+ import com.uhf.uhf.HexEditTextBox;
+ import com.uhf.uhf.LogList;
+ import com.uhf.uhf.R;
+ import com.uhf.uhf.TagAccessList;
+-import com.uhf.uhf.TagRealList;
+-import com.uhf.uhf.UHFApplication;
+-import com.uhf.uhf.spiner.SpinerPopWindow;
+ import com.uhf.uhf.spiner.AbstractSpinerAdapter.IOnItemSelectListener;
++import com.uhf.uhf.spiner.SpinerPopWindow;
+ 
+-import android.app.Activity;
+-import android.content.BroadcastReceiver;
+-import android.content.Context;
+-import android.content.Intent;
+-import android.content.IntentFilter;
+-import android.os.Bundle;
+-import android.os.Handler;
+-import android.support.v4.content.LocalBroadcastManager;
+-import android.util.AttributeSet;
+-import android.util.Log;
+-import android.view.KeyEvent;
+-import android.view.LayoutInflater;
+-import android.view.View;
+-import android.view.View.OnClickListener;
+-import android.widget.EditText;
+-import android.widget.LinearLayout;
+-import android.widget.RadioGroup;
+-import android.widget.TableRow;
+-import android.widget.TextView;
+-import android.widget.Toast;
++import java.util.ArrayList;
++import java.util.List;
+ 
+ 
+ public class PageTagAccess extends LinearLayout {
+@@ -60,7 +52,6 @@ public class PageTagAccess extends LinearLayout {
+ 	private TableRow mDropDownRow;
+ 	
+ 	private List<String> mAccessList;
+-	
+ 	private SpinerPopWindow mSpinerPopWindow;
+ 	
+ 	private HexEditTextBox mPasswordEditText;
+diff --git a/app/src/main/res/values-en/array.xml b/app/src/main/res/values-en/array.xml
+new file mode 100644
+index 0000000..7962003
+--- /dev/null
++++ b/app/src/main/res/values-en/array.xml
+@@ -0,0 +1,12 @@
++<?xml version="1.0" encoding="utf-8"?>
++<resources>
++
++    
++	<string-array name="antenna_list">
++		<item>"Antenna 1"</item>
++		<item>"Antenna 2"</item>
++		<item>"Antenna 3"</item>
++		<item>"Antenna 4"</item>
++	</string-array>
++	
++</resources>
+\ No newline at end of file
+-- 
+2.10.1.windows.1
+

@@ -301,7 +301,7 @@ public class PageTagAccess extends LinearLayout {
                 
                 if (arg0.getId() == R.id.read) {
                 	try {
-                    	btWordCnt = (byte) Integer.parseInt(mDataLenEditText.getText().toString());
+                    	btWordCnt = (byte) (Integer.parseInt(mDataLenEditText.getText().toString()));
                 	} catch (Exception e) {
                 		Toast.makeText(
                 				mContext,

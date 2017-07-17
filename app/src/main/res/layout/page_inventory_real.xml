@@ -247,6 +247,115 @@
 						</TableRow>
 					</TableLayout>
 				</LinearLayout>
+				<LinearLayout
+					android:layout_width="fill_parent"
+					android:layout_height="wrap_content"
+					android:orientation="vertical">
+					<View
+						android:layout_width="fill_parent"
+						android:layout_height="1dip"
+						android:paddingLeft="3.7sp"
+						android:paddingRight="3.7sp"
+						android:background="#ff555555" />
+					<LinearLayout
+						android:layout_width="fill_parent"
+						android:layout_height="wrap_content"
+						android:orientation="horizontal">
+						<CheckBox
+							android:id="@+id/select_ant1"
+							android:layout_width="0dp"
+							android:layout_weight="1"
+							android:layout_height="wrap_content"
+							android:layout_marginBottom="3.7dip"
+							android:layout_marginTop="7.5dip"
+							android:text="Ant 1"
+							android:textColor="#ff222222"
+							android:checked="false"
+							android:textSize="12.0sp" />
+						<CheckBox
+							android:id="@+id/select_ant2"
+							android:layout_width="0dp"
+							android:layout_weight="1"
+							android:layout_height="wrap_content"
+							android:layout_marginBottom="3.7dip"
+							android:layout_marginTop="7.5dip"
+							android:text="Ant 2"
+							android:textColor="#ff222222"
+							android:checked="false"
+							android:textSize="12.0sp" />
+						<CheckBox
+							android:id="@+id/select_ant3"
+							android:layout_width="0dp"
+							android:layout_weight="1"
+							android:layout_height="wrap_content"
+							android:layout_marginBottom="3.7dip"
+							android:layout_marginTop="7.5dip"
+							android:text="Ant 3"
+							android:textColor="#ff222222"
+							android:checked="false"
+							android:textSize="12.0sp" />
+						<CheckBox
+							android:id="@+id/select_ant4"
+							android:layout_width="0dp"
+							android:layout_weight="1"
+							android:layout_height="wrap_content"
+							android:layout_marginBottom="3.7dip"
+							android:layout_marginTop="7.5dip"
+							android:text="Ant 4"
+							android:textColor="#ff222222"
+							android:checked="false"
+							android:textSize="12.0sp" />
+					</LinearLayout>
+					<LinearLayout
+						android:layout_width="fill_parent"
+						android:layout_height="wrap_content"
+						android:orientation="horizontal">
+						<CheckBox
+							android:id="@+id/select_ant5"
+							android:layout_width="0dp"
+							android:layout_weight="1"
+							android:layout_height="wrap_content"
+							android:layout_marginBottom="3.7dip"
+							android:layout_marginTop="7.5dip"
+							android:text="Ant 5"
+							android:textColor="#ff222222"
+							android:checked="false"
+							android:textSize="12.0sp" />
+						<CheckBox
+							android:id="@+id/select_ant6"
+							android:layout_width="0dp"
+							android:layout_weight="1"
+							android:layout_height="wrap_content"
+							android:layout_marginBottom="3.7dip"
+							android:layout_marginTop="7.5dip"
+							android:text="Ant 6"
+							android:textColor="#ff222222"
+							android:checked="false"
+							android:textSize="12.0sp" />
+						<CheckBox
+							android:id="@+id/select_ant7"
+							android:layout_width="0dp"
+							android:layout_weight="1"
+							android:layout_height="wrap_content"
+							android:layout_marginBottom="3.7dip"
+							android:layout_marginTop="7.5dip"
+							android:text="Ant 7"
+							android:textColor="#ff222222"
+							android:checked="false"
+							android:textSize="12.0sp" />
+						<CheckBox
+							android:id="@+id/select_ant8"
+							android:layout_width="0dp"
+							android:layout_weight="1"
+							android:layout_height="wrap_content"
+							android:layout_marginBottom="3.7dip"
+							android:layout_marginTop="7.5dip"
+							android:text="Ant 8"
+							android:textColor="#ff222222"
+							android:checked="false"
+							android:textSize="12.0sp" />
+					</LinearLayout>
+				</LinearLayout>
 			</LinearLayout>
 			 <LinearLayout 
 			     android:layout_width="match_parent"

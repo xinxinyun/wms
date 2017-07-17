@@ -20,7 +20,6 @@ import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.com.tools.ExcelUtils;
 import com.reader.base.CMD;
 import com.reader.base.ERROR;
 import com.reader.base.ReaderBase;
@@ -72,6 +71,9 @@ public class PageInventoryReal extends LinearLayout {
 	private long mRefreshTime;
 	private Context mContext;
 
+	// add ant switch inventory
+	private CheckBox mAnt1,mAnt2,mAnt3,mAnt4,mAnt5,mAnt6,mAnt7,mAnt8;
+
 	public PageInventoryReal(Context context, AttributeSet attrs) {
 		super(context, attrs);
 		mContext = context;
@@ -109,6 +111,8 @@ public class PageInventoryReal extends LinearLayout {
 		mTagsOpTimeText = (TextView) findViewById(id.tags_op_time_text);
 		mTagRealList = (TagRealList) findViewById(id.tag_real_list);
 		mRealRoundEditText = (EditText) findViewById(id.real_round_text);
+
+		initAnts();
 
 		mStartStop.setOnClickListener(setInventoryRealOnClickListener);
 
@@ -204,25 +208,118 @@ public class PageInventoryReal extends LinearLayout {
 		// });
 	}
 
+	OnCheckedChangeListener mOnCheckedChangeListener = new OnCheckedChangeListener() {
+		@Override
+		public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+			int id = buttonView.getId();
+			switch (id) {
+				case R.id.select_ant1:
+					if (isChecked) {
+						m_curInventoryBuffer.lAntenna.add(new Byte((byte)0x00));
+					} else {
+						m_curInventoryBuffer.lAntenna.remove(new Byte((byte)0x00));
+						m_curInventoryBuffer.nIndexAntenna = 0;
+					}
+					break;
+				case R.id.select_ant2:
+					if (isChecked) {
+						m_curInventoryBuffer.lAntenna.add(new Byte((byte)0x01));
+					} else {
+						m_curInventoryBuffer.lAntenna.remove(new Byte((byte)0x01));
+						m_curInventoryBuffer.nIndexAntenna = 0;
+					}
+					break;
+				case R.id.select_ant3:
+					if (isChecked) {
+						m_curInventoryBuffer.lAntenna.add(new Byte((byte)0x02));
+					} else {
+						m_curInventoryBuffer.lAntenna.remove(new Byte((byte)0x02));
+						m_curInventoryBuffer.nIndexAntenna = 0;
+					}
+					break;
+				case R.id.select_ant4:
+					if (isChecked) {
+						m_curInventoryBuffer.lAntenna.add(new Byte((byte)0x03));
+					} else {
+						m_curInventoryBuffer.lAntenna.remove(new Byte((byte)0x03));
+						m_curInventoryBuffer.nIndexAntenna = 0;
+					}
+					break;
+				case R.id.select_ant5:
+					if (isChecked) {
+						m_curInventoryBuffer.lAntenna.add(new Byte((byte)0x04));
+					} else {
+						m_curInventoryBuffer.lAntenna.remove(new Byte((byte)0x04));
+						m_curInventoryBuffer.nIndexAntenna = 0;
+					}
+					break;
+				case R.id.select_ant6:
+					if (isChecked) {
+						m_curInventoryBuffer.lAntenna.add(new Byte((byte)0x05));
+					} else {
+						m_curInventoryBuffer.lAntenna.remove(new Byte((byte)0x05));
+						m_curInventoryBuffer.nIndexAntenna = 0;
+					}
+					break;
+				case R.id.select_ant7:
+					if (isChecked) {
+						m_curInventoryBuffer.lAntenna.add(new Byte((byte)0x06));
+					} else {
+						m_curInventoryBuffer.lAntenna.remove(new Byte((byte)0x06));
+						m_curInventoryBuffer.nIndexAntenna = 0;
+					}
+					break;
+				case R.id.select_ant8:
+					if (isChecked) {
+						m_curInventoryBuffer.lAntenna.add(new Byte((byte)0x07));
+					} else {
+						m_curInventoryBuffer.lAntenna.remove(new Byte((byte)0x07));
+						m_curInventoryBuffer.nIndexAntenna = 0;
+					}
+					break;
+				default:
+					break;
+			}
+		}
+	};
+	private void initAnts() {
+		mAnt1 = (CheckBox) findViewById(id.select_ant1);
+		mAnt2 = (CheckBox) findViewById(id.select_ant2);
+		mAnt3 = (CheckBox) findViewById(id.select_ant3);
+		mAnt4 = (CheckBox) findViewById(id.select_ant4);
+		mAnt5 = (CheckBox) findViewById(id.select_ant5);
+		mAnt6 = (CheckBox) findViewById(id.select_ant6);
+		mAnt7 = (CheckBox) findViewById(id.select_ant7);
+		mAnt8 = (CheckBox) findViewById(id.select_ant8);
+		mAnt1.setOnCheckedChangeListener(mOnCheckedChangeListener);
+		mAnt2.setOnCheckedChangeListener(mOnCheckedChangeListener);
+		mAnt3.setOnCheckedChangeListener(mOnCheckedChangeListener);
+		mAnt4.setOnCheckedChangeListener(mOnCheckedChangeListener);
+		mAnt5.setOnCheckedChangeListener(mOnCheckedChangeListener);
+		mAnt6.setOnCheckedChangeListener(mOnCheckedChangeListener);
+		mAnt7.setOnCheckedChangeListener(mOnCheckedChangeListener);
+		mAnt8.setOnCheckedChangeListener(mOnCheckedChangeListener);
+	}
+
 	public void refresh() {
-		test();
-		/*
 		m_curInventoryBuffer.clearInventoryRealResult();
 		refreshList();
 		refreshText();
 		clearText();
-		mRealRoundEditText.setText("1"); */
+		mRealRoundEditText.setText("1");
+		clearAnt();
 	}
 
-	private void test() {
-		new Thread(new Runnable() {
-			@Override
-			public void run() {
-				List<InventoryBuffer.InventoryTagMap> maps = m_curInventoryBuffer.lsTagList;
-				ExcelUtils.writeTagToExcel("test/a.xls",maps);
-				Log.d(TAG,"build finsh");
-			}
-		}).start();
+	private void clearAnt() {
+		mAnt1.setChecked(false);
+		mAnt2.setChecked(false);
+		mAnt3.setChecked(false);
+		mAnt4.setChecked(false);
+		mAnt5.setChecked(false);
+		mAnt6.setChecked(false);
+		mAnt7.setChecked(false);
+		mAnt8.setChecked(false);
+		m_curInventoryBuffer.clearInventoryPar();
 	}
 
 
@@ -303,7 +400,7 @@ public class PageInventoryReal extends LinearLayout {
 		mPos2 = m_curInventoryBuffer.btTarget;
 
 		if (m_curInventoryBuffer.lAntenna.size() <= 0)
-			m_curInventoryBuffer.lAntenna.add((byte) 0x00);
+			m_curInventoryBuffer.lAntenna.add(new Byte((byte)0x00));
 
 		int nRepeat = m_curInventoryBuffer.btRepeat & 0xFF;
 		mRealRoundEditText.setText(String.valueOf(nRepeat <= 0 ? 1 : nRepeat));
@@ -315,16 +412,10 @@ public class PageInventoryReal extends LinearLayout {
 	private void startstop() {
 		bTmpInventoryFlag = false;
 
-		m_curInventoryBuffer.clearInventoryPar();
+		//m_curInventoryBuffer.clearInventoryPar();
 
-		m_curInventoryBuffer.lAntenna.add((byte) 0x00);
+		//m_curInventoryBuffer.lAntenna.add((byte) 0x00);
 
-		if (m_curInventoryBuffer.lAntenna.size() <= 0) {
-			Toast.makeText(mContext,
-					getResources().getString(R.string.antenna_empty),
-					Toast.LENGTH_SHORT).show();
-			return;
-		}
 
 		m_curInventoryBuffer.bLoopInventoryReal = true;
 		m_curInventoryBuffer.btRepeat = 0;
@@ -371,6 +462,12 @@ public class PageInventoryReal extends LinearLayout {
 				refreshList();
 				return;
 			} else {
+				if (m_curInventoryBuffer.lAntenna.size() <= 0) {
+					Toast.makeText(mContext,
+							getResources().getString(R.string.antenna_empty),
+							Toast.LENGTH_SHORT).show();
+					return;
+				}
 				refreshStartStop(true);
 				// Log.e("flaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaag",mStartStop.getText().toString());
 
@@ -387,11 +484,14 @@ public class PageInventoryReal extends LinearLayout {
 
 		mReaderHelper.clearInventoryTotal();
 		refreshText();
+		byte btWorkAntenna = 0;
+		if (m_curInventoryBuffer.lAntenna.size() > 0) {
+			btWorkAntenna = m_curInventoryBuffer.lAntenna
+					.get(m_curInventoryBuffer.nIndexAntenna);
+			if (btWorkAntenna < 0)
+				btWorkAntenna = 0;
+		}
 
-		byte btWorkAntenna = m_curInventoryBuffer.lAntenna
-				.get(m_curInventoryBuffer.nIndexAntenna);
-		if (btWorkAntenna < 0)
-			btWorkAntenna = 0;
 		// mReader.setWorkAntenna(m_curReaderSetting.btReadId, btWorkAntenna);
 		mReaderHelper.runLoopInventroy();
 		m_curReaderSetting.btWorkAntenna = btWorkAntenna;
@@ -446,6 +546,7 @@ public class PageInventoryReal extends LinearLayout {
 	}
 
 	private void clearText() {
+		mReaderHelper.setInventoryTotal(0);
 		mTagsCountText.setText("0");
 		mTagsTotalText.setText("0");
 		mTagsSpeedText.setText("0");
@@ -475,6 +576,12 @@ public class PageInventoryReal extends LinearLayout {
 					// refreshStartStop(true);
 					// add by lei.li 2016/11/04
 					// Log.e("zhebian", "?????????????????????????????");
+
+					if (m_curInventoryBuffer.lsTagList.size() > 0);
+				{
+
+							Log.d("TAGS",m_curInventoryBuffer.lsTagList.get(0).strEPC);
+					}
 
 					// add by lei.li 2016/11/14
 					if (!DEBUG) {
