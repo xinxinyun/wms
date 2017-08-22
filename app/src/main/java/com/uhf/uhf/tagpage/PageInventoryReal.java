@@ -413,6 +413,10 @@ public class PageInventoryReal extends LinearLayout {
 		bTmpInventoryFlag = false;
 
 		//m_curInventoryBuffer.clearInventoryPar();
+        m_curInventoryBuffer.btRepeat = 0x00;
+        m_curInventoryBuffer.nIndexAntenna = 0;
+        m_curInventoryBuffer.nCommond = 0;
+        m_curInventoryBuffer.bLoopInventoryReal = false;
 
 		//m_curInventoryBuffer.lAntenna.add((byte) 0x00);
 
@@ -492,8 +496,8 @@ public class PageInventoryReal extends LinearLayout {
 				btWorkAntenna = 0;
 		}
 
-		// mReader.setWorkAntenna(m_curReaderSetting.btReadId, btWorkAntenna);
-		mReaderHelper.runLoopInventroy();
+		mReader.setWorkAntenna(m_curReaderSetting.btReadId, btWorkAntenna);
+		//mReaderHelper.runLoopInventroy();
 		m_curReaderSetting.btWorkAntenna = btWorkAntenna;
 		mRefreshTime = new Date().getTime();
 		refreshStartStop(true);

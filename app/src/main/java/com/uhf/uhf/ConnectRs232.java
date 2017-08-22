@@ -148,6 +148,7 @@ public class ConnectRs232 extends BaseActivity {
 					Intent intent;
 					intent = new Intent().setClass(ConnectRs232.this, MainActivity.class);
 					startActivity(intent);
+					//模块必须上电才能工作
 					ControlGPIO.newInstance().JNIwriteGPIO(1);
 					//finish();
 				} catch (SecurityException e) {

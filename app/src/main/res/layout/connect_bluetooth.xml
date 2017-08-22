@@ -23,6 +23,5 @@
 		android:textStyle="bold"
 		android:textSize="20.0sp"
 		android:clickable="true" />
-
 </LinearLayout>
 

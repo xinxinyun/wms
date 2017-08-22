@@ -5,9 +5,10 @@
     android:versionName="1.1" >
 
     <uses-sdk
-        android:minSdkVersion="8"
+        android:minSdkVersion="19"
         android:targetSdkVersion="19" />
     <uses-feature android:name="android.hardware.usb.host" />
+    <uses-feature android:name="android.hardware.bluetooth_le" android:required="true"/>
 
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
     <uses-permission android:name="android.permission.BLUETOOTH" />
@@ -202,7 +203,7 @@
                 <action android:name="com.android.example.USB_PERMISSION"></action>
             </intent-filter>
         </receiver>
-
+        <service android:name="com.ble.ble.BleService"
+            android:enabled="true" android:exported="false" />
     </application>
-
 </manifest>

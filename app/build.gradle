@@ -35,4 +35,5 @@ dependencies {
     testCompile 'junit:junit:4.12'
     compile files('src/main/libs/jxl.jar')
     compile project(path: ':usbSerialForAndroid')
+    compile files('src/main/libs/AndroidBleApi_V1.1.1.jar')
 }

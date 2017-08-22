@@ -1100,6 +1100,62 @@ public abstract class ReaderBase {
 
 		return nResult;
 	}
+
+	/**
+	 * Set the mask filter the Tag.
+	 * @param btReadId The reader address.
+	 * @param btTarget Set the inventory way(s0,s1,s2 or s3),you must use you set target to inventory the tag.
+	 * @param btAction The match tag or not Action,you can see the detail of this command.
+	 * @param btMembank The select mask region,EPC,TID or USER.
+	 * @param btStartAdd The mask start address(according to bit).
+	 * @param btMaskLen The mask length (according to bit).
+	 * @param maskValue The mask value.
+	 * @return
+	 */
+	public final int setTagMask(byte btReadId,byte btMaskNo,byte btTarget,byte btAction,byte btMembank,byte btStartAdd,byte btMaskLen,byte[] maskValue)
+	{
+		byte[] btAryData = new byte[7 + maskValue.length];
+		btAryData[0] = btMaskNo;
+		btAryData[1] = btTarget;
+		btAryData[2] = btAction;
+		btAryData[3] = btMembank;
+		btAryData[4] = btStartAdd;
+		btAryData[5] = btMaskLen;
+		System.arraycopy(maskValue, 0, btAryData, 6, maskValue.length);
+		btAryData[btAryData.length - 1] = (byte)0x00;
+
+		int nResult = sendMessage(btReadId,(byte)0x98,btAryData);
+
+		return nResult;
+	}
+
+	/**
+	 * Get the mask setting.
+	 * @param btReadId the reader address.
+	 * @return
+	 */
+	public final int getTagMask(byte btReadId)
+	{
+		byte[] btAryData = { (byte)0x20 };
+
+		int nResult = sendMessage(btReadId,(byte)0x98,btAryData);
+
+		return nResult;
+	}
+
+	/**
+	 * Clear the mask setting.
+	 * @param btReadId the reader address.
+	 * @return
+	 */
+	public final int clearTagMask(byte btReadId,byte btMaskNo)
+	{
+		byte[] btAryData = { btMaskNo };
+
+		int nResult = sendMessage(btReadId,(byte)0x98,btAryData);
+
+		return nResult;
+	}
 	
 	/**
 	 * Send naked data.

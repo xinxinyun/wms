@@ -270,7 +270,7 @@
 							android:layout_marginTop="7.5dip"
 							android:text="Ant 1"
 							android:textColor="#ff222222"
-							android:checked="false"
+							android:checked="true"
 							android:textSize="12.0sp" />
 						<CheckBox
 							android:id="@+id/select_ant2"
