@@ -64,6 +64,8 @@ public class ReaderSetting {
 	/** Rf communications link*/
 	public byte btRfLinkProfile;
 
+	/** Get the mask setting value*/
+	public byte[] btsGetMaskValue;
 
 	/**
 	 * Set the object's default constructor

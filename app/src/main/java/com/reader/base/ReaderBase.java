@@ -16,6 +16,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Arrays;
+import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import com.reader.base.CMD;
 import com.reader.base.HEAD;
@@ -24,6 +27,8 @@ public abstract class ReaderBase {
 	private WaitThread mWaitThread = null;
 	private InputStream mInStream = null;
 	private OutputStream mOutStream = null;
+
+	private ExecutorService mExecutorService = Executors.newFixedThreadPool(5);
 	
 	/**
 	 * Connection Lost.
@@ -202,21 +207,22 @@ public abstract class ReaderBase {
 	 * @param btArySenderData	To send data
 	 * @return	Succeeded :0, Failed:-1
 	 */
-	private int sendMessage(byte[] btArySenderData) {
-		
-		try {
-			synchronized (mOutStream) {		
-				mOutStream.write(btArySenderData);
+	private int sendMessage(final byte[] btArySenderData) {
+		mExecutorService.submit(new Runnable() {
+			@Override
+			public void run() {
+				try {
+					synchronized (mOutStream) {
+						mOutStream.write(btArySenderData);
+					}
+				} catch (IOException e) {
+					onLostConnect();
+				} catch (Exception e) {
+					onLostConnect();
+				}
 			}
-		} catch (IOException e) {
-			onLostConnect();
-			return -1;
-		} catch (Exception e) {
-			return -1;
-		}
-
+		});
 		sendData(btArySenderData);
-		
 		return 0;
 	}
 

@@ -12,7 +12,7 @@ import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.reader.helper.ControlGPIO;
+import com.nativec.tools.ModuleManager;
 import com.reader.helper.ReaderHelper;
 import com.uhf.uhf.serialport.SerialPort;
 import com.uhf.uhf.serialport.SerialPortFinder;
@@ -148,8 +148,7 @@ public class ConnectRs232 extends BaseActivity {
 					Intent intent;
 					intent = new Intent().setClass(ConnectRs232.this, MainActivity.class);
 					startActivity(intent);
-					//模块必须上电才能工作
-					ControlGPIO.newInstance().JNIwriteGPIO(1);
+					ModuleManager.newInstance().setUHFStatus(true);
 					//finish();
 				} catch (SecurityException e) {
 					Toast.makeText(

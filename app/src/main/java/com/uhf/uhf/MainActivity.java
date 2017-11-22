@@ -23,9 +23,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.com.tools.ExcelUtils;
+import com.nativec.tools.ModuleManager;
 import com.reader.base.ERROR;
 import com.reader.base.ReaderBase;
-import com.reader.helper.ControlGPIO;
 import com.reader.helper.ISO180006BOperateTagBuffer;
 import com.reader.helper.InventoryBuffer;
 import com.reader.helper.OperateTagBuffer;
@@ -374,7 +374,7 @@ public class MainActivity extends BaseActivity {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 //close the module
-                                ControlGPIO.newInstance().JNIwriteGPIO(0);
+                                ModuleManager.newInstance().setUHFStatus(true);
                                 getApplication().onTerminate();
                             }
                         }).setNegativeButton(getString(R.string.cancel),

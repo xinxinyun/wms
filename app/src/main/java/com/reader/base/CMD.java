@@ -53,6 +53,7 @@ public class CMD {
 	public final static byte GET_AND_RESET_INVENTORY_BUFFER = (byte) 0x91;
 	public final static byte GET_INVENTORY_BUFFER_TAG_COUNT = (byte) 0x92;
 	public final static byte RESET_INVENTORY_BUFFER = (byte) 0x93;
+    public final static byte OPERATE_TAG_MASK = (byte)0x98;
 	
 	public static String format(byte btCmd)
     {

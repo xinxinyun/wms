@@ -550,6 +550,9 @@ public class ReaderHelper {
             case CMD.RESET_INVENTORY_BUFFER:
                 processResetInventoryBuffer(msgTran);
                 break;
+            case CMD.OPERATE_TAG_MASK:
+                processTagMask(msgTran);
+                break;
             default:
                 break;
         }
@@ -1691,6 +1694,39 @@ public class ReaderHelper {
         }
     }
 
+    private void processTagMask(MessageTran msgTran) {
+        String strCmd = mContext.getResources().getString(R.string.operate_mask);
+        byte[] btAryData = msgTran.getAryData();
+        String strErrorCode = "";
+        if (btAryData.length == 1) {
+            if (btAryData[0] == (byte) 0x10) {
+                writeLog(mContext.getResources().getString(R.string.command_succeeded), 0x10);
+                return;
+            } else if (btAryData[1] == (byte) 0x41) {
+                strErrorCode = mContext.getResources().getString(R.string.parameter_invalid_mask);
+            } else {
+                strErrorCode = "Unknown Error";
+            }
+        } else {
+            if (btAryData.length > 7) {
+
+                m_curReaderSetting.btsGetMaskValue = msgTran.getAryData();
+                refreshReaderSetting(msgTran.getCmd(), m_curReaderSetting);
+                writeLog(mContext.getResources().getString(R.string.get_mask_success), 0x10);
+                try {
+                    Thread.sleep(50);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                return;
+            }
+        }
+
+        String strLog = strCmd + mContext.getResources().getString(R.string.failure_reason) + strErrorCode;
+        writeLog(strLog, 0x11);
+    }
+
+
     public void runLoopInventroy() {
         if (m_curInventoryBuffer.nIndexAntenna <
                 m_curInventoryBuffer.lAntenna.size() ||
@@ -1773,4 +1809,6 @@ public class ReaderHelper {
                     m_curInventoryBuffer.btFastRepeat);
         }
     }
+
+
 }

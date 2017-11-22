@@ -413,4 +413,19 @@
     <string name="data">Input Command:</string>
     <string name="check">Check Sum:</string>
 
+    <string name="mask_start_address">Start address(bit):</string>
+    <string name="mask_len">Mask len(bit):</string>
+    <string name="mask_value">Mask value(hex):</string>
+    <string name="MaskNo">Mask No:</string>
+
+    <string name="set_target_mask">Set tag mask</string>
+    <string name="target">Target:</string>
+    <string name="get_target_mask">Get tag mask</string>
+    <string name="action">Action:</string>
+    <string name="membank">Membank:</string>
+    <string name="clear_target_mask">Clear tag mask</string>
+    <string name="setting_mask_tag">Setting Tag Mask</string>
+    <string name="get_mask_success">Get mask success</string>
+    <string name="parameter_invalid_mask">Invalid parameter</string>
+    <string name="operate_mask">Operate mask</string>
 </resources>

@@ -505,6 +505,7 @@
 							android:paddingTop="5.0dip"
                             android:src="@drawable/right" />
                     </TableRow>
+
                     
                     <TableRow
                         android:id="@+id/table_row_setting_return_loss"
@@ -655,6 +656,56 @@
 							android:paddingTop="5.0dip"
                             android:src="@drawable/right" />
                     </TableRow>
+
+					<TableRow
+						android:id="@+id/table_row_setting_mask_tag"
+						android:layout_width="fill_parent"
+						android:layout_marginLeft="2.0dip"
+						android:layout_marginRight="2.0dip"
+						android:background="@drawable/table_item_middle_selector"
+						android:paddingBottom="7.5dip"
+						android:paddingTop="7.5dip"
+						android:clickable="true" >
+
+						<LinearLayout
+							android:layout_width="fill_parent"
+							android:layout_height="wrap_content"
+							android:orientation="vertical" >
+							<TextView
+								android:layout_width="wrap_content"
+								android:layout_height="fill_parent"
+								android:drawablePadding="7.5dip"
+								android:gravity="center_vertical"
+								android:includeFontPadding="false"
+								android:paddingLeft="17.0dip"
+								android:text="@string/setting_mask_tag"
+								android:textColor="#ff222222"
+								android:textSize="12.0sp" />
+
+							<TextView
+								android:id="@+id/text_setting_mask_tag"
+								android:layout_width="wrap_content"
+								android:layout_height="fill_parent"
+								android:drawablePadding="7.5dip"
+								android:gravity="center_vertical"
+								android:includeFontPadding="false"
+								android:paddingTop="4.0dip"
+								android:paddingLeft="15.0dip"
+								android:text=""
+								android:textColor="#ff777777"
+								android:textSize="12.0sp" />
+						</LinearLayout>
+
+						<ImageView
+							android:layout_width="wrap_content"
+							android:layout_height="fill_parent"
+							android:layout_gravity="right"
+							android:gravity="center_vertical"
+							android:paddingRight="15.0dip"
+							android:paddingBottom="5.0dip"
+							android:paddingTop="5.0dip"
+							android:src="@drawable/right" />
+					</TableRow>
                     
                 <TableRow
                         android:id="@+id/table_row_setting_region"

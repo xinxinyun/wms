@@ -14,7 +14,7 @@ import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.view.KeyEvent;
 
-import com.reader.helper.ControlGPIO;
+import com.nativec.tools.ModuleManager;
 import com.uhf.uhf.R;
 
 import java.util.Locale;
@@ -120,7 +120,7 @@ public class BaseActivity extends Activity {
         IntentFilter intentFilter = new IntentFilter(Intent.ACTION_CLOSE_SYSTEM_DIALOGS);
         this.registerReceiver(mVirtualKeyListenerBroadcastReceiver, intentFilter);
         if (mSwitchFlag) {
-            ControlGPIO.newInstance().JNIwriteGPIO(ControlGPIO.ON);
+            ModuleManager.newInstance().setUHFStatus(true);
         }
         //ControlGPIO.newInstance().JNIwriteGPIO(1);
     }
@@ -177,7 +177,7 @@ public class BaseActivity extends Activity {
                         System.out.println("Press HOME key");
                     } else if (systemReason.equals(SYSTEM_RECENT_APPS)) {
                         System.out.println("Press RECENT_APPS key");
-                        ControlGPIO.newInstance().JNIwriteGPIO(ControlGPIO.OFF);
+                        ModuleManager.newInstance().setUHFStatus(true);
                         mSwitchFlag = true;
                     }
                 }

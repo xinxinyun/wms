@@ -406,5 +406,21 @@
     
     <string name="data">数据:</string>
     <string name="check">校验位:</string>
-    
+
+    <string name="set_target_mask">设置标签标示</string>
+    <string name="target">Target:</string>
+    <string name="mask_start_address">Start address(bit):</string>
+    <string name="mask_len">Mask len(bit):</string>
+    <string name="mask_value">Mask value(hex):</string>
+
+    <string name="get_target_mask">获取标签标示设置</string>
+    <string name="MaskNo">Mask No:</string>
+    <string name="action">Action:</string>
+    <string name="membank">Membank:</string>
+    <string name="clear_target_mask">清理标签标示设置</string>
+    <string name="setting_mask_tag">设置标签Mask</string>
+    <string name="get_mask_success">获取mask成功</string>
+    <string name="parameter_invalid_mask">无效参数</string>
+    <string name="operate_mask">操作mask</string>
+
 </resources>
