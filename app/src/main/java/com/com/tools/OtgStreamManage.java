@@ -61,6 +61,7 @@ public class OtgStreamManage {
             throw new Exception("You not have available device!");
         }
         for (Map.Entry<String, UsbDevice> usbDeviceEntry : mUsbManager.getDeviceList().entrySet()) {
+            mUsbDevice = usbDeviceEntry.getValue();
             if (!mUsbManager.hasPermission(usbDeviceEntry.getValue())) {
                 mUsbManager.requestPermission(usbDeviceEntry.getValue(), mPermissionIntent);
                 return true;

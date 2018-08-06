@@ -568,6 +568,7 @@ public class PageInventoryReal extends LinearLayout {
 		public void onReceive(Context context, Intent intent) {
 			if (intent.getAction().equals(
 					ReaderHelper.BROADCAST_REFRESH_INVENTORY_REAL)) {
+				Log.d("Real time receive",Thread.currentThread().getName());
 				byte btCmd = intent.getByteExtra("cmd", (byte) 0x00);
 				switch (btCmd) {
 				case CMD.REAL_TIME_INVENTORY:

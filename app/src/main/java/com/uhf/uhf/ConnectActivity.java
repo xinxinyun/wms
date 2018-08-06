@@ -21,6 +21,8 @@ public class ConnectActivity extends Activity {
     private TextView mConectBluetooth;
     private TextView mConnectOtg;
 
+    private final int REQUEST_ENABLE = 0;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -74,12 +76,24 @@ public class ConnectActivity extends Activity {
                                 Toast.LENGTH_SHORT).show();
                         return;
                     }
-                    startActivity(new Intent().setClass(getApplicationContext(), ConnectBlueTooth.class));
+                    startActivityForResult(new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE),REQUEST_ENABLE);
                     break;
             }
-            finish();
+            //finish();
         }
     };
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        switch (resultCode) {
+            case Activity.RESULT_OK:
+                startActivity(new Intent().setClass(getApplicationContext(), ConnectBlueTooth.class));
+                break;
+            default:
+                break;
+        }
+    }
 
     @Override
     protected void onDestroy() {

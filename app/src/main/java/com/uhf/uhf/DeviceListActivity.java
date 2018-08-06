@@ -143,7 +143,7 @@ public class DeviceListActivity extends Activity {
 	        	// Unregister broadcast listeners
 	        	this.unregisterReceiver(mReceiver);
 	        } catch (Exception e) {
-				;
+	            e.printStackTrace();
 			}
         }
     }

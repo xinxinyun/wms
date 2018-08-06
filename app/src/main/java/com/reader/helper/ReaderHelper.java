@@ -262,6 +262,8 @@ public class ReaderHelper {
         Intent itent = new Intent(BROADCAST_REFRESH_INVENTORY_REAL);
         itent.putExtra("cmd", btCmd);
         mLocalBroadcastManager.sendBroadcast(itent);
+
+        Log.d("Real time",Thread.currentThread().getName());
     }
 
     ;
@@ -652,7 +654,7 @@ public class ReaderHelper {
                     R.string.unknown_error);
         }
 
-        String strLog = strCmd
+        String strLog = CMD.format(btCmd)
                 + mContext.getResources().getString(R.string.failure_reason)
                 + strErrorCode;
         writeLog(strLog, ERROR.FAIL);
