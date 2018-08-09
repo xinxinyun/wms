@@ -158,7 +158,7 @@ public class ConnectBlueTooth extends Activity {
                     service).getService(mBleCallBack);
             if (mBleService != null) {
                 mBleService.initialize();
-                mBleService.setDecode(false);
+                mBleService.setDecode(true);
                 mBleService.setConnectTimeout(5000);
             }
         }
@@ -254,7 +254,7 @@ public class ConnectBlueTooth extends Activity {
                             }
                             @Override
                             public void write(byte[] buff) {
-                               mBleService.send(address,buff,false);
+                               mBleService.send(address,buff,true);
                             }
                         });
                     } catch (Exception e) {
