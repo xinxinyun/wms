@@ -1,19 +1,17 @@
 package com.uhf.uhf.tagpage;
 
-import java.util.List;
-
-import com.reader.helper.InventoryBuffer.InventoryTagMap;
-import com.uhf.uhf.R;
-import com.uhf.uhf.R.id;
-import com.uhf.uhf.R.layout;
-
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
+
+import com.reader.helper.InventoryBuffer.InventoryTagMap;
+import com.uhf.uhf.R.id;
+import com.uhf.uhf.R.layout;
+
+import java.util.List;
 
 public class RealListAdapter extends BaseAdapter {
 	//add by lei.li 2016/11/10
@@ -24,6 +22,8 @@ public class RealListAdapter extends BaseAdapter {
 	private Context mContext;
 	
 	private List<InventoryTagMap> listMap;
+
+	private boolean isPhaseVisiable = false;
 	
 	public final class ListItemView{                
 		public TextView mIdText;
@@ -32,6 +32,7 @@ public class RealListAdapter extends BaseAdapter {
 		public TextView mTimesText;
 		public TextView mRssiText;
 		public TextView mFreqText;
+		public TextView mPhaseText;
     }
 
 	public RealListAdapter(Context context, List<InventoryTagMap> listMap) {
@@ -67,21 +68,21 @@ public class RealListAdapter extends BaseAdapter {
 			convertView = mInflater.inflate(layout.tag_real_list_item, null);
 			listItemView.mIdText = (TextView)convertView.findViewById(id.id_text);
 			listItemView.mEpcText = (TextView)convertView.findViewById(id.epc_text);
-			
 			//add by lei.li 2016/11/11
 			/*if (!listMap.isEmpty()) {
 			    listItemView.mEpcText.getLayoutParams().width = lengthestData();
 			    mWidthest = listItemView.mEpcText.getLayoutParams().width;
 			}*/
 			//add by lei.li 2016/11/11
-			
+
 			//add by lei.li 2016/11/14
 			//add by lei.li 2016/11/14
 
-			
+
 			listItemView.mPcText = (TextView)convertView.findViewById(id.pc_text);
 			listItemView.mTimesText = (TextView)convertView.findViewById(id.times_text);
 			listItemView.mRssiText = (TextView)convertView.findViewById(id.rssi_text);
+			listItemView.mPhaseText = (TextView) convertView.findViewById(id.phase_text);
 			listItemView.mFreqText = (TextView)convertView.findViewById(id.freq_text);
 			convertView.setTag(listItemView);
 		} else {
@@ -105,8 +106,8 @@ public class RealListAdapter extends BaseAdapter {
 		} catch (Exception e) {
 			listItemView.mRssiText.setText("");
 		}
+		listItemView.mPhaseText.setText(map.strPhase);
 		listItemView.mFreqText.setText(map.strFreq);
-		
 		return convertView;
 
 	}	
@@ -122,5 +123,13 @@ public class RealListAdapter extends BaseAdapter {
 				 length = itm.strEPC.length();
 		}
 		return length * 16;
+	}
+
+	public boolean isPhaseVisiable() {
+		return isPhaseVisiable;
+	}
+
+	public void setPhaseVisiable(boolean phaseVisiable) {
+		isPhaseVisiable = phaseVisiable;
 	}
 }

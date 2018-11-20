@@ -428,4 +428,15 @@
     <string name="get_mask_success">Get mask success</string>
     <string name="parameter_invalid_mask">Invalid parameter</string>
     <string name="operate_mask">Operate mask</string>
+    <string name="fast_switch">Fast Switch Antenna Mode</string>
+    <string name="ant_1">1ANT</string>
+    <string name="ant_4">4ANT</string>
+    <string name="ant_8">8ANT</string>
+    <string name="buffer_inventory" >Buffer Mode</string>
+    <string name="interval">Interval</string>
+    <string name="repeat">repeat</string>
+    <string name="optimized">Optimization</string>
+    <string name="taget_quantity">Target Quantity</string>
+    <string name="run_times">Run Times</string>
+    <string name="time_interval">Time Interval</string>
 </resources>

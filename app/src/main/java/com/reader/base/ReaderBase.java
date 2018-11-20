@@ -12,6 +12,8 @@
 
 package com.reader.base;
 
+import android.support.annotation.NonNull;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -337,11 +339,11 @@ public abstract class ReaderBase {
 	 * @param btOutputPower	RF output power, range from 0 to 33(0x00 - 0x21), the unit is dBm.
 	 * @return	Succeeded :0, Failed:-1
 	 */
-	public final int setOutputPower(byte btReadId, byte btOutputPower) {
+	public final int setOutputPower(byte btReadId, @NonNull byte[] btOutputPower) {
 		byte btCmd = CMD.SET_OUTPUT_POWER;
-		byte[] btAryData = new byte[1];
-		
-		btAryData[0] = btOutputPower;
+		byte[] btAryData = new byte[btOutputPower.length];
+
+		System.arraycopy(btOutputPower,0,btAryData,0,btAryData.length);
 
 		int nResult = sendMessage(btReadId, btCmd, btAryData);
 
@@ -862,10 +864,10 @@ public abstract class ReaderBase {
 	public final int fastSwitchAntInventory(byte btReadId,
 			byte btA, byte btStayA, byte btB, byte btStayB, 
 			byte btC, byte btStayC, byte btD, byte btStayD, 
-			byte btInterval, byte btRepeat) {
+			byte btInterval,byte btRepeat) {
 		
 		byte btCmd = CMD.FAST_SWITCH_ANT_INVENTORY;
-		byte[] btAryData = new byte[10];
+		byte[] btAryData = new byte[10 ];
 		
 		btAryData[0] = btA;
 		btAryData[1] = btStayA;
@@ -876,10 +878,36 @@ public abstract class ReaderBase {
 		btAryData[6] = btD;
 		btAryData[7] = btStayD;
 		btAryData[8] = btInterval;
+
 		btAryData[9] = btRepeat;
+
 
 		int nResult = sendMessage(btReadId, btCmd, btAryData);
 
+		return nResult;
+	}
+/**
+	 * Fast Switch Antenna Mode.
+	 * <br>Attention:
+	 * <br> The hardware has a dual CPU architecture, main CPU is responsible for tag inventory, and assistant CPU is responsible for data management. Inventory and data transfer are parallel and simultaneous. So the data transfer via serial port doesn't affect the efficiency of reader.
+	 * <br>In massive tag applications, please use cmd_real_time_inventory command which is more effective for large tag quantity applications.
+	 * @param btReadId		Reader Address(0xFF Public Address)
+	 * @param btA			First working ant (00 - 03). If set this byte above 03 means ignore it.
+	 * @param btStayA		Inventory round for an antenna.
+	 * @param btB			Second working ant (00 - 03). If set this byte above 03 means ignore it.
+	 * @param btStayB		Inventory round for an antenna.
+	 * @param btC			Third working ant (00 - 03). If set this byte above 03 means ignore it.
+	 * @param btStayC		Inventory round for an antenna.
+	 * @param btD			Fourth working ant (00 - 03). If set this byte above 03 means ignore it.
+	 * @param btStayD		Inventory round for an antenna.
+	 * @param btInterval	Rest time between switching antennas. During the cause of rest, RF output will be cancelled, thus power consumption and heat generation are both reduced.
+	 * @param btRepeat		Repeat the inventory with above ant switch sequence.
+	 * @return	Succeeded :0, Failed:-1
+	 */
+	public final int fastSwitchAntInventory(byte btReadId,@NonNull byte[] parameters) {
+
+		byte btCmd = CMD.FAST_SWITCH_ANT_INVENTORY;
+		int nResult = sendMessage(btReadId, btCmd, parameters);
 		return nResult;
 	}
 

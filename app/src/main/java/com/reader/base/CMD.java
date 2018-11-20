@@ -16,7 +16,7 @@ public class CMD {
 	public final static byte SET_WORK_ANTENNA = 0x74;
 	public final static byte GET_WORK_ANTENNA = 0x75;
 	public final static byte SET_OUTPUT_POWER = 0x76;
-	public final static byte GET_OUTPUT_POWER = 0x77;
+	public final static byte GET_OUTPUT_POWER = (byte)0x97;
 	public final static byte SET_FREQUENCY_REGION = 0x78;
 	public final static byte GET_FREQUENCY_REGION = 0x79;
 	public final static byte SET_BEEPER_MODE = 0x7A;

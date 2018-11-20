@@ -208,6 +208,22 @@
 			        android:layout_width="3.7dp"
 			        android:layout_height="match_parent"
 			        android:background="#BBBBBB" />
+				<TextView
+					android:id="@+id/phase_text"
+					android:layout_width="60sp"
+					android:layout_height="30dp"
+					android:visibility="gone"
+					android:padding="1.5sp"
+					android:textSize="12sp"
+					android:textColor="#ff333333"
+					android:gravity="center"
+					android:singleLine="true"
+					android:text="Phase"
+					android:textStyle="bold"/>
+				<View
+					android:layout_width="3.7dp"
+					android:layout_height="match_parent"
+					android:background="#BBBBBB" />
 				
 				<TextView
 				    android:id="@+id/freq_text"

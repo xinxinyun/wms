@@ -422,5 +422,40 @@
     <string name="get_mask_success">获取mask成功</string>
     <string name="parameter_invalid_mask">无效参数</string>
     <string name="operate_mask">操作mask</string>
+    <string name="fast_switch">快速切换天线</string>
+    <string name="ant_1">1天线</string>
+    <string name="ant_4">4天线</string>
+    <string name="ant_8">8天线</string>
+    <string name="buffer_inventory" >缓存模式</string>
+    <string name="interval">天线延时</string>
+    <string name="repeat">循环次数</string>
+    <string name="optimized">优化</string>
+    <string name="taget_quantity">标签数量</string>
+    <string name="run_times">运行次数</string>
+    <string name="time_interval">时间间隔</string>
+
+    <string-array name="ants">
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+        <item>6</item>
+        <item>7</item>
+        <item>8</item>
+    </string-array>
+
+    <string-array name="session_flag">
+        <item>S0</item>
+        <item>S1</item>
+        <item>S2</item>
+        <item>S3</item>
+    </string-array>
+
+    <string-array name="session_target">
+        <item>A</item>
+        <item>B</item>
+    </string-array>
+
 
 </resources>

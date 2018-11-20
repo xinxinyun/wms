@@ -59,6 +59,8 @@ public class ReaderHelper {
      */
     public final static String BROADCAST_REFRESH_ISO18000_6B = "com.reader.helper.refresh.ISO180006B";
 
+    public final static String BROADCAST_REFRESH_FAST_SWITCH_TERMINAL = "com.reader.helper.refresh.fastSwitchTerminal";
+
     private static LocalBroadcastManager mLocalBroadcastManager = null;
 
     /**
@@ -263,7 +265,7 @@ public class ReaderHelper {
         itent.putExtra("cmd", btCmd);
         mLocalBroadcastManager.sendBroadcast(itent);
 
-        Log.d("Real time",Thread.currentThread().getName());
+        Log.d("Real time", Thread.currentThread().getName());
     }
 
     ;
@@ -705,10 +707,10 @@ public class ReaderHelper {
         String strCmd = CMD.format(btCmd);
         String strErrorCode = "";
 
-        if (btAryData.length == 0x04 || btAryData.length == 0x01) {
+        if (btAryData.length == 0x04 || btAryData.length == 0x01 || btAryData.length == 0x08) {
             m_curReaderSetting.btReadId = msgTran.getReadId();
-            m_curReaderSetting.btAryOutputPower = btAryData.clone();
-
+            //m_curReaderSetting.btAryOutputPower = btAryData.clone();
+            System.arraycopy(btAryData, 0, m_curReaderSetting.btAryOutputPower, 0, btAryData.length);
             refreshReaderSetting(btCmd, m_curReaderSetting);
             writeLog(strCmd, ERROR.SUCCESS);
             return;
@@ -1800,17 +1802,31 @@ public class ReaderHelper {
         }
     }
 
-    private void runLoopFastSwitch() {
+    public void runLoopFastSwitch() {
         if (m_curInventoryBuffer.bLoopInventory) {
-            mReader.fastSwitchAntInventory(m_curReaderSetting.btReadId,
+            /*mReader.fastSwitchAntInventory(m_curReaderSetting.btReadId,
                     m_curInventoryBuffer.btA, m_curInventoryBuffer.btStayA,
                     m_curInventoryBuffer.btB, m_curInventoryBuffer.btStayB,
                     m_curInventoryBuffer.btC, m_curInventoryBuffer.btStayC,
                     m_curInventoryBuffer.btD, m_curInventoryBuffer.btStayD,
                     m_curInventoryBuffer.btInterval,
-                    m_curInventoryBuffer.btFastRepeat);
+                    m_curInventoryBuffer.btFastRepeat);*/
+            if (m_curInventoryBuffer.nRunTimes > 0) {
+                mReader.fastSwitchAntInventory(m_curInventoryBuffer.btRepeat, m_curInventoryBuffer.nFastSwitchAntsParams);
+                m_curInventoryBuffer.nRunTimes--;
+                if (m_curInventoryBuffer.nRunTimes > 0 && m_curInventoryBuffer.nTimeInterval > 0) {
+                    try {
+                        Thread.sleep(m_curInventoryBuffer.nTimeInterval);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+            } else if (m_curInventoryBuffer.nRunTimes == 0) {
+                m_curInventoryBuffer.bLoopInventory = false;
+                mLocalBroadcastManager.sendBroadcast(new Intent(BROADCAST_REFRESH_FAST_SWITCH_TERMINAL));
+            } else {
+                mReader.fastSwitchAntInventory(m_curInventoryBuffer.btRepeat, m_curInventoryBuffer.nFastSwitchAntsParams);
+            }
         }
     }
-
-
 }

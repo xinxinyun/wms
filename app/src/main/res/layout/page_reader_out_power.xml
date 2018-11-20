@@ -29,7 +29,7 @@
 		    android:layout_width="fill_parent"
 			android:layout_height="wrap_content"
 			android:orientation="vertical" >
-		    
+
 		    <TextView
 				android:layout_width="wrap_content"
 	            android:layout_height="wrap_content"
@@ -51,15 +51,20 @@
 				android:orientation="horizontal"
 				android:gravity="center" >
 	
-			    
+			    <TextView
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+                    android:textColor="#ff222222"
+					android:text="ANT1:"/>
 		        <EditText
-		            android:id="@+id/out_power_text"
+		            android:id="@+id/out_power_text1"
 		            android:singleLine="true"
 		            android:layout_width="150sp"
 		            android:layout_height="22.5sp"
 		            android:background="@drawable/editbox_background"
 		            android:gravity="center"
 		            android:inputType="text"
+                    android:text="0"
 		            android:textSize="12sp" />
 	        	
 				<TextView
@@ -73,7 +78,266 @@
 		            android:textSize="12sp" />
 	        	
 	        </LinearLayout>
-	        
+			<LinearLayout
+			    android:layout_width="fill_parent"
+				android:layout_height="wrap_content"
+				android:paddingLeft="7.5dip"
+				android:paddingTop="3.7dip"
+				android:paddingRight="7.5dip"
+				android:paddingBottom="3.7dip"
+				android:orientation="horizontal"
+				android:gravity="center" >
+
+			    <TextView
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+                    android:textColor="#ff222222"
+					android:text="ANT2:"/>
+		        <EditText
+		            android:id="@+id/out_power_text2"
+		            android:singleLine="true"
+		            android:layout_width="150sp"
+		            android:layout_height="22.5sp"
+		            android:background="@drawable/editbox_background"
+		            android:gravity="center"
+		            android:inputType="text"
+                    android:text="0"
+		            android:textSize="12sp" />
+
+				<TextView
+		            android:singleLine="true"
+		            android:layout_width="wrap_content"
+		            android:layout_height="32.5sp"
+		            android:gravity="center"
+		            android:paddingLeft="7.5dip"
+		            android:text="@string/dBm"
+		            android:textColor="#ff222222"
+		            android:textSize="12sp" />
+
+	        </LinearLayout>
+			<LinearLayout
+			    android:layout_width="fill_parent"
+				android:layout_height="wrap_content"
+				android:paddingLeft="7.5dip"
+				android:paddingTop="3.7dip"
+				android:paddingRight="7.5dip"
+				android:paddingBottom="3.7dip"
+				android:orientation="horizontal"
+				android:gravity="center" >
+
+			    <TextView
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+                    android:textColor="#ff222222"
+					android:text="ANT3:"/>
+		        <EditText
+		            android:id="@+id/out_power_text3"
+		            android:singleLine="true"
+		            android:layout_width="150sp"
+		            android:layout_height="22.5sp"
+		            android:background="@drawable/editbox_background"
+		            android:gravity="center"
+		            android:inputType="text"
+                    android:text="0"
+		            android:textSize="12sp" />
+
+				<TextView
+		            android:singleLine="true"
+		            android:layout_width="wrap_content"
+		            android:layout_height="32.5sp"
+		            android:gravity="center"
+		            android:paddingLeft="7.5dip"
+		            android:text="@string/dBm"
+		            android:textColor="#ff222222"
+		            android:textSize="12sp" />
+
+	        </LinearLayout>
+			<LinearLayout
+			    android:layout_width="fill_parent"
+				android:layout_height="wrap_content"
+				android:paddingLeft="7.5dip"
+				android:paddingTop="3.7dip"
+				android:paddingRight="7.5dip"
+				android:paddingBottom="3.7dip"
+				android:orientation="horizontal"
+				android:gravity="center" >
+
+			    <TextView
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+                    android:textColor="#ff222222"
+					android:text="ANT4:"/>
+		        <EditText
+		            android:id="@+id/out_power_text4"
+		            android:singleLine="true"
+		            android:layout_width="150sp"
+		            android:layout_height="22.5sp"
+		            android:background="@drawable/editbox_background"
+		            android:gravity="center"
+		            android:inputType="text"
+                    android:text="0"
+		            android:textSize="12sp" />
+
+				<TextView
+		            android:singleLine="true"
+		            android:layout_width="wrap_content"
+		            android:layout_height="32.5sp"
+		            android:gravity="center"
+		            android:paddingLeft="7.5dip"
+		            android:text="@string/dBm"
+		            android:textColor="#ff222222"
+		            android:textSize="12sp" />
+
+	        </LinearLayout>
+			<LinearLayout
+			    android:layout_width="fill_parent"
+				android:layout_height="wrap_content"
+				android:paddingLeft="7.5dip"
+				android:paddingTop="3.7dip"
+				android:paddingRight="7.5dip"
+				android:paddingBottom="3.7dip"
+				android:orientation="horizontal"
+				android:gravity="center" >
+
+			    <TextView
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+                    android:textColor="#ff222222"
+					android:text="ANT5:"/>
+		        <EditText
+		            android:id="@+id/out_power_text5"
+		            android:singleLine="true"
+		            android:layout_width="150sp"
+		            android:layout_height="22.5sp"
+		            android:background="@drawable/editbox_background"
+		            android:gravity="center"
+		            android:inputType="text"
+                    android:text="0"
+		            android:textSize="12sp" />
+
+				<TextView
+		            android:singleLine="true"
+		            android:layout_width="wrap_content"
+		            android:layout_height="32.5sp"
+		            android:gravity="center"
+		            android:paddingLeft="7.5dip"
+		            android:text="@string/dBm"
+		            android:textColor="#ff222222"
+		            android:textSize="12sp" />
+
+	        </LinearLayout>
+			<LinearLayout
+			    android:layout_width="fill_parent"
+				android:layout_height="wrap_content"
+				android:paddingLeft="7.5dip"
+				android:paddingTop="3.7dip"
+				android:paddingRight="7.5dip"
+				android:paddingBottom="3.7dip"
+				android:orientation="horizontal"
+				android:gravity="center" >
+
+			    <TextView
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+                    android:textColor="#ff222222"
+					android:text="ANT6:"/>
+		        <EditText
+		            android:id="@+id/out_power_text6"
+		            android:singleLine="true"
+		            android:layout_width="150sp"
+		            android:layout_height="22.5sp"
+		            android:background="@drawable/editbox_background"
+		            android:gravity="center"
+		            android:inputType="text"
+                    android:text="0"
+		            android:textSize="12sp" />
+
+				<TextView
+		            android:singleLine="true"
+		            android:layout_width="wrap_content"
+		            android:layout_height="32.5sp"
+		            android:gravity="center"
+		            android:paddingLeft="7.5dip"
+		            android:text="@string/dBm"
+		            android:textColor="#ff222222"
+		            android:textSize="12sp" />
+
+	        </LinearLayout>
+			<LinearLayout
+			    android:layout_width="fill_parent"
+				android:layout_height="wrap_content"
+				android:paddingLeft="7.5dip"
+				android:paddingTop="3.7dip"
+				android:paddingRight="7.5dip"
+				android:paddingBottom="3.7dip"
+				android:orientation="horizontal"
+				android:gravity="center" >
+
+			    <TextView
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+                    android:textColor="#ff222222"
+					android:text="ANT7:"/>
+		        <EditText
+		            android:id="@+id/out_power_text7"
+		            android:singleLine="true"
+		            android:layout_width="150sp"
+		            android:layout_height="22.5sp"
+		            android:background="@drawable/editbox_background"
+		            android:gravity="center"
+		            android:inputType="text"
+                    android:text="0"
+		            android:textSize="12sp" />
+
+				<TextView
+		            android:singleLine="true"
+		            android:layout_width="wrap_content"
+		            android:layout_height="32.5sp"
+		            android:gravity="center"
+		            android:paddingLeft="7.5dip"
+		            android:text="@string/dBm"
+		            android:textColor="#ff222222"
+		            android:textSize="12sp" />
+
+	        </LinearLayout>
+			<LinearLayout
+			    android:layout_width="fill_parent"
+				android:layout_height="wrap_content"
+				android:paddingLeft="7.5dip"
+				android:paddingTop="3.7dip"
+				android:paddingRight="7.5dip"
+				android:paddingBottom="3.7dip"
+				android:orientation="horizontal"
+				android:gravity="center" >
+
+			    <TextView
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+                    android:textColor="#ff222222"
+					android:text="ANT8:"/>
+		        <EditText
+		            android:id="@+id/out_power_text8"
+		            android:singleLine="true"
+		            android:layout_width="150sp"
+		            android:layout_height="22.5sp"
+		            android:background="@drawable/editbox_background"
+		            android:gravity="center"
+		            android:inputType="text"
+                    android:text="0"
+		            android:textSize="12sp" />
+
+				<TextView
+		            android:singleLine="true"
+		            android:layout_width="wrap_content"
+		            android:layout_height="32.5sp"
+		            android:gravity="center"
+		            android:paddingLeft="7.5dip"
+		            android:text="@string/dBm"
+		            android:textColor="#ff222222"
+		            android:textSize="12sp" />
+
+	        </LinearLayout>
+
 			<LinearLayout
 	            android:layout_width="fill_parent"
 				android:layout_height="wrap_content"

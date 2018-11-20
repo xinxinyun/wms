@@ -20,7 +20,7 @@ public class ReaderSetting {
 	/**Reader temperature value */
 	public byte btTemperature;
 	/**Output power 1-4 byte*/
-	public byte []btAryOutputPower;
+	public byte[] btAryOutputPower;
 	/** Work Antenna*/
 	public byte btWorkAntenna;
 	@Deprecated
@@ -77,7 +77,7 @@ public class ReaderSetting {
 		btIndexBaudrate = 0x00;
 		btPlusMinus = 0x00;
 		btTemperature = 0x00;
-		btAryOutputPower = null;
+		btAryOutputPower = new byte[8];
 		btWorkAntenna = 0x00;
 		btDrmMode = 0x00;
 		btRegion = 0x00;

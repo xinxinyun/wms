@@ -39,8 +39,17 @@ public class InventoryBuffer {
 		public int nAnt3;
 		/** work antenna 4*/
 		public int nAnt4;
-		
-		/**
+		/** work antenna 1*/
+		public int nAnt5;
+		/** work antenna 2*/
+		public int nAnt6;
+		/** work antenna 3*/
+		public int nAnt7;
+		/** work antenna 4*/
+		public int nAnt8;
+        public String strPhase;
+
+        /**
 		 * Defaulted constructor
 		 */
 		public InventoryTagMap() {
@@ -85,6 +94,10 @@ public class InventoryBuffer {
 	public boolean bLoopInventoryReal;
 	/** Custom Session loop inventory tag mark*/
 	public boolean bLoopCustomizedSession;
+
+	public byte[] nFastSwitchAntsParams;
+	public int nRunTimes;
+	public int nTimeInterval;
 	
 	/** tag quantity */
 	public int nTagCount;

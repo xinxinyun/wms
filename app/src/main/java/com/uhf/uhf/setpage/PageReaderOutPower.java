@@ -1,24 +1,6 @@
 package com.uhf.uhf.setpage;
 
 
-import com.reader.base.CMD;
-import com.reader.base.ERROR;
-import com.reader.base.ReaderBase;
-import com.reader.base.StringTool;
-import com.reader.helper.ISO180006BOperateTagBuffer;
-import com.reader.helper.InventoryBuffer;
-import com.reader.helper.OperateTagBuffer;
-import com.reader.helper.ReaderHelper;
-import com.reader.helper.ReaderSetting;
-import com.uhf.uhf.LogList;
-import com.uhf.uhf.R;
-import com.uhf.uhf.UHFApplication;
-import com.uhf.uhf.R.id;
-import com.uhf.uhf.R.layout;
-import com.ui.base.BaseActivity;
-
-import android.R.integer;
-import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -30,6 +12,21 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.reader.base.CMD;
+import com.reader.base.ERROR;
+import com.reader.base.ReaderBase;
+import com.reader.helper.ISO180006BOperateTagBuffer;
+import com.reader.helper.InventoryBuffer;
+import com.reader.helper.OperateTagBuffer;
+import com.reader.helper.ReaderHelper;
+import com.reader.helper.ReaderSetting;
+import com.uhf.uhf.LogList;
+import com.uhf.uhf.R.id;
+import com.uhf.uhf.R.layout;
+import com.uhf.uhf.UHFApplication;
+import com.ui.base.BaseActivity;
 
 public class PageReaderOutPower extends BaseActivity {
 	private LogList mLogList;
@@ -37,8 +34,15 @@ public class PageReaderOutPower extends BaseActivity {
 	private TextView mSet;
 	private TextView mGet;
 	
-	private EditText mOutPowerText;
-	
+	private EditText mOutPowerText1;
+	private EditText mOutPowerText2;
+	private EditText mOutPowerText3;
+	private EditText mOutPowerText4;
+	private EditText mOutPowerText5;
+	private EditText mOutPowerText6;
+	private EditText mOutPowerText7;
+	private EditText mOutPowerText8;
+
 	private ReaderHelper mReaderHelper;
 	private ReaderBase mReader;
 	
@@ -80,7 +84,14 @@ public class PageReaderOutPower extends BaseActivity {
 		mLogList = (LogList) findViewById(id.log_list);
 		mSet = (TextView) findViewById(id.set);
 		mGet = (TextView) findViewById(id.get);
-		mOutPowerText = (EditText) findViewById(id.out_power_text);
+		mOutPowerText1 = (EditText) findViewById(id.out_power_text1);
+		mOutPowerText2 = (EditText) findViewById(id.out_power_text2);
+		mOutPowerText3 = (EditText) findViewById(id.out_power_text3);
+		mOutPowerText4 = (EditText) findViewById(id.out_power_text4);
+		mOutPowerText5 = (EditText) findViewById(id.out_power_text5);
+		mOutPowerText6 = (EditText) findViewById(id.out_power_text6);
+		mOutPowerText7 = (EditText) findViewById(id.out_power_text7);
+		mOutPowerText8 = (EditText) findViewById(id.out_power_text8);
 
 		mSet.setOnClickListener(setOutPowerOnClickListener);
 		
@@ -99,7 +110,14 @@ public class PageReaderOutPower extends BaseActivity {
 	private void updateView() {
 		
 		if (m_curReaderSetting.btAryOutputPower != null) {
-			mOutPowerText.setText(String.valueOf(m_curReaderSetting.btAryOutputPower[0] & 0xFF));
+			mOutPowerText1.setText(String.valueOf(m_curReaderSetting.btAryOutputPower[0] & 0xFF));
+			mOutPowerText2.setText(String.valueOf(m_curReaderSetting.btAryOutputPower[1] & 0xFF));
+			mOutPowerText3.setText(String.valueOf(m_curReaderSetting.btAryOutputPower[2] & 0xFF));
+			mOutPowerText4.setText(String.valueOf(m_curReaderSetting.btAryOutputPower[3] & 0xFF));
+			mOutPowerText5.setText(String.valueOf(m_curReaderSetting.btAryOutputPower[4] & 0xFF));
+			mOutPowerText6.setText(String.valueOf(m_curReaderSetting.btAryOutputPower[5] & 0xFF));
+			mOutPowerText7.setText(String.valueOf(m_curReaderSetting.btAryOutputPower[6] & 0xFF));
+			mOutPowerText8.setText(String.valueOf(m_curReaderSetting.btAryOutputPower[7] & 0xFF));
 		}
 	}
 	
@@ -111,15 +129,23 @@ public class PageReaderOutPower extends BaseActivity {
 				mReader.getOutputPower(m_curReaderSetting.btReadId);
 				break;
 			case id.set:
-				byte btOutputPower = 0x00;
+				byte btOutputPower[] = new byte[8];
 				try {
-					btOutputPower = (byte)Integer.parseInt(mOutPowerText.getText().toString());
+					btOutputPower[0] = (byte)Integer.parseInt(mOutPowerText1.getText().toString());
+					btOutputPower[1] = (byte)Integer.parseInt(mOutPowerText2.getText().toString());
+					btOutputPower[2] = (byte)Integer.parseInt(mOutPowerText3.getText().toString());
+					btOutputPower[3] = (byte)Integer.parseInt(mOutPowerText4.getText().toString());
+					btOutputPower[4] = (byte)Integer.parseInt(mOutPowerText5.getText().toString());
+					btOutputPower[5] = (byte)Integer.parseInt(mOutPowerText6.getText().toString());
+					btOutputPower[6] = (byte)Integer.parseInt(mOutPowerText7.getText().toString());
+					btOutputPower[7] = (byte)Integer.parseInt(mOutPowerText8.getText().toString());
 				} catch (Exception e) {
-					;
+					Toast.makeText(getApplicationContext(),"InValid number",Toast.LENGTH_SHORT).show();
+					return;
 				}
 				
 				mReader.setOutputPower(m_curReaderSetting.btReadId, btOutputPower);
-				m_curReaderSetting.btAryOutputPower = new byte[]{btOutputPower};
+				m_curReaderSetting.btAryOutputPower = btOutputPower;
 				break;
 			}
 		}

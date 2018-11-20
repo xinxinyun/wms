@@ -1,8 +1,5 @@
 package com.uhf.uhf;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import android.content.Context;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -22,6 +19,9 @@ import com.reader.helper.InventoryBuffer.InventoryTagMap;
 import com.reader.helper.ReaderHelper;
 import com.uhf.uhf.tagpage.RealListAdapter;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class TagRealList extends LinearLayout {
 	
 	
@@ -29,6 +29,8 @@ public class TagRealList extends LinearLayout {
 	private TableRow mTagRealRow;
 	private ImageView mTagRealImage;
 	private TextView mListTextInfo;
+
+	private TextView mPhaseText;
 
 	private TextView mMinRSSIText, mMaxRSSIText;
 
@@ -97,6 +99,8 @@ public class TagRealList extends LinearLayout {
 
 		mMinRSSIText = (TextView) findViewById(R.id.min_rssi_text);
 		mMaxRSSIText = (TextView) findViewById(R.id.max_rssi_text);
+
+		mPhaseText = (TextView) findViewById(R.id.phase_text);
 
 		mTagRealRow.setOnClickListener(new OnClickListener() {
 
@@ -214,5 +218,9 @@ public class TagRealList extends LinearLayout {
 		}
 
 		return widest * 16;
+	}
+
+	public void showPhase() {
+
 	}
 }
