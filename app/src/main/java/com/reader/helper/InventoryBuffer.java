@@ -49,6 +49,8 @@ public class InventoryBuffer {
 		public int nAnt8;
         public String strPhase;
 
+        public boolean isBufferTag = false;
+
         /**
 		 * Defaulted constructor
 		 */
@@ -157,7 +159,7 @@ public class InventoryBuffer {
 		btRepeat = 0x00;
 		lAntenna.clear();
 		//bLoopInventory = false;
-		//lAntenna.add((byte)0x00);
+		lAntenna.add(new Byte((byte)0x00));
 		nIndexAntenna = 0;
 		nCommond = 0;
 		bLoopInventoryReal = false;

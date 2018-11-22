@@ -22,6 +22,7 @@ import android.view.View.OnClickListener;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.com.tools.Beeper;
 import com.com.tools.ExcelUtils;
 import com.nativec.tools.ModuleManager;
 import com.reader.base.ERROR;
@@ -357,7 +358,6 @@ public class MainActivity extends BaseActivity {
 			/*if (!mLogList.tryClose())
 				askForOut();*/
             askForOut();
-
             return true;
         }
 
@@ -374,8 +374,8 @@ public class MainActivity extends BaseActivity {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 //close the module
-                                ModuleManager.newInstance().setUHFStatus(true);
-                                getApplication().onTerminate();
+                                ModuleManager.newInstance().setUHFStatus(false);
+                                ((UHFApplication) getApplication()).onTerminate();
                             }
                         }).setNegativeButton(getString(R.string.cancel),
                 new DialogInterface.OnClickListener() {
@@ -409,5 +409,6 @@ public class MainActivity extends BaseActivity {
         super.onDestroy();
         if (lbm != null)
             lbm.unregisterReceiver(mRecv);
+        Beeper.release();
     }
 }

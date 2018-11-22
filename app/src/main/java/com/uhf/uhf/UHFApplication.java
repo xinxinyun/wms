@@ -11,9 +11,11 @@ import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
 import android.util.Log;
 
+import com.com.tools.Beeper;
 import com.com.tools.OtgStreamManage;
 import com.reader.base.ERROR;
 import com.reader.helper.ReaderHelper;
+import com.ui.base.PreferenceUtil;
 
 import java.io.IOException;
 import java.net.Socket;
@@ -62,6 +64,12 @@ public class UHFApplication extends Application {
 		mContext = getApplicationContext();
 		// add by lei.li support OTG
 		OtgStreamManage.newInstance().init(mContext);
+		PreferenceUtil.init(mContext);
+		try {
+			Beeper.init(mContext);
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
 		/*CrashHandler crashHandler = CrashHandler.getInstance();
 		crashHandler.init(getApplicationContext());*/
 	}
@@ -78,7 +86,7 @@ public class UHFApplication extends Application {
 			try {
 				activity.finish();
 			} catch (Exception e) {
-				;
+
 			}
 		}
 

@@ -142,6 +142,7 @@ public class PageInventoryReal extends LinearLayout {
         itent.addAction(ReaderHelper.BROADCAST_REFRESH_INVENTORY_REAL);
         itent.addAction(ReaderHelper.BROADCAST_REFRESH_INVENTORY);
         itent.addAction(ReaderHelper.BROADCAST_REFRESH_FAST_SWITCH_TERMINAL);
+        itent.addAction(ReaderHelper.BROADCAST_REFRESH_FAST_SWITCH);
         lbm.registerReceiver(mRecv, itent);
 
         mDropDownRow1.setEnabled(mCbRealSession.isChecked());
@@ -191,6 +192,27 @@ public class PageInventoryReal extends LinearLayout {
                     mLayoutRealSet.setVisibility(View.VISIBLE);
                 } else {
                     mLayoutRealSet.setVisibility(View.GONE);
+                    mBufferInventoryCheck.setChecked(false);
+                    mFastSwitchCheck.setChecked(false);
+                    mTypeAnt1.setChecked(true);
+                    mAnt1.setChecked(true);
+                    mAnt2.setChecked(false);
+                    mAnt3.setChecked(false);
+                    mAnt4.setChecked(false);
+                    mAnt5.setChecked(false);
+                    mAnt6.setChecked(false);
+                    mAnt7.setChecked(false);
+                    mAnt8.setChecked(false);
+
+                    mAnt1.setEnabled(true);
+                    mAnt2.setEnabled(false);
+                    mAnt3.setEnabled(false);
+                    mAnt4.setEnabled(false);
+                    mAnt5.setEnabled(false);
+                    mAnt6.setEnabled(false);
+                    mAnt7.setEnabled(false);
+                    mAnt8.setEnabled(false);
+
                 }
 
                 mDropDownRow1.setEnabled(mCbRealSession.isChecked());
@@ -213,8 +235,9 @@ public class PageInventoryReal extends LinearLayout {
         }
 
         // start_add by lei.li 2016/11/09
-        refreshText();
-        refreshList();
+        //refreshText();
+        //refreshList();
+        refresh();
         // end_add by lei.li 2016/11/09
 
         refreshStartStop(mReaderHelper.getInventoryFlag());
@@ -438,6 +461,7 @@ public class PageInventoryReal extends LinearLayout {
         mBufferInventoryCheck.setOnCheckedChangeListener(new OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                mTagRealList.isCheckedBufferInventory(isChecked);
                 if (isChecked) {
                     mBufferSetPanel.setVisibility(View.VISIBLE);
                     mAntsPanel.setVisibility(View.VISIBLE);
@@ -470,6 +494,8 @@ public class PageInventoryReal extends LinearLayout {
                         mAnt6.setEnabled(false);
                         mAnt7.setEnabled(false);
                         mAnt8.setEnabled(false);
+                        if (!mBufferInventoryCheck.isChecked())
+                            mTagRealList.showSelectAntsCount(1);
                         break;
                     case id.ant_4:
                         mAnt1.setEnabled(true);
@@ -480,6 +506,8 @@ public class PageInventoryReal extends LinearLayout {
                         mAnt6.setEnabled(false);
                         mAnt7.setEnabled(false);
                         mAnt8.setEnabled(false);
+                        if (!mBufferInventoryCheck.isChecked())
+                            mTagRealList.showSelectAntsCount(4);
                         break;
                     case id.ant_8:
                         mAnt1.setEnabled(true);
@@ -490,11 +518,20 @@ public class PageInventoryReal extends LinearLayout {
                         mAnt6.setEnabled(true);
                         mAnt7.setEnabled(true);
                         mAnt8.setEnabled(true);
+                        if (!mBufferInventoryCheck.isChecked())
+                            mTagRealList.showSelectAntsCount(8);
                         break;
                 }
             }
         });
 
+        mFastPhase.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                mTagRealList.isShowPhase(isChecked);
+                mReaderHelper.setShowPhase(isChecked);
+            }
+        });
         //mBufferSetPanel = findViewById(id.panel);
     }
 
@@ -504,11 +541,11 @@ public class PageInventoryReal extends LinearLayout {
         refreshText();
         clearText();
         mRealRoundEditText.setText("1");
-        clearAnt();
+        //clearAnt();
     }
 
     private void clearAnt() {
-        mAnt1.setChecked(false);
+        mAnt1.setChecked(true);
         mAnt2.setChecked(false);
         mAnt3.setChecked(false);
         mAnt4.setChecked(false);
@@ -523,6 +560,7 @@ public class PageInventoryReal extends LinearLayout {
     @SuppressWarnings("deprecation")
     private void refreshStartStop(boolean start) {
         if (start) {
+            refresh();
             mStartStop.setBackgroundDrawable(getResources().getDrawable(
                     R.drawable.button_disenabled_background));
             mStartStop.setText(getResources()
@@ -608,7 +646,6 @@ public class PageInventoryReal extends LinearLayout {
 
     private void startstop() {
         bTmpInventoryFlag = false;
-
         //m_curInventoryBuffer.clearInventoryPar();
         m_curInventoryBuffer.btRepeat = 0x00;
         m_curInventoryBuffer.nIndexAntenna = 0;
@@ -638,41 +675,41 @@ public class PageInventoryReal extends LinearLayout {
             return;
         }
 
-        if (mCbRealSet.isChecked() && mCbRealSession.isChecked()) {
-            m_curInventoryBuffer.bLoopCustomizedSession = true;
-            m_curInventoryBuffer.btSession = (byte) (mPos1 & 0xFF);
-            m_curInventoryBuffer.btTarget = (byte) (mPos2 & 0xFF);
-        } else if (mBufferInventoryCheck.isChecked()) {
-            m_curInventoryBuffer.bLoopInventoryReal = false;
-            m_curInventoryBuffer.bLoopInventory = true;
-            m_curInventoryBuffer.bLoopCustomizedSession = false;
-        } else if(mFastSwitchCheck.isChecked()) {
-            m_curInventoryBuffer.bLoopInventoryReal = false;
-            m_curInventoryBuffer.bLoopInventory = true;
-            m_curInventoryBuffer.bLoopCustomizedSession = false;
-            initFastSwitchParamter();
-
-            if (!mStartStop.getText().toString()
-                    .equals(getResources().getString(R.string.start_inventory))) {
-                refreshText();
-                mReaderHelper.setInventoryFlag(false);
+        if(mCbRealSet.isChecked()) {
+            if (mCbRealSet.isChecked() && mCbRealSession.isChecked()) {
+                m_curInventoryBuffer.bLoopCustomizedSession = true;
+                m_curInventoryBuffer.btSession = (byte) (mPos1 & 0xFF);
+                m_curInventoryBuffer.btTarget = (byte) (mPos2 & 0xFF);
+            } else if (mBufferInventoryCheck.isChecked()) {
                 m_curInventoryBuffer.bLoopInventoryReal = false;
+                m_curInventoryBuffer.bLoopInventory = true;
+                m_curInventoryBuffer.bLoopCustomizedSession = false;
+            } else if(mFastSwitchCheck.isChecked()) {
+                m_curInventoryBuffer.bLoopInventoryReal = false;
+                m_curInventoryBuffer.bLoopInventory = true;
+                m_curInventoryBuffer.bLoopCustomizedSession = false;
+                initFastSwitchParamter();
+
+                if (!mStartStop.getText().toString()
+                        .equals(getResources().getString(R.string.start_inventory))) {
+                    refreshText();
+                    mReaderHelper.setInventoryFlag(false);
+                    m_curInventoryBuffer.bLoopInventoryReal = false;
+                    m_curInventoryBuffer.bLoopInventory = false;
+                    m_curInventoryBuffer.bLoopCustomizedSession = false;
+                    refreshStartStop(false);
+                    refreshList();
+                    return;
+                } else {
+                    mReaderHelper.runLoopFastSwitch();
+                    refreshStartStop(true);
+                }
+                return;
+            }else {
                 m_curInventoryBuffer.bLoopInventory = false;
                 m_curInventoryBuffer.bLoopCustomizedSession = false;
-                refreshStartStop(false);
-                refreshList();
-                return;
-            } else {
-                mReaderHelper.runLoopFastSwitch();
-                refreshStartStop(true);
             }
-            return;
-        }else {
-            m_curInventoryBuffer.bLoopInventory = false;
-            m_curInventoryBuffer.bLoopCustomizedSession = false;
         }
-
-
 
         if (!mStartStop.getText().toString()
                 .equals(getResources().getString(R.string.start_inventory))) {
@@ -908,8 +945,9 @@ public class PageInventoryReal extends LinearLayout {
     private final BroadcastReceiver mRecv = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            if (intent.getAction().equals(
-                    ReaderHelper.BROADCAST_REFRESH_INVENTORY_REAL) || intent.getAction().equals(ReaderHelper.BROADCAST_REFRESH_INVENTORY)) {
+            if (intent.getAction().equals(ReaderHelper.BROADCAST_REFRESH_INVENTORY_REAL)
+                    || intent.getAction().equals(ReaderHelper.BROADCAST_REFRESH_INVENTORY)
+                    || intent.getAction().equals(ReaderHelper.BROADCAST_REFRESH_FAST_SWITCH)) {
                 Log.d("Real time receive", Thread.currentThread().getName());
                 byte btCmd = intent.getByteExtra("cmd", (byte) 0x00);
                 switch (btCmd) {
@@ -937,12 +975,9 @@ public class PageInventoryReal extends LinearLayout {
                                 bTmpInventoryFlag = true;
                                 mHandler.removeCallbacks(mRefreshRunnable);
                                 mHandler.postDelayed(mRefreshRunnable, 2000);
-
                                 // rm by lei.li 2016/11/04
                                 // m_curInventoryBuffer.clearInventoryRealResult();
                                 // mReaderHelper.clearInventoryTotal();
-                                // Log.e("zhebian",
-                                // "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
                             }
                         }
                     }
@@ -990,8 +1025,7 @@ public class PageInventoryReal extends LinearLayout {
                         break;
                 }
 
-            } else if (intent.getAction().equals(
-                    ReaderHelper.BROADCAST_WRITE_LOG)) {
+            } else if (intent.getAction().equals(ReaderHelper.BROADCAST_WRITE_LOG)) {
                 mLogList.writeLog((String) intent.getStringExtra("log"),
                         intent.getIntExtra("type", ERROR.SUCCESS));
             } else if (intent.getAction().equals(ReaderHelper.BROADCAST_REFRESH_FAST_SWITCH_TERMINAL)) {
@@ -1014,7 +1048,6 @@ public class PageInventoryReal extends LinearLayout {
 
         if (lbm != null)
             lbm.unregisterReceiver(mRecv);
-
         mLoopHandler.removeCallbacks(mLoopRunnable);
         mHandler.removeCallbacks(mRefreshRunnable);
     }

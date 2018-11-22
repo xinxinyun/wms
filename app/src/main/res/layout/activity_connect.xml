@@ -45,6 +45,7 @@
 		android:textColor="#ff222222"
 		android:textStyle="bold"
 		android:textSize="20.0sp"
+		android:visibility="gone"
 		android:clickable="true" />
 	
 	<TextView

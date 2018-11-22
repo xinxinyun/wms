@@ -167,7 +167,9 @@ public class ConnectBlueTooth extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.connect_bluetooth);
+
         mContext = getApplicationContext();
         checkBLEFeature();
         bindService(new Intent(this, BleService.class), mConnection, BIND_AUTO_CREATE);

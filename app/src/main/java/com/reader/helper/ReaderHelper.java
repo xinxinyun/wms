@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
+import com.com.tools.Beeper;
 import com.reader.base.CMD;
 import com.reader.base.ERROR;
 import com.reader.base.HEAD;
@@ -108,6 +109,8 @@ public class ReaderHelper {
     private boolean m_bISO6BContinue = false;
 
     private int m_nTotal = 0;
+
+    private boolean isShowPhase;
 
     /**
      * Constructor
@@ -318,7 +321,13 @@ public class ReaderHelper {
         }
     }
 
-    ;
+    public boolean isShowPhase() {
+        return isShowPhase;
+    }
+
+    public void setShowPhase(boolean showPhase) {
+        isShowPhase = showPhase;
+    }
 
     /**
      * Set and return the global reader helper base class in helper.
@@ -576,7 +585,6 @@ public class ReaderHelper {
         if (btAryData.length == 0x01) {
             if (btAryData[0] == ERROR.SUCCESS) {
                 m_curReaderSetting.btReadId = msgTran.getReadId();
-
                 writeLog(strCmd, ERROR.SUCCESS);
                 return;
             } else {
@@ -979,7 +987,7 @@ public class ReaderHelper {
 
             refreshInventory(btCmd, m_curInventoryBuffer);
             writeLog(strCmd, ERROR.SUCCESS);
-
+            Beeper.beep(Beeper.BEEPER);
             runLoopInventroy();
             return;
         } else if (btAryData.length == 0x01) {
@@ -1176,6 +1184,7 @@ public class ReaderHelper {
             writeLog(strCmd, ERROR.SUCCESS);
             refreshInventoryReal(INVENTORY_END, m_curInventoryBuffer);
             runLoopInventroy();
+            Beeper.beep(Beeper.BEEPER);
         } else {
             m_nTotal++;
             int nLength = btAryData.length;
@@ -1192,6 +1201,7 @@ public class ReaderHelper {
             setMaxMinRSSI(btAryData[nLength - 1] & 0xFF);
             byte btTemp = btAryData[0];
             byte btAntId = (byte) ((btTemp & 0x03) + 1);
+            if ((btAryData[nLength - 1] & 0x80) != 0) btAntId += 4;
             m_curInventoryBuffer.nCurrentAnt = btAntId & 0xFF;
 
             byte btFreq = (byte) ((btTemp & 0xFF) >> 2);
@@ -1206,6 +1216,36 @@ public class ReaderHelper {
                 tag.strRSSI = strRSSI;
                 tag.nReadCount = 1;
                 tag.strFreq = strFreq;
+
+                switch (btAntId) {
+                    case 0x01:
+                        tag.nAnt1 = 1;
+                        break;
+                    case 0x02:
+                        tag.nAnt2 = 1;
+                        break;
+                    case 0x03:
+                        tag.nAnt3 = 1;
+                        break;
+                    case 0x04:
+                        tag.nAnt4 = 1;
+                        break;
+                    case 0x05:
+                        tag.nAnt5 = 1;
+                        break;
+                    case 0x06:
+                        tag.nAnt6 = 1;
+                        break;
+                    case 0x07:
+                        tag.nAnt7 = 1;
+                        break;
+                    case 0x08:
+                        tag.nAnt8 = 1;
+                        break;
+                    default:
+                        break;
+                }
+
                 m_curInventoryBuffer.lsTagList.add(tag);
                 m_curInventoryBuffer.dtIndexMap.put(strEPC,
                         m_curInventoryBuffer.lsTagList.size() - 1);
@@ -1214,10 +1254,40 @@ public class ReaderHelper {
                 tag.strRSSI = strRSSI;
                 tag.nReadCount++;
                 tag.strFreq = strFreq;
+
+                switch (btAntId) {
+                    case 0x01:
+                        tag.nAnt1++;
+                        break;
+                    case 0x02:
+                        tag.nAnt2++;
+                        break;
+                    case 0x03:
+                        tag.nAnt3++;
+                        break;
+                    case 0x04:
+                        tag.nAnt4++;
+                        break;
+                    case 0x05:
+                        tag.nAnt5++;
+                        break;
+                    case 0x06:
+                        tag.nAnt6++;
+                        break;
+                    case 0x07:
+                        tag.nAnt7++;
+                        break;
+                    case 0x08:
+                        tag.nAnt8++;
+                        break;
+                    default:
+                        break;
+                }
             }
 
             m_curInventoryBuffer.dtEndInventory = new Date();
             refreshInventoryReal(btCmd, m_curInventoryBuffer);
+            Beeper.beep(Beeper.BEEPER_SHORT);
         }
     }
 
@@ -1256,7 +1326,8 @@ public class ReaderHelper {
 
             m_curInventoryBuffer.nDataCount = nSwitchTotal;
             m_curInventoryBuffer.nCommandDuration = nSwitchTime;
-
+            m_curInventoryBuffer.nReadRate = nSwitchTotal * 1000 / nSwitchTime;
+            Beeper.beep(Beeper.BEEPER);
             writeLog(strCmd, ERROR.SUCCESS);
             refreshFastSwitch(INVENTORY_END, m_curInventoryBuffer);
             runLoopFastSwitch();
@@ -1264,6 +1335,7 @@ public class ReaderHelper {
             m_nTotal++;
             int nLength = btAryData.length;
             int nEpcLength = nLength - 4;
+            String phase = null;
 
             String strEPC = StringTool.byteArrayToString(btAryData, 3,
                     nEpcLength);
@@ -1273,6 +1345,22 @@ public class ReaderHelper {
             byte btTemp = btAryData[0];
             byte btAntId = (byte) ((btTemp & 0x03) + 1);
             m_curInventoryBuffer.nCurrentAnt = btAntId & 0xFF;
+
+            if (isShowPhase)
+            {
+                setMaxMinRSSI(btAryData[nLength - 3] & 0x7F);
+                strRSSI = String.valueOf(btAryData[nLength - 3] & 0x7F);
+                if ((btAryData[nLength - 3] & 0x80) != 0) btAntId += 4;
+                //phase =String.format("%02X",btAryData[btAryData.length - 1]);
+                phase = StringTool.byteArrayToString(btAryData,btAryData.length - 2,2);
+            }
+            else
+            {
+                setMaxMinRSSI(btAryData[nLength - 1] & 0x7F);
+                strRSSI = String.valueOf(btAryData[nLength - 1] & 0x7F);
+                if ((btAryData[nLength - 1] & 0x80) != 0) btAntId += 4;
+            }
+
             // String strAntId = String.valueOf(btAntId & 0xFF);
 
             byte btFreq = (byte) ((btTemp & 0xFF) >> 2);
@@ -1286,12 +1374,16 @@ public class ReaderHelper {
                 tag.strEPC = strEPC;
                 tag.strRSSI = strRSSI;
                 tag.nReadCount = 1;
+                tag.strPhase = phase;
                 tag.strFreq = strFreq;
                 tag.nAnt1 = 0;
                 tag.nAnt2 = 0;
                 tag.nAnt3 = 0;
                 tag.nAnt4 = 0;
-
+                tag.nAnt5 = 0;
+                tag.nAnt6 = 0;
+                tag.nAnt7 = 0;
+                tag.nAnt8 = 0;
                 switch (btAntId) {
                     case 0x01:
                         tag.nAnt1 = 1;
@@ -1305,6 +1397,18 @@ public class ReaderHelper {
                     case 0x04:
                         tag.nAnt4 = 1;
                         break;
+                    case 0x05:
+                        tag.nAnt5 = 1;
+                        break;
+                    case 0x06:
+                        tag.nAnt6 = 1;
+                        break;
+                    case 0x07:
+                        tag.nAnt7 = 1;
+                        break;
+                    case 0x08:
+                        tag.nAnt8 = 1;
+                        break;
                     default:
                         break;
                 }
@@ -1315,6 +1419,7 @@ public class ReaderHelper {
                 tag = m_curInventoryBuffer.lsTagList.get(findIndex);
                 tag.strRSSI = strRSSI;
                 tag.nReadCount++;
+                tag.strPhase = phase;
                 tag.strFreq = strFreq;
                 switch (btAntId) {
                     case 0x01:
@@ -1329,13 +1434,25 @@ public class ReaderHelper {
                     case 0x04:
                         tag.nAnt4++;
                         break;
+                    case 0x05:
+                        tag.nAnt5++;
+                        break;
+                    case 0x06:
+                        tag.nAnt6++;
+                        break;
+                    case 0x07:
+                        tag.nAnt7++;
+                        break;
+                    case 0x08:
+                        tag.nAnt8++;
+                        break;
                     default:
                         break;
                 }
             }
-
             m_curInventoryBuffer.dtEndInventory = new Date();
             refreshFastSwitch(btCmd, m_curInventoryBuffer);
+            Beeper.beep(Beeper.BEEPER_SHORT);
         }
 
     }
@@ -1580,15 +1697,19 @@ public class ReaderHelper {
             setMaxMinRSSI(btAryData[nDataLen - 3] & 0xFF);
             byte btTemp = btAryData[nDataLen - 2];
             byte btAntId = (byte) ((btTemp & 0x03) + 1);
+            if ((btAryData[nDataLen - 3] & 0x80) != 0) btAntId += 4;
             int nReadCount = btAryData[nDataLen - 1] & 0xFF;
 
             InventoryTagMap tag = new InventoryTagMap();
             tag.strPC = strPC;
             tag.strCRC = strCRC;
             tag.strEPC = strEPC;
+            tag.strFreq = strCRC;
             tag.btAntId = btAntId;
             tag.strRSSI = strRSSI;
             tag.nReadCount = nReadCount;
+            tag.isBufferTag = true;
+
             m_curInventoryBuffer.lsTagList.add(tag);
             m_curInventoryBuffer.dtIndexMap.put(strEPC,
                     m_curInventoryBuffer.lsTagList.size() - 1);

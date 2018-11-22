@@ -254,6 +254,8 @@
     <string name="list_antenna_port">"天线号"</string>
     
     <string name="real_list_times">"识别次数"</string>
+    <string name="real_list_times_4_ant">"识别次数(1/2/3/4)"</string>
+    <string name="real_list_times_8_ant">"识别次数(1/2/3/4/5/6/7/8)"</string>
     <string name="real_list_freq">"载波频率"</string>
     
     <string name="buffer_list_times">"识别次数"</string>
@@ -435,14 +437,14 @@
     <string name="time_interval">时间间隔</string>
 
     <string-array name="ants">
-        <item>1</item>
-        <item>2</item>
-        <item>3</item>
-        <item>4</item>
-        <item>5</item>
-        <item>6</item>
-        <item>7</item>
-        <item>8</item>
+        <item>ANT1</item>
+        <item>ANT2</item>
+        <item>ANT3</item>
+        <item>ANT4</item>
+        <item>ANT5</item>
+        <item>ANT6</item>
+        <item>ANT7</item>
+        <item>ANT8</item>
     </string-array>
 
     <string-array name="session_flag">

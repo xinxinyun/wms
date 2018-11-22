@@ -23,204 +23,242 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class TagRealList extends LinearLayout {
-	
-	
-	private Context mContext;
-	private TableRow mTagRealRow;
-	private ImageView mTagRealImage;
-	private TextView mListTextInfo;
 
-	private TextView mPhaseText;
 
-	private TextView mMinRSSIText, mMaxRSSIText;
+    private Context mContext;
+    private TableRow mTagRealRow;
+    private ImageView mTagRealImage;
+    private TextView mListTextInfo;
 
-	private ReaderHelper mReaderHelper;
+    private TextView mPhaseText;
+    private TextView mReadTimes;
 
-	private List<InventoryTagMap> data;
-	private RealListAdapter mRealListAdapter;
-	private ListView mTagRealList;
+    private TextView mMinRSSIText, mMaxRSSIText;
 
-	private View mTagsRealListScrollView;
-	//add by lei.li 2016/12/26
-	private TextView mUIDText;
+    private ReaderHelper mReaderHelper;
 
-	private WindowManager wm;
+    private List<InventoryTagMap> data;
+    private RealListAdapter mRealListAdapter;
+    private ListView mTagRealList;
 
-	private static InventoryBuffer m_curInventoryBuffer;
+    private View mTagsRealListScrollView;
+    //add by lei.li 2016/12/26
+    private TextView mUIDText;
+    private TextView mFreqText;
 
-	private OnItemSelectedListener mOnItemSelectedListener;
+    private WindowManager wm;
 
-	public interface OnItemSelectedListener {
-		public void onItemSelected(View arg1, int arg2, long arg3);
-	}
+    private static InventoryBuffer m_curInventoryBuffer;
 
-	public TagRealList(Context context, AttributeSet attrs) {
-		super(context, attrs);
-		initContext(context);
-	}
+    private OnItemSelectedListener mOnItemSelectedListener;
 
-	public TagRealList(Context context) {
-		super(context);
-		initContext(context);
-	}
+    public interface OnItemSelectedListener {
+        public void onItemSelected(View arg1, int arg2, long arg3);
+    }
 
-	@SuppressWarnings("deprecation")
-	private void initContext(Context context) {
-		mContext = context;
-		LayoutInflater.from(context).inflate(R.layout.tag_real_list, this);
+    public TagRealList(Context context, AttributeSet attrs) {
+        super(context, attrs);
+        initContext(context);
+    }
 
-		try {
-			mReaderHelper = ReaderHelper.getDefaultHelper();
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+    public TagRealList(Context context) {
+        super(context);
+        initContext(context);
+    }
 
-		data = new ArrayList<InventoryTagMap>();
-		m_curInventoryBuffer = mReaderHelper.getCurInventoryBuffer();
+    @SuppressWarnings("deprecation")
+    private void initContext(Context context) {
+        mContext = context;
+        LayoutInflater.from(context).inflate(R.layout.tag_real_list, this);
 
-		mTagsRealListScrollView = findViewById(R.id.tags_real_list_scroll_view);
-		wm = (WindowManager) getContext().getSystemService(
-				Context.WINDOW_SERVICE);
-		LayoutParams lp = (LayoutParams) mTagsRealListScrollView
-				.getLayoutParams();
-		lp.height = (int) (wm.getDefaultDisplay().getHeight() / 2.7);
-		mTagsRealListScrollView.setLayoutParams(lp);
-		mTagsRealListScrollView.invalidate();
-		// mTagsRealListScrollView.setVisibility(View.GONE);
-		mUIDText = (TextView) findViewById(R.id.uid_text);
+        try {
+            mReaderHelper = ReaderHelper.getDefaultHelper();
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
 
-		mTagRealRow = (TableRow) findViewById(R.id.table_row_tag_real);
-		mTagRealImage = (ImageView) findViewById(R.id.image_prompt);
-		mTagRealImage.setImageDrawable(getResources()
-				.getDrawable(R.drawable.up));
-		mListTextInfo = (TextView) findViewById(R.id.list_text_info);
-		mListTextInfo.setText(getResources().getString(R.string.open_tag_list));
+        data = new ArrayList<InventoryTagMap>();
+        m_curInventoryBuffer = mReaderHelper.getCurInventoryBuffer();
 
-		mMinRSSIText = (TextView) findViewById(R.id.min_rssi_text);
-		mMaxRSSIText = (TextView) findViewById(R.id.max_rssi_text);
+        mTagsRealListScrollView = findViewById(R.id.tags_real_list_scroll_view);
+        wm = (WindowManager) getContext().getSystemService(
+                Context.WINDOW_SERVICE);
+        LayoutParams lp = (LayoutParams) mTagsRealListScrollView
+                .getLayoutParams();
+        lp.height = (int) (wm.getDefaultDisplay().getHeight() / 2.7);
+        mTagsRealListScrollView.setLayoutParams(lp);
+        mTagsRealListScrollView.invalidate();
+        // mTagsRealListScrollView.setVisibility(View.GONE);
+        mUIDText = (TextView) findViewById(R.id.uid_text);
 
-		mPhaseText = (TextView) findViewById(R.id.phase_text);
+        mTagRealRow = (TableRow) findViewById(R.id.table_row_tag_real);
+        mTagRealImage = (ImageView) findViewById(R.id.image_prompt);
+        mTagRealImage.setImageDrawable(getResources()
+                .getDrawable(R.drawable.up));
+        mListTextInfo = (TextView) findViewById(R.id.list_text_info);
+        mListTextInfo.setText(getResources().getString(R.string.open_tag_list));
 
-		mTagRealRow.setOnClickListener(new OnClickListener() {
+        mMinRSSIText = (TextView) findViewById(R.id.min_rssi_text);
+        mMaxRSSIText = (TextView) findViewById(R.id.max_rssi_text);
 
-			@Override
-			public void onClick(View arg0) {
-				LayoutParams lp = (LayoutParams) mTagsRealListScrollView
-						.getLayoutParams();
+        mReadTimes = (TextView) findViewById(R.id.times_text);
+        mPhaseText = (TextView) findViewById(R.id.phase_text);
 
-				if (lp.height <= wm.getDefaultDisplay().getHeight() / 2) {
-					// mTagsRealListScrollView.setVisibility(View.VISIBLE);
+        mFreqText = findViewById(R.id.freq_text);
 
-					lp.height = (int) (wm.getDefaultDisplay().getHeight() / 1.5);
-					mTagsRealListScrollView.setLayoutParams(lp);
-					mTagsRealListScrollView.invalidate();
+        mTagRealRow.setOnClickListener(new OnClickListener() {
 
-					mTagRealImage.setImageDrawable(getResources().getDrawable(
-							R.drawable.down));
-					mListTextInfo.setText(getResources().getString(
-							R.string.close_tag_list));
-				} else {
-					// mTagsRealListScrollView.setVisibility(View.GONE);
+            @Override
+            public void onClick(View arg0) {
+                LayoutParams lp = (LayoutParams) mTagsRealListScrollView
+                        .getLayoutParams();
 
-					lp.height = (int) (wm.getDefaultDisplay().getHeight() / 2.7);
-					mTagsRealListScrollView.setLayoutParams(lp);
-					mTagsRealListScrollView.invalidate();
+                if (lp.height <= wm.getDefaultDisplay().getHeight() / 2) {
+                    // mTagsRealListScrollView.setVisibility(View.VISIBLE);
 
-					mTagRealImage.setImageDrawable(getResources().getDrawable(
-							R.drawable.up));
-					mListTextInfo.setText(getResources().getString(
-							R.string.open_tag_list));
-				}
-			}
-		});
+                    lp.height = (int) (wm.getDefaultDisplay().getHeight() / 1.5);
+                    mTagsRealListScrollView.setLayoutParams(lp);
+                    mTagsRealListScrollView.invalidate();
 
-		mTagRealList = (ListView) findViewById(R.id.tag_real_list_view);
-		mRealListAdapter = new RealListAdapter(mContext, data);
-		mTagRealList.setAdapter(mRealListAdapter);
+                    mTagRealImage.setImageDrawable(getResources().getDrawable(
+                            R.drawable.down));
+                    mListTextInfo.setText(getResources().getString(
+                            R.string.close_tag_list));
+                } else {
+                    // mTagsRealListScrollView.setVisibility(View.GONE);
 
-		mTagRealList.setOnItemClickListener(new OnItemClickListener() {
+                    lp.height = (int) (wm.getDefaultDisplay().getHeight() / 2.7);
+                    mTagsRealListScrollView.setLayoutParams(lp);
+                    mTagsRealListScrollView.invalidate();
 
-			@Override
-			public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
-					long arg3) {
+                    mTagRealImage.setImageDrawable(getResources().getDrawable(
+                            R.drawable.up));
+                    mListTextInfo.setText(getResources().getString(
+                            R.string.open_tag_list));
+                }
+            }
+        });
 
-				if (mOnItemSelectedListener != null)
-					mOnItemSelectedListener.onItemSelected(arg1, arg2, arg3);
-			}
+        mTagRealList = (ListView) findViewById(R.id.tag_real_list_view);
+        mRealListAdapter = new RealListAdapter(mContext, data);
+        mTagRealList.setAdapter(mRealListAdapter);
 
-		});
-	}
+        mTagRealList.setOnItemClickListener(new OnItemClickListener() {
 
-	public void setOnItemSelectedListener(
-			OnItemSelectedListener onItemSelectedListener) {
-		mOnItemSelectedListener = onItemSelectedListener;
-	}
+            @Override
+            public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
+                                    long arg3) {
 
-	public final void clearText() {
-		mMinRSSIText.setText("0dBm");
-		mMaxRSSIText.setText("0dBm");
-	}
+                if (mOnItemSelectedListener != null)
+                    mOnItemSelectedListener.onItemSelected(arg1, arg2, arg3);
+            }
 
-	public final void refreshText() {
-		if (m_curInventoryBuffer.nMinRSSI == 0 && m_curInventoryBuffer.nMaxRSSI == 0) {
-			mMinRSSIText.setText("0dBm");
-			mMaxRSSIText.setText("0dBm");
-		} else {
-			mMinRSSIText.setText((m_curInventoryBuffer.nMinRSSI - 129) + "dBm");
-			mMaxRSSIText.setText((m_curInventoryBuffer.nMaxRSSI - 129) + "dBm");
-		}
-	}
+        });
+    }
 
-	public final void refreshList() {
-		data.clear();
-		data.addAll(m_curInventoryBuffer.lsTagList);
-		mRealListAdapter.notifyDataSetChanged();
-		// add by lei.li 2016/11/12 this code 
+    public void setOnItemSelectedListener(
+            OnItemSelectedListener onItemSelectedListener) {
+        mOnItemSelectedListener = onItemSelectedListener;
+    }
+
+    public final void clearText() {
+        mMinRSSIText.setText("0dBm");
+        mMaxRSSIText.setText("0dBm");
+    }
+
+    public final void refreshText() {
+        if (m_curInventoryBuffer.nMinRSSI == 0 && m_curInventoryBuffer.nMaxRSSI == 0) {
+            mMinRSSIText.setText("0dBm");
+            mMaxRSSIText.setText("0dBm");
+        } else {
+            mMinRSSIText.setText((m_curInventoryBuffer.nMinRSSI - 129) + "dBm");
+            mMaxRSSIText.setText((m_curInventoryBuffer.nMaxRSSI - 129) + "dBm");
+        }
+    }
+
+    public final void refreshList() {
+        data.clear();
+        data.addAll(m_curInventoryBuffer.lsTagList);
+        mRealListAdapter.notifyDataSetChanged();
+        // add by lei.li 2016/11/12 this code
 				/*if (mTagRealList.getChildCount() != 0) {
 					mTagsRealListScrollView.findViewById(R.id.tag_type)
 							.getLayoutParams().width = mTagRealList.getChildAt(0)
 							.getWidth();
 							*/
-		invaildate();
+        invaildate();
 					/*
 			
 				}*/
-		// add by lei.li 2016/11/12
-		/*
-		 * mTagRealList.getLayoutParams().width =
-		 * UITools.getWidestView(mContext, mRealListAdapter);
-		 * if(mTagRealList.getChildCount() != 0)
-		 * mTagRealList.getChildAt(0).findViewById
-		 * (R.id.epc_text).getLayoutParams().width =
-		 * (UITools.getWidestViewChild(mContext, mRealListAdapter,
-		 * R.id.epc_text)); Log.e("zYYYYYYYYYYYYY", "::::::::::" +
-		 * UITools.getWidestViewChild(mContext, mRealListAdapter,
-		 * R.id.epc_text));
-		 */
-	}
-	// add by lei.li 2016/12/26
-	
-	private void invaildate() {
-		if (mUIDText != null) {
-			mUIDText.setWidth(mRealListAdapter.mWidthest);
-			Log.e("change the width", mUIDText.getWidth() + "::::::::::::::");
-			mUIDText.invalidate();   
-		}
-	}
-	
-	// add by lei.li 2016/11/11
-	private int lengthestData() {
-		int widest = 0;
-		for (InventoryTagMap itm : m_curInventoryBuffer.lsTagList) {
-			if (widest < itm.strEPC.length())
-				widest = itm.strEPC.length();
-		}
+        // add by lei.li 2016/11/12
+        /*
+         * mTagRealList.getLayoutParams().width =
+         * UITools.getWidestView(mContext, mRealListAdapter);
+         * if(mTagRealList.getChildCount() != 0)
+         * mTagRealList.getChildAt(0).findViewById
+         * (R.id.epc_text).getLayoutParams().width =
+         * (UITools.getWidestViewChild(mContext, mRealListAdapter,
+         * R.id.epc_text)); Log.e("zYYYYYYYYYYYYY", "::::::::::" +
+         * UITools.getWidestViewChild(mContext, mRealListAdapter,
+         * R.id.epc_text));
+         */
+    }
+    // add by lei.li 2016/12/26
 
-		return widest * 16;
-	}
+    private void invaildate() {
+        if (mUIDText != null) {
+            mUIDText.setWidth(mRealListAdapter.mWidthest);
+            Log.e("change the width", mUIDText.getWidth() + "::::::::::::::");
+            mUIDText.invalidate();
+        }
+    }
 
-	public void showPhase() {
+    // add by lei.li 2016/11/11
+    private int lengthestData() {
+        int widest = 0;
+        for (InventoryTagMap itm : m_curInventoryBuffer.lsTagList) {
+            if (widest < itm.strEPC.length())
+                widest = itm.strEPC.length();
+        }
 
-	}
+        return widest * 16;
+    }
+
+    public void isShowPhase(boolean flag) {
+        if (flag) {
+            mPhaseText.setVisibility(View.VISIBLE);
+            mRealListAdapter.setPhaseVisiable(true);
+        } else {
+            mPhaseText.setVisibility(View.GONE);
+            mRealListAdapter.setPhaseVisiable(false);
+        }
+    }
+
+    public void showSelectAntsCount(int ants) {
+        mRealListAdapter.setmUseAntCount(ants);
+        switch (ants) {
+            case 1:
+                mReadTimes.setText(R.string.real_list_times);
+                break;
+            case 4:
+                mReadTimes.setText(R.string.real_list_times_4_ant);
+                break;
+            case 8:
+                mReadTimes.setText(R.string.real_list_times_8_ant);
+                break;
+            default:
+                break;
+        }
+    }
+
+    public void isCheckedBufferInventory(boolean flag) {
+        if (flag){
+            mReadTimes.setText(R.string.real_list_times);
+            mFreqText.setText("CRC");
+        }  else {
+            showSelectAntsCount(mRealListAdapter.getmUseAntCount());
+            mFreqText.setText(R.string.real_list_freq);
+        }
+    }
 }
