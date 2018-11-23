@@ -684,7 +684,9 @@ public class ReaderHelper {
 
         if (btAryData.length == 0x01) {
             if (btAryData[0] == 0x00 || btAryData[0] == 0x01
-                    || btAryData[0] == 0x02 || btAryData[0] == 0x03) {
+                    || btAryData[0] == 0x02 || btAryData[0] == 0x03
+                    || btAryData[0] == 0x04 || btAryData[0] == 0x05
+                    || btAryData[0] == 0x06 || btAryData[0] == 0x07) {
                 m_curReaderSetting.btReadId = msgTran.getReadId();
                 m_curReaderSetting.btWorkAntenna = btAryData[0];
 
