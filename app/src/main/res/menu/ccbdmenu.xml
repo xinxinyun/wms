@@ -1,0 +1,18 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/toolbar_collection"
+        android:orderInCategory="1"
+        android:title="开始盘存"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/toolbar_share"
+        android:orderInCategory="2"
+        android:title="结束盘存"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/toolbar_fontsize"
+        android:orderInCategory="3"
+        android:title="提交结果"
+        app:showAsAction="never" />
+</menu>

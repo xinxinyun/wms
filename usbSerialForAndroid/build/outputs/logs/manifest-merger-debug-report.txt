@@ -1,37 +1,37 @@
 -- Merging decision tree log ---
 manifest
-ADDED from E:\dbak\gitrep\UHF\usbSerialForAndroid\src\main\AndroidManifest.xml:2:1-7:12
-INJECTED from E:\dbak\gitrep\UHF\usbSerialForAndroid\src\main\AndroidManifest.xml:2:1-7:12
-INJECTED from E:\dbak\gitrep\UHF\usbSerialForAndroid\src\main\AndroidManifest.xml:2:1-7:12
-INJECTED from E:\dbak\gitrep\UHF\usbSerialForAndroid\src\main\AndroidManifest.xml:2:1-7:12
-INJECTED from E:\dbak\gitrep\UHF\usbSerialForAndroid\src\main\AndroidManifest.xml:2:1-7:12
-INJECTED from E:\dbak\gitrep\UHF\usbSerialForAndroid\src\main\AndroidManifest.xml:2:1-7:12
-INJECTED from E:\dbak\gitrep\UHF\usbSerialForAndroid\src\main\AndroidManifest.xml:2:1-7:12
+ADDED from D:\AndroidWorkspace\wms\usbSerialForAndroid\src\main\AndroidManifest.xml:2:1-6:12
+INJECTED from D:\AndroidWorkspace\wms\usbSerialForAndroid\src\main\AndroidManifest.xml:2:1-6:12
+INJECTED from D:\AndroidWorkspace\wms\usbSerialForAndroid\src\main\AndroidManifest.xml:2:1-6:12
+INJECTED from D:\AndroidWorkspace\wms\usbSerialForAndroid\src\main\AndroidManifest.xml:2:1-6:12
+INJECTED from D:\AndroidWorkspace\wms\usbSerialForAndroid\src\main\AndroidManifest.xml:2:1-6:12
+INJECTED from D:\AndroidWorkspace\wms\usbSerialForAndroid\src\main\AndroidManifest.xml:2:1-6:12
+INJECTED from D:\AndroidWorkspace\wms\usbSerialForAndroid\src\main\AndroidManifest.xml:2:1-6:12
 	package
-		ADDED from E:\dbak\gitrep\UHF\usbSerialForAndroid\src\main\AndroidManifest.xml:3:7-43
-		INJECTED from E:\dbak\gitrep\UHF\usbSerialForAndroid\src\main\AndroidManifest.xml
-		INJECTED from E:\dbak\gitrep\UHF\usbSerialForAndroid\src\main\AndroidManifest.xml
+		ADDED from D:\AndroidWorkspace\wms\usbSerialForAndroid\src\main\AndroidManifest.xml:3:7-43
+		INJECTED from D:\AndroidWorkspace\wms\usbSerialForAndroid\src\main\AndroidManifest.xml
+		INJECTED from D:\AndroidWorkspace\wms\usbSerialForAndroid\src\main\AndroidManifest.xml
 	android:versionName
-		ADDED from E:\dbak\gitrep\UHF\usbSerialForAndroid\src\main\AndroidManifest.xml:5:7-32
-		INJECTED from E:\dbak\gitrep\UHF\usbSerialForAndroid\src\main\AndroidManifest.xml
-		INJECTED from E:\dbak\gitrep\UHF\usbSerialForAndroid\src\main\AndroidManifest.xml
+		ADDED from D:\AndroidWorkspace\wms\usbSerialForAndroid\src\main\AndroidManifest.xml:5:7-32
+		INJECTED from D:\AndroidWorkspace\wms\usbSerialForAndroid\src\main\AndroidManifest.xml
+		INJECTED from D:\AndroidWorkspace\wms\usbSerialForAndroid\src\main\AndroidManifest.xml
 	xmlns:android
-		ADDED from E:\dbak\gitrep\UHF\usbSerialForAndroid\src\main\AndroidManifest.xml:2:11-69
+		ADDED from D:\AndroidWorkspace\wms\usbSerialForAndroid\src\main\AndroidManifest.xml:2:11-69
 	android:versionCode
-		ADDED from E:\dbak\gitrep\UHF\usbSerialForAndroid\src\main\AndroidManifest.xml:4:7-30
-		INJECTED from E:\dbak\gitrep\UHF\usbSerialForAndroid\src\main\AndroidManifest.xml
-		INJECTED from E:\dbak\gitrep\UHF\usbSerialForAndroid\src\main\AndroidManifest.xml
+		ADDED from D:\AndroidWorkspace\wms\usbSerialForAndroid\src\main\AndroidManifest.xml:4:7-30
+		INJECTED from D:\AndroidWorkspace\wms\usbSerialForAndroid\src\main\AndroidManifest.xml
+		INJECTED from D:\AndroidWorkspace\wms\usbSerialForAndroid\src\main\AndroidManifest.xml
 uses-sdk
-ADDED from E:\dbak\gitrep\UHF\usbSerialForAndroid\src\main\AndroidManifest.xml:6:5-44
-INJECTED from E:\dbak\gitrep\UHF\usbSerialForAndroid\src\main\AndroidManifest.xml:6:5-44
-INJECTED from E:\dbak\gitrep\UHF\usbSerialForAndroid\src\main\AndroidManifest.xml:6:5-44
-INJECTED from E:\dbak\gitrep\UHF\usbSerialForAndroid\src\main\AndroidManifest.xml:6:5-44
-INJECTED from E:\dbak\gitrep\UHF\usbSerialForAndroid\src\main\AndroidManifest.xml:6:5-44
+INJECTED from D:\AndroidWorkspace\wms\usbSerialForAndroid\src\main\AndroidManifest.xml reason: use-sdk injection requested
+INJECTED from D:\AndroidWorkspace\wms\usbSerialForAndroid\src\main\AndroidManifest.xml
+INJECTED from D:\AndroidWorkspace\wms\usbSerialForAndroid\src\main\AndroidManifest.xml
+INJECTED from D:\AndroidWorkspace\wms\usbSerialForAndroid\src\main\AndroidManifest.xml
+INJECTED from D:\AndroidWorkspace\wms\usbSerialForAndroid\src\main\AndroidManifest.xml
 	android:targetSdkVersion
-		INJECTED from E:\dbak\gitrep\UHF\usbSerialForAndroid\src\main\AndroidManifest.xml
-		ADDED from E:\dbak\gitrep\UHF\usbSerialForAndroid\src\main\AndroidManifest.xml:6:5-44
-		INJECTED from E:\dbak\gitrep\UHF\usbSerialForAndroid\src\main\AndroidManifest.xml
+		INJECTED from D:\AndroidWorkspace\wms\usbSerialForAndroid\src\main\AndroidManifest.xml
+		ADDED from D:\AndroidWorkspace\wms\usbSerialForAndroid\src\main\AndroidManifest.xml
+		INJECTED from D:\AndroidWorkspace\wms\usbSerialForAndroid\src\main\AndroidManifest.xml
 	android:minSdkVersion
-		ADDED from E:\dbak\gitrep\UHF\usbSerialForAndroid\src\main\AndroidManifest.xml:6:15-41
-		INJECTED from E:\dbak\gitrep\UHF\usbSerialForAndroid\src\main\AndroidManifest.xml
-		INJECTED from E:\dbak\gitrep\UHF\usbSerialForAndroid\src\main\AndroidManifest.xml
+		INJECTED from D:\AndroidWorkspace\wms\usbSerialForAndroid\src\main\AndroidManifest.xml
+		ADDED from D:\AndroidWorkspace\wms\usbSerialForAndroid\src\main\AndroidManifest.xml
+		INJECTED from D:\AndroidWorkspace\wms\usbSerialForAndroid\src\main\AndroidManifest.xml

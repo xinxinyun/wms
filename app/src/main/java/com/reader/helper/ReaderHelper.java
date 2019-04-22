@@ -251,7 +251,6 @@ public class ReaderHelper {
     private void refreshInventory(byte btCmd, InventoryBuffer curInventoryBuffer) {
         Intent itent = new Intent(BROADCAST_REFRESH_INVENTORY);
         itent.putExtra("cmd", btCmd);
-        mLocalBroadcastManager.sendBroadcast(itent);
     }
 
     ;
@@ -1162,6 +1161,10 @@ public class ReaderHelper {
         writeLog(strLog, ERROR.FAIL);
     }
 
+    /**
+     *  实时库存扫描
+     * @param msgTran
+     */
     private void processRealTimeInventory(MessageTran msgTran) {
         byte btCmd = msgTran.getCmd();
         byte[] btAryData = msgTran.getAryData();

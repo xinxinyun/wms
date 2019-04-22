@@ -2,214 +2,192 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.uhf.uhf"
     android:versionCode="11"
-    android:versionName="1.1" >
+    android:versionName="1.1">
 
-    <uses-sdk
-        android:minSdkVersion="19"
-        android:targetSdkVersion="24" />
+    <uses-sdk android:targetSdkVersion="24" />
+
     <uses-feature android:name="android.hardware.usb.host" />
-    <uses-feature android:name="android.hardware.bluetooth_le" android:required="true"/>
+    <uses-feature
+        android:name="android.hardware.bluetooth_le"
+        android:required="true" />
 
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
-    <uses-permission android:name="android.permission.BLUETOOTH" />
-    <uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS" />
+    <uses-permission android:name="android.permission.BLUETOOTH" /> <!-- <uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS" /> -->
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
-    <uses-permission android:name="android.permission.INTERNET"></uses-permission>
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <application
-        android:name="com.uhf.uhf.UHFApplication"
+        android:name=".UHFApplication"
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
-        android:label="@string/app_name" >
-
+        android:label="@string/app_name">
         <activity
-            android:name="com.uhf.uhf.ConnectActivity"
+            android:name="com.ui.RfidActivity"
+            android:label="@string/title_activity_rfid"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
+        <activity
+            android:name="com.ui.OutTimeActivity"
+            android:label="@string/title_activity_out_time"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name="com.ui.AllAreaActivity"
+            android:label="@string/title_activity_sale"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name="com.ui.SaleActivity"
+            android:label="@string/title_activity_sale"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name="com.ui.DbTestActivity"
+            android:label="@string/title_activity_db_test"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".HomeActivity"
             android:label="@string/app_name"
-            android:theme="@android:style/Theme.NoTitleBar"
             android:launchMode="singleTop"
-            android:windowSoftInputMode="adjustPan" >
+            android:theme="@android:style/Theme.NoTitleBar"
+            android:windowSoftInputMode="adjustPan">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-            <!--<intent-filter>
-                <action android:name="android.hardware.usb.action.USB_DEVICE_ATTACHED" />
-            </intent-filter>-->
+            <!--
+                <intent-filter>
+                    <action android:name="android.hardware.usb.action.USB_DEVICE_ATTACHED" />
+                </intent-filter>
+            -->
 
-            <meta-data android:name="android.hardware.usb.action.USB_DEVICE_ATTACHED"
+            <meta-data
+                android:name="android.hardware.usb.action.USB_DEVICE_ATTACHED"
                 android:resource="@xml/device_filter" />
         </activity>
-
+        <!--
+ <activity
+             android:name=".ConnectRs232"
+             android:theme="@android:style/Theme.NoTitleBar"
+             android:windowSoftInputMode="adjustPan"></activity>
+        -->
         <activity
-            android:name="com.uhf.uhf.ConnectRs232"
-            android:theme="@android:style/Theme.NoTitleBar"
-            android:windowSoftInputMode="adjustPan" >
-        </activity>
-
+            android:name=".AreaCheckActitity"
+            android:theme="@style/Base.AppTheme" />
         <activity
-            android:name="com.uhf.uhf.ConnectBlueTooth"
+            android:name=".ConnectBlueTooth"
             android:theme="@android:style/Theme.NoTitleBar"
-            android:windowSoftInputMode="adjustPan" >
-        </activity>
-
+            android:windowSoftInputMode="adjustPan" />
         <activity
-            android:name="com.uhf.uhf.ConnectTcpIp"
+            android:name=".ConnectTcpIp"
             android:theme="@android:style/Theme.NoTitleBar"
-            android:windowSoftInputMode="adjustPan" >
-        </activity>
-
+            android:windowSoftInputMode="adjustPan" />
         <activity
-            android:name="com.uhf.uhf.DeviceListActivity"
+            android:name=".DeviceListActivity"
             android:theme="@android:style/Theme.NoTitleBar"
-            android:windowSoftInputMode="adjustPan" >
-        </activity>
-
+            android:windowSoftInputMode="adjustPan" />
         <activity
-            android:name="com.uhf.uhf.setpage.PageReaderMaskTag"
+            android:name=".setpage.PageReaderMaskTag"
             android:theme="@android:style/Theme.NoTitleBar"
-            android:windowSoftInputMode="adjustPan">
-        </activity>
-
+            android:windowSoftInputMode="adjustPan" />
         <activity
-            android:name="com.uhf.uhf.setpage.PageReaderAddress"
+            android:name=".setpage.PageReaderAddress"
             android:theme="@android:style/Theme.NoTitleBar"
-            android:windowSoftInputMode="adjustPan" >
-        </activity>
-
+            android:windowSoftInputMode="adjustPan" />
         <activity
-            android:name="com.uhf.uhf.setpage.PageReaderIdentifier"
+            android:name=".setpage.PageReaderIdentifier"
             android:theme="@android:style/Theme.NoTitleBar"
-            android:windowSoftInputMode="adjustPan" >
-        </activity>
-
+            android:windowSoftInputMode="adjustPan" />
         <activity
-            android:name="com.uhf.uhf.setpage.PageReaderFirmwareVersion"
+            android:name=".setpage.PageReaderFirmwareVersion"
             android:theme="@android:style/Theme.NoTitleBar"
-            android:windowSoftInputMode="adjustPan" >
-        </activity>
-
+            android:windowSoftInputMode="adjustPan" />
         <activity
-            android:name="com.uhf.uhf.setpage.PageReaderTemperature"
+            android:name=".setpage.PageReaderTemperature"
             android:theme="@android:style/Theme.NoTitleBar"
-            android:windowSoftInputMode="adjustPan" >
-        </activity>
-
+            android:windowSoftInputMode="adjustPan" />
         <activity
-            android:name="com.uhf.uhf.setpage.PageReaderGpio"
+            android:name=".setpage.PageReaderGpio"
             android:theme="@android:style/Theme.NoTitleBar"
-            android:windowSoftInputMode="adjustPan" >
-        </activity>
-
+            android:windowSoftInputMode="adjustPan" />
         <activity
-            android:name="com.uhf.uhf.setpage.PageReaderBeeper"
+            android:name=".setpage.PageReaderBeeper"
             android:theme="@android:style/Theme.NoTitleBar"
-            android:windowSoftInputMode="adjustPan" >
-        </activity>
-
+            android:windowSoftInputMode="adjustPan" />
         <activity
-            android:name="com.uhf.uhf.setpage.PageReaderOutPower"
+            android:name=".setpage.PageReaderOutPower"
             android:theme="@android:style/Theme.NoTitleBar"
-            android:windowSoftInputMode="adjustPan" >
-        </activity>
-
+            android:windowSoftInputMode="adjustPan" />
         <activity
-            android:name="com.uhf.uhf.setpage.PageReaderAntenna"
+            android:name=".setpage.PageReaderAntenna"
             android:theme="@android:style/Theme.NoTitleBar"
-            android:windowSoftInputMode="adjustPan" >
-        </activity>
-
+            android:windowSoftInputMode="adjustPan" />
         <activity
-            android:name="com.uhf.uhf.setpage.PageReaderReturnLoss"
+            android:name=".setpage.PageReaderReturnLoss"
             android:theme="@android:style/Theme.NoTitleBar"
-            android:windowSoftInputMode="adjustPan" >
-        </activity>
-
+            android:windowSoftInputMode="adjustPan" />
         <activity
-            android:name="com.uhf.uhf.setpage.PageReaderAntDetector"
+            android:name=".setpage.PageReaderAntDetector"
             android:theme="@android:style/Theme.NoTitleBar"
-            android:windowSoftInputMode="adjustPan" >
-        </activity>
-
+            android:windowSoftInputMode="adjustPan" />
         <activity
-            android:name="com.uhf.uhf.setpage.PageReaderMonza"
+            android:name=".setpage.PageReaderMonza"
             android:theme="@android:style/Theme.NoTitleBar"
-            android:windowSoftInputMode="adjustPan" >
-        </activity>
-
+            android:windowSoftInputMode="adjustPan" />
         <activity
-            android:name="com.uhf.uhf.setpage.PageReaderRegion"
+            android:name=".setpage.PageReaderRegion"
             android:theme="@android:style/Theme.NoTitleBar"
-            android:windowSoftInputMode="adjustPan" >
-        </activity>
-
+            android:windowSoftInputMode="adjustPan" />
         <activity
-            android:name="com.uhf.uhf.setpage.PageReaderProfile"
+            android:name=".setpage.PageReaderProfile"
             android:theme="@android:style/Theme.NoTitleBar"
-            android:windowSoftInputMode="adjustPan" >
-        </activity>
-
+            android:windowSoftInputMode="adjustPan" />
         <activity
-            android:name="com.uhf.uhf.tagpage.PageInventoryReal"
+            android:name=".tagpage.PageInventoryReal"
             android:theme="@android:style/Theme.NoTitleBar"
-            android:windowSoftInputMode="adjustPan" >
-        </activity>
-
+            android:windowSoftInputMode="adjustPan" />
         <activity
-            android:name="com.uhf.uhf.tagpage.PageInventoryBuffer"
+            android:name=".tagpage.PageInventoryBuffer"
             android:theme="@android:style/Theme.NoTitleBar"
-            android:windowSoftInputMode="adjustPan" >
-        </activity>
-
+            android:windowSoftInputMode="adjustPan" />
         <activity
-            android:name="com.uhf.uhf.tagpage.PageInventoryFast"
+            android:name=".tagpage.PageInventoryFast"
             android:theme="@android:style/Theme.NoTitleBar"
-            android:windowSoftInputMode="adjustPan" >
-        </activity>
-
+            android:windowSoftInputMode="adjustPan" />
         <activity
-            android:name="com.uhf.uhf.tagpage.PageInventoryReal6B"
+            android:name=".tagpage.PageInventoryReal6B"
             android:theme="@android:style/Theme.NoTitleBar"
-            android:windowSoftInputMode="adjustPan" >
-        </activity>
-
+            android:windowSoftInputMode="adjustPan" />
         <activity
-            android:name="com.uhf.uhf.tagpage.PageTagAccess"
+            android:name=".tagpage.PageTagAccess"
             android:theme="@android:style/Theme.NoTitleBar"
-            android:windowSoftInputMode="adjustPan" >
-        </activity>
-
+            android:windowSoftInputMode="adjustPan" />
         <activity
-            android:name="com.uhf.uhf.tagpage.PageTag6BAccess"
+            android:name=".tagpage.PageTag6BAccess"
             android:theme="@android:style/Theme.NoTitleBar"
-            android:windowSoftInputMode="adjustPan" >
-        </activity>
-
+            android:windowSoftInputMode="adjustPan" />
         <activity
-            android:name="com.uhf.uhf.MainActivity"
+            android:name=".MainActivity"
             android:theme="@android:style/Theme.NoTitleBar"
-            android:windowSoftInputMode="adjustPan" >
-        </activity>
-
+            android:windowSoftInputMode="adjustPan" />
         <activity
-            android:name="com.uhf.uhf.Monitor"
+            android:name=".Monitor"
             android:theme="@android:style/Theme.NoTitleBar"
-            android:windowSoftInputMode="adjustPan" >
-        </activity>
-
+            android:windowSoftInputMode="adjustPan" />
         <activity
-            android:name="com.uhf.uhf.Setting"
+            android:name=".Setting"
             android:theme="@android:style/Theme.NoTitleBar"
-            android:windowSoftInputMode="adjustPan" >
-        </activity>
+            android:windowSoftInputMode="adjustPan" />
 
         <receiver android:name=".ConnectOtg">
             <intent-filter>
-                <action android:name="com.android.example.USB_PERMISSION"></action>
+                <action android:name="com.android.example.USB_PERMISSION" />
             </intent-filter>
         </receiver>
-        <service android:name="com.ble.ble.BleService"
-            android:enabled="true" android:exported="false" />
+
+        <service
+            android:name="com.ble.ble.BleService"
+            android:enabled="true"
+            android:exported="false" />
     </application>
+
 </manifest>

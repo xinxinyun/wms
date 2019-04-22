@@ -353,13 +353,13 @@ public class MainActivity extends BaseActivity {
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if (keyCode == KeyEvent.KEYCODE_BACK) {
+        /*if (keyCode == KeyEvent.KEYCODE_BACK) {
 
-			/*if (!mLogList.tryClose())
-				askForOut();*/
+			*//*if (!mLogList.tryClose())
+				askForOut();*//*
             askForOut();
             return true;
-        }
+        }*/
 
         return super.onKeyDown(keyCode, event);
     }

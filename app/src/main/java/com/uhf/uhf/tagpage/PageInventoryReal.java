@@ -95,8 +95,8 @@ public class PageInventoryReal extends LinearLayout {
     public PageInventoryReal(Context context, AttributeSet attrs) {
         super(context, attrs);
         mContext = context;
-        LayoutInflater.from(context)
-                .inflate(layout.page_inventory_real, this);
+
+        LayoutInflater.from(context).inflate(layout.page_inventory_real, this);
         try {
             mReaderHelper = ReaderHelper.getDefaultHelper();
             mReader = mReaderHelper.getReader();
@@ -113,7 +113,11 @@ public class PageInventoryReal extends LinearLayout {
                 .getCurOperateTagISO18000Buffer();
 
         mLogList = (LogList) findViewById(id.log_list);
+
+
         mStartStop = (TextView) findViewById(id.startstop);
+
+
         mCbRealSet = (CheckBox) findViewById(id.check_real_set);
         mLayoutRealSet = (LinearLayout) findViewById(id.layout_real_set);
         mCbRealSession = (CheckBox) findViewById(id.check_real_session);
@@ -675,16 +679,22 @@ public class PageInventoryReal extends LinearLayout {
             return;
         }
 
+        //设置了高级选项
         if(mCbRealSet.isChecked()) {
+            //mCbRealSession=自定义session参数
             if (mCbRealSet.isChecked() && mCbRealSession.isChecked()) {
                 m_curInventoryBuffer.bLoopCustomizedSession = true;
                 m_curInventoryBuffer.btSession = (byte) (mPos1 & 0xFF);
                 m_curInventoryBuffer.btTarget = (byte) (mPos2 & 0xFF);
-            } else if (mBufferInventoryCheck.isChecked()) {
+            }
+            //缓存模式是否开启
+            else if (mBufferInventoryCheck.isChecked()) {
                 m_curInventoryBuffer.bLoopInventoryReal = false;
                 m_curInventoryBuffer.bLoopInventory = true;
                 m_curInventoryBuffer.bLoopCustomizedSession = false;
-            } else if(mFastSwitchCheck.isChecked()) {
+            }
+            //快速切换天线
+            else if(mFastSwitchCheck.isChecked()) {
                 m_curInventoryBuffer.bLoopInventoryReal = false;
                 m_curInventoryBuffer.bLoopInventory = true;
                 m_curInventoryBuffer.bLoopCustomizedSession = false;
@@ -711,6 +721,7 @@ public class PageInventoryReal extends LinearLayout {
             }
         }
 
+        //结束存盘
         if (!mStartStop.getText().toString()
                 .equals(getResources().getString(R.string.start_inventory))) {
             refreshText();
@@ -725,6 +736,7 @@ public class PageInventoryReal extends LinearLayout {
             refreshList();
             return;
         } else {
+            //至少选择一个天线
             if (m_curInventoryBuffer.lAntenna.size() <= 0) {
                 Toast.makeText(mContext,
                         getResources().getString(R.string.antenna_empty),
