@@ -29,17 +29,18 @@ public class StorgeJob extends Job {
         super(new Params(PRIORITY).persist());
         this.epcCode = epcCode;
         sleepTime = 5;
-        Log.i(TAG, epcCode + "  goin");
+        Log.i(TAG, "[" + epcCode + "]goin");
     }
 
     @Override
     public void onAdded() {
-
+        Log.i(TAG, "[" + epcCode + "]onAdded");
     }
 
     @Override
     public void onRun() throws Throwable {
-       this.submitInventory(epcCode);
+        Log.i(TAG, "[" + epcCode + "]onRun");
+        this.submitInventory(epcCode);
     }
 
     @Override
@@ -68,7 +69,7 @@ public class StorgeJob extends Job {
                 paramsMap, headerMap, new CallBackUtil.CallBackDefault() {//回调
                     @Override
                     public void onFailure(Call call, Exception e) {
-                        Log.d(TAG,e.getMessage());
+                        Log.d(TAG, e.getMessage());
                     }
 
                     @Override

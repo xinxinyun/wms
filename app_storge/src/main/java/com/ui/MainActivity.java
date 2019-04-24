@@ -3,12 +3,10 @@ package com.ui;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
-import com.JobQueueApplication;
 import com.birbit.android.jobqueue.JobManager;
 import com.com.tools.Beeper;
 import com.contants.WmsContanst;
@@ -20,6 +18,7 @@ import com.rfid.ReaderConnector;
 import com.rfid.rxobserver.RXObserver;
 import com.rfid.rxobserver.bean.RXInventoryTag;
 import com.uhf.uhf.R;
+import com.uhf.uhf.UHFApplication;
 
 import java.util.ArrayList;
 
@@ -50,12 +49,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
             String epcCode = tag.strEPC;
 
-            Log.d(TAG, epcCode);
+            //Log.d(TAG, epcCode);
 
             if (!epcCodeList.contains(epcCode)) {
                 epcCodeList.add(epcCode);
                 //添加识别码到消息队列。
-                jobManager.addJob(new StorgeJob(epcCode));
+                jobManager.addJobInBackground(new StorgeJob(epcCode));
                 //调用蜂鸣声提示已扫描到商品
                 Beeper.beep(Beeper.BEEPER_SHORT);
             }
@@ -74,6 +73,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        toolbar.setTitle("门店消磁程序");
 
         startupBtn = findViewById(R.id.startupBtn);
         shutdownBtn = findViewById(R.id.shutdownBtn);
@@ -81,7 +81,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         startupBtn.setOnClickListener(this);
         shutdownBtn.setOnClickListener(this);
 
-        jobManager = JobQueueApplication.getInstance().getJobManager();
+        jobManager = UHFApplication.getJobManager();
     }
 
 
@@ -111,7 +111,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 Thread.currentThread().sleep(500);
                 mReader.realTimeInventory((byte) 0xff, (byte) 0x01);
 
-                shutdownBtn.setVisibility(View.GONE);
+                startupBtn.setVisibility(View.GONE);
+                shutdownBtn.setVisibility(View.VISIBLE);
             } catch (Exception e) {
                 Toast.makeText(getBaseContext(), e.getMessage(), Toast.LENGTH_LONG).show();
                 e.printStackTrace();
@@ -132,6 +133,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         //RFID模块下线
         ModuleManager.newInstance().setUHFStatus(false);
         ModuleManager.newInstance().release();
+        shutdownBtn.setVisibility(View.GONE);
         startupBtn.setVisibility(View.VISIBLE);
     }
 }

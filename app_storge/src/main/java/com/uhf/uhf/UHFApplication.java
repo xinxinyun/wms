@@ -11,6 +11,9 @@ import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
 import android.util.Log;
 
+import com.birbit.android.jobqueue.JobManager;
+import com.birbit.android.jobqueue.config.Configuration;
+import com.birbit.android.jobqueue.log.CustomLogger;
 import com.com.tools.Beeper;
 import com.com.tools.OtgStreamManage;
 import com.reader.base.ERROR;
@@ -34,6 +37,8 @@ public class UHFApplication extends Application {
 	private BluetoothSocket mBtSocket = null;
 
 	public ArrayList<CharSequence> mMonitorListItem = new ArrayList<CharSequence>();
+
+	private static JobManager jobManager;
 
 	public final void writeMonitor(String strLog, int type) {
 		Date now = new Date();
@@ -70,6 +75,8 @@ public class UHFApplication extends Application {
 		} catch (Exception ex) {
 			ex.printStackTrace();
 		}
+
+		configureJobManager();//2. 配置JobMananger
 		/*CrashHandler crashHandler = CrashHandler.getInstance();
 		crashHandler.init(getApplicationContext());*/
 	}
@@ -100,11 +107,11 @@ public class UHFApplication extends Application {
 
 		mTcpSocket = null;
 		mBtSocket = null;
-		if (ConnectRs232.mSerialPort != null) {
+		/*if (ConnectRs232.mSerialPort != null) {
 			Log.e("close serial", "serial");
 			ConnectRs232.mSerialPort.close();
 		}
-
+*/
 		if (BluetoothAdapter.getDefaultAdapter() != null)
 			BluetoothAdapter.getDefaultAdapter().disable();
 
@@ -121,5 +128,50 @@ public class UHFApplication extends Application {
 	
 	public static Context getContext(){
 		return mContext;
+	}
+
+
+	public static JobManager getJobManager() {
+		return jobManager;
+	}
+
+	private void configureJobManager() {
+		//3. JobManager的配置器，利用Builder模式
+		Configuration configuration = new Configuration.Builder(this)
+				.customLogger(new CustomLogger() {
+					private static final String TAG = "JOBS";
+
+					@Override
+					public boolean isDebugEnabled() {
+						return true;
+					}
+
+					@Override
+					public void d(String text, Object... args) {
+						Log.d(TAG, String.format(text, args));
+					}
+
+					@Override
+					public void e(Throwable t, String text, Object... args) {
+						Log.e(TAG, String.format(text, args), t);
+					}
+
+					@Override
+					public void e(String text, Object... args) {
+						Log.e(TAG, String.format(text, args));
+					}
+
+					@Override
+					public void v(String text, Object... args) {
+						Log.e(TAG, String.format(text, args));
+					}
+				})
+				.minConsumerCount(1)//always keep at least one consumer alive
+				.maxConsumerCount(3)//up to 3 consumers at a time
+				.loadFactor(3)//3 jobs per consumer
+				.consumerKeepAlive(120)//wait 2 minute
+				.build();
+
+		jobManager = new JobManager(configuration);
 	}
 }

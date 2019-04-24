@@ -5,7 +5,7 @@ android {
 
 
     defaultConfig {
-        applicationId "com.example.app_sale"
+        applicationId "com.amr.sale"
         minSdkVersion 15
         targetSdkVersion 28
         versionCode 1
