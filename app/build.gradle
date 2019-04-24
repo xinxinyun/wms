@@ -5,7 +5,7 @@ android {
     compileSdkVersion 27
     buildToolsVersion '27.0.1'
     defaultConfig {
-        applicationId "com.arm.wms"
+        applicationId "com.wms.pad"
         minSdkVersion 19
         targetSdkVersion 27
         versionCode 1

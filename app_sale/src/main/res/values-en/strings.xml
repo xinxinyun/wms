@@ -1,0 +1,444 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <drawable name="clr_normal">#666666</drawable>
+    <drawable name="clr_pressed">#333333</drawable>
+
+    <drawable name="list_normal">#00000000</drawable>
+    <drawable name="list_pressed">#FF333333</drawable>
+
+    <string name="app_name">UHFDemo</string>
+    <string name="menu_settings">Settings</string>
+
+    <string name="connect_tcp_ip">"TCP/IP"</string>
+    <string name="connect_bluetooth">"Bluetooth"</string>
+
+    <string name="connect_tcp_ip_address">"IP:"</string>
+    <string name="connect_tcp_ip_port">"Port:"</string>
+
+
+
+    <!--new adds data-->
+    <string name="start_scan">Start scan</string>
+    <string name="language">中文</string>
+    <string name="version">Version</string>
+    <string name="clear_log">Clear Log</string>
+    <string name="failure_reason">Failure, the failure reason： </string>
+    <string name="set_ant_success">Successfully set working antenna, current working antenna: Ant</string>
+    <string name="no_match_label">No matching label</string>
+    <string name="antenna">Antenna</string>
+    <string name="write_success_l">Write success</string>
+    <string name="byte_l">byte</string>
+    <string name="lock_success">Lock success</string>
+    <string name="already_lock">Already lock</string>
+    <string name="can_not_lock">Can not lock</string>
+    
+    <!--  error discreption-->
+    <string name="command_succeeded">Command succesed.</string>
+    <string name="command_failed">Command failed.</string>
+    <string name="cup_seset_error">CUP reset error.</string>
+    <string name="cw_on_error">Turn on CW error.</string>
+    <string name="antenna_miss_error">Antenna is missing.</string>
+    <string name="write_flash_error">Write flash error.</string>
+    <string name="Read_flash_error">Read flash error</string>
+    <string name="set_output_power_error">Set output power error.</string>
+    <string name="tag_inventory_error">Error occurred when inventory.</string>
+    <string name="tag_read_error">Error occurred when read.</string>
+    <string name="tag_write_error">Error occurred when write.</string>
+    <string name="tag_lock_error">Error occurred when lock.</string>
+    <string name="tag_kill_error">Error occurred when kill.</string>
+    <string name="no_tag_error">There is no tag to be operated.</string>
+    <string name="inventory_ok_but_access_fail">Tag Inventoried but access failed.</string>
+    <string name="buffer_is_empty_error">Buffer is empty.</string>
+    <string name="access_ro_password_error">Access failed or wrong password.</string>
+    
+    
+    <string name="parameter_invalid">Invalid parameter.</string>
+    <string name="parameter_invalid_wordcnt_too_long">WordCnt is too long.</string>
+    <string name="parameter_invaild_membank_out_of_range">MemBank out of range.</string>
+    <string name="parameter_invaild_lock_region_out_of_range">Lock region out of range.</string>
+    <string name="parameter_invaild_lock_action_out_of_range">LockType out of range.</string>
+    <string name="parameter_reader_address_invaild">Invalid reader address.</string>
+    <string name="parameter_invaild_antenna_id_out_of_range">AntennaID out of range.</string>
+    <string name="parameter_invaild_output_power_out_of_range">Output power out of range.</string>
+    <string name="parameter_invaild_frequency_region_out_of_range">Frequency region out of range.</string>
+    <string name="parameter_invaild_baudrate_out_of_range">Baud rate out of range.</string>
+    <string name="parameter_beeper_mode_out_of_range">Buzzer behavior out of range.</string>
+    
+    <string name="parameter_epc_match_len_too_long">EPC match is too long.</string>
+    <string name="parameter_epc_match_len_error">EPC match length wrong.</string>
+    <string name="parameter_invaild_epc_match_mode">Invalid EPC match mode.</string>
+    <string name="parameter_invaild_frequency_range">Invalid frequency range.</string>
+    <string name="fail_to_get_rn16_from_tag">Failed to receive RN16 from tag.</string>
+    <string name="parameter_invaild_drm_mode">Invalid DRM mode.</string>
+    
+    
+    <string name="pll_lock_fail">PLL can not lock.</string>
+    <string name="rf_chip_fail_to_response">No response from RF chip.</string>
+    
+    <string name="fail_to_chieve_desired_output_power">Can not achieve desired output power level.</string>
+    <string name="copyright_authentication_fail">Can not authenticate firmware copyright.</string>
+    
+     <string name="spectrum_regulation_error">Spectrum regulation wrong.</string>
+    <string name="output_power_too_low">Output power too low.</string>
+    <string name="unknown_error">Unknown Error</string>
+    
+    <!--  CMD discreption -->
+    <string name="inventory">Inventory</string>
+    <string name="reset">Reset reader.</string>
+    <string name="set_uart_baudrate">Set baud rate of serial port.</string>
+    <string name="get_firmware_version">Get firmware version.</string>
+    <string name="set_reader_add">Set reader address.</string>
+    <string name="set_work_ant">Set working antenna.</string>
+    <string name="get_work_ant">Query current working antenna.</string>
+    <string name="set_output_power">Set RF output power.</string>
+    <string name="get_output_power">Query RF output power.</string>
+    <string name="set_freq_reg">Set RF frequency spectrum.</string>
+    <string name="get_freq_reg">Query RF frequency spectrum.</string>
+    <string name="set_beeper_mode">Set reader buzzer hehavior.</string>
+    <string name="get_rader_temp">Check reader internal temperature.</string>
+    <string name="read_gpio_value">Get GPIO1 GPIO2 status.</string>
+    <string name="write_gpio_value">Set GPIO3 GPIO4 status.</string>
+    <string name="set_ant_conn">Set antenna detector status.</string>
+    <string name="get_ant_conn">Get antenna detector status.</string>
+    <string name="set_temp_output_power">Set RF power without saving to flash.</string>
+    <string name="set_reader_identi">Set reader identification bytes.</string>
+    <string name="get_reader_identi">Get reader identification bytes.</string>
+    
+    <string name="set_rf_link_pro">Set RF link profile.</string>
+    <string name="get_rf_link_pro">Get RF link profile.</string>
+    <string name="get_rf_port">Get current antenna port return loss.</string>
+    
+    <string name="read_tag_c">Read EPC C1G2 tag(s).</string>
+    <string name="write_tag_c">Write EPC C1G2 tag(s).</string>
+    <string name="lock_tag_c">Lock EPC C1G2 tag(s).</string>
+    <string name="kill_tag_c">Kill EPC C1G2 tag(s).</string>
+    <string name="set_access_epc_match">Set tag access filter by EPC.</string>
+    <string name="get_access_epc_match">Get tag access filter by EPC.</string>
+    <string name="real_time_inventory">Inventory tags in real time mode.</string>
+    <string name="fast_switch_ant_inv">Real time inventory with fast ant switch.</string>
+    <string name="customized_session">Inventory with desired session and inventoried flag.</string>
+    <string name="set_impinj">Set impinj FastTID function(Without saving to FLASH).</string>
+    <string name="set_and_save_impinj">Set impinj FastTID function(Save to FLASH).</string>
+    <string name="get_imping">Get current FastTID setting.</string>
+    <string name="iso_B_inv">Inventory 18000 6B tag(s).</string>
+    <string name="iso_B_read">Read 18000 6B tag.</string>
+    
+    <string name="iso_b_write_tag">Write 18000-6B tag.</string>
+    <string name="iso_b_lock_tag">Lock 18000-6B tag data byte.</string>
+    <string name="iso_b_query_lock_tag">Query lock 18000-6B tag data byte.</string>
+    <string name="get_inventory_buff">Get buffered data without clearing.</string>
+    <string name="get_ant_reset_inv">Get and clear buffered data.</string>
+    <string name="get_inventory_buffer_tag_count">Query how many tags are buffered.</string>
+    <string name="reset_inventory_buff">Clear buffer.</string>
+    <string name="unknown_operate">Unknown operate.</string>
+    
+    
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+    <string name="ok">OK</string>
+    <string name="cancel">Cancel</string>
+    <string name="goon">Continue</string>
+    <string name="switchwifi">Switch</string>
+    <string name="alert_diag_title">Alert</string>
+    <string name="are_you_sure_to_exit">Are you sure to exit?</string>
+    <string name="music_is_play_must_exit">Must be stop music playing before inventory</string>
+
+    <!-- new -->
+    <string name="file_name">File:</string>
+    <string name="file_dir">Directory:</string>
+
+    <string name="item_1">6C TagOperator</string>
+    <string name="item_2">6B TagOperator</string>
+    <string name="item_3">Advanced Settings</string>
+    <string name="item_add1">Export Excel</string>
+    <string name="item_4">Exit</string>
+
+    <string name="tab_title1">Inventory Tag</string>
+    <string name="tab_title2">Access Tag</string>
+
+    <string name="connect_rs232">"RS232"</string>
+    <string name="connect">"Connect"</string>
+    <string name="connect_otg">"Connect OTG"</string>
+
+    <string name="com_port">Serial Port:</string>
+    <string name="baud_rate">Baudrate:</string>
+    <string name="com_port_usb">"USB(FT312D)"</string>
+
+    <string name="rs232_error">"RS232 Setup Error"</string>
+
+    <string name="error_configuration">Please configurate first.</string>
+    <string name="error_security">This Port has no read and write permission.</string>
+    <string name="error_unknown">Open Fail,Unknown Error</string>
+
+    <string name="scanning">Searching for Devices</string>
+    <string name="select_device">Select the device you want to connect</string>
+    <string name="none_paired">No paired devices</string>
+    <string name="none_found">Device not found</string>
+    <string name="title_paired_devices">Paired devices</string>
+    <string name="title_other_devices">Other available devices</string>
+    <string name="button_scan">Search for Devices</string>
+
+    <string name="back_to_main">Back to Home</string>
+
+    <string name="open_caption">Operating Record(Click to Expand)</string>
+    <string name="close_caption">Operating Record(Click to Hide)</string>
+
+    <string name="setting_reset">Reset Reader</string>
+    <string name="setting_base">Basic Setup</string>
+    <string name="setting_reader_address">RS-485 Address(HEX)</string>
+    <string name="setting_identifier">Reader Identifier(12Byte)</string>
+    <string name="setting_firmware_version">Firmware Version</string>
+    <string name="setting_temperature">Internal Temperature</string>
+    <string name="setting_gpio">Read/Write GPIO</string>
+    <string name="setting_set_gpio">Write GPIO(GPIO3,GPIO4):</string>
+    <string name="setting_get_gpio">Read GPIO(GPIO1,GPIO2):</string>
+    <string name="setting_gpio_1">High</string>
+    <string name="setting_gpio_0">Low</string>
+    <string name="setting_beeper">Buzzer Behavior</string>
+    <string name="beeper_quiet">Quiet</string>
+    <string name="beeper_all">Beep after an inventory round</string>
+    <string name="beeper_one">Beep after a tag is identified.(Influence multi-tags indentification, for test only)</string>
+
+    <string name="setting_rf">RF Setup</string>
+    <string name="setting_drm_status">DRM Status</string>
+    <string name="setting_out_power">RF Output Power</string>
+    <string name="dBm">dBm</string>
+    <string name="setting_antenna">Manual Switch Antenna</string>
+    <string name="antenna_port">Current Ant:</string>
+    <string name="setting_return_loss">Measure RF Port Return Loss</string>
+    <string name="setting_ant_detector">Antenna Connetion Detector</string>
+    <string name="ant_detector">RL Threshold:</string>
+    <string name="desc">Note:</string>
+    <string name="desc_detector_1">1.Reader detects antenna connections by measuring the return loss of RF ports.</string>
+    <string name="desc_detector_2">2.Reader stops tag operation if return loss is above the threshold.</string>
+    <string name="desc_detector_3">3.User can turn it off by setting the threshold to 0.</string>
+
+    <string name="setting_monza">"Impinj Monza FastTID"</string>
+    <string name="desc_monza_1">1.Only a certain number of Impinj Monza tag types support this function.</string>
+    <string name="desc_monza_2">2.If this function is not supported by tags, please turn it off.</string>
+
+    <string name="setting_region">RF Spectrum Setup </string>
+    <string name="region_custom">User Defined Frequencies</string>
+    <string name="region_default">System Default Frequencies</string>
+    <string name="region_range">Freq Range:</string>
+    <string name="freq_start">Start Frequency:</string>
+    <string name="freq_end">End Frequency:</string>
+    <string name="freq_interval">Freq Space:</string>
+    <string name="freq_nums">Quantity:</string>
+    <string name="freq_unit"></string>
+
+    <string name="setting_profile">RF Link Setup</string>
+    <string name="profile_option0">"Profile 0  Tari 25uS; FM0 40KHz"</string>
+    <string name="profile_option1">"Profile 1(Recommended and Default)  Tari 25uS; Miller 4 250KHz"</string>
+    <string name="profile_option2">"Profile 2  Tari 25uS; Miller 4 300KHz" </string>
+    <string name="profile_option3">"Profile 3  Tari 6.25uS; FM0 400KHz" </string>
+
+    <string name="setting_row_monitor">SerialPort Monitor</string>
+
+    <string name="iso180006cinventory">18000-6C Tag Test</string>
+    <string name="iso180006binventory">ISO 18000-6B Tag Test</string>
+    <string name="inventory_real_mode">Tag Inventory(Real Time Mode)</string>
+    <string name="inventory_buffer_mode">Tag Inventory(Buffer Mode)</string>
+    <string name="inventory_fast4ant_mode">Tag Inventory(Fast Switch Antenna Mode)</string>
+    <string name="iso180006Binventory">6B Tag Inventory</string>
+
+    <string name="real_set">Advanced Options</string>
+
+    <string name="real_session">User Define Session</string>
+    <string name="select_antenna">Antenna Selection</string>
+    <string name="antenna_1">Ant1</string>
+    <string name="antenna_2">Ant2</string>
+    <string name="antenna_3">Ant3</string>
+    <string name="antenna_4">Ant4</string>
+    <string name="real_round">Repeat Per Command:</string>
+
+    <string name="access_tag">Access Tag</string>
+
+    <string name="list_antenna_port">"Ant ID"</string>
+
+    <string name="real_list_times">"ID CNT"</string>
+    <string name="real_list_times_4_ant">"ID CNT(1/2/3/4)"</string>
+    <string name="real_list_times_8_ant">"ID CNT(1/2/3/4/5/6/7/8)"</string>
+    <string name="real_list_freq">"Carrier Freq"</string>
+
+    <string name="buffer_list_times">"ID CNT"</string>
+    <string name="buffer_round">Repeat Per Command:</string>
+    <!--  add by lei.li 2016/11/24  -->
+    <!-- <string name="open_tag_list">Tag List(Click to Expand)</string> -->
+    <!-- <string name="close_tag_list">Tag List(Click to Hide)</string> -->
+    <!--  add by lei.li 2016/11/24  -->
+    <string name="open_tag_list">Tag List</string>
+    <string name="close_tag_list">Tag List</string>
+
+    <string name="tags_count">"Inventoried:"</string>
+    <string name="tags_count_unit">" PCS"</string>
+    <string name="tags_total">"Total Tag: "</string>
+    <string name="tags_op_time">"CMD exec time"</string>
+    <string name="tags_op_time_unit">"millisecond"</string>
+    <string name="tags_total_unit">" PCS"</string>
+    <string name="tags_speed">"Speed: "</string>
+    <string name="tags_speed_unit">" Tag/Sec"</string>
+    <string name="tags_time">"Total Duration: "</string>
+    <string name="tags_time_unit">" mS"</string>
+    <string name="tags_times_unit">" times"</string>
+
+    <string name="tag_get_buffer">Get Buffer</string>
+    <string name="tag_get_clear_buffer">Get and Clear Buffer</string>
+    <string name="tag_clear_buffer">Clear Buffer</string>
+    <string name="tag_query_buffer">Query Tag Quantity</string>
+
+    <string name="fast4ant_set">"Parameter Setup"</string>
+    <string name="fast4ant_delay">"Interval Between Ants(mS): "</string>
+    <string name="fast4ant_repeat">"Repeat: ""</string>
+
+    <string name="fast4ant_list_times">"ID CNT"</string>
+    <string name="fast4ant_list_freq">"Carrier Freq"</string>
+
+    <string name="tag_access">"Access Tag"</string>
+    <string name="tag_list_title">"Tag List: "</string>
+    <string name="tag_access_epc">"Selected Tag"</string>
+    <string name="tag_write_read">"Read/Write Tag"</string>
+    <string name="tag_lock">"Lock Tag"</string>
+    <string name="tag_kill">"Kill tag"</string>
+
+    <string name="area_password">"Password"</string>
+    <string name="area_epc">"EPC"</string>
+    <string name="area_tid">"TID"</string>
+    <string name="area_user">"USER"</string>
+
+    <string name="area_access_password">"Access Password"</string>
+    <string name="area_kill_password">"Kill Password"</string>
+
+    <string name="lock_free">"Open"</string>
+    <string name="lock_lock">"Lock"</string>
+    <string name="lock_free_ever">"Permanent Open"</string>
+    <string name="lock_lock_ever">"Pernanent Lock"</string>
+
+    <string name="password">"Access Password(HEX): "</string>
+    <!-- add by lei.li 2011/1/11 -->
+    <string name="password_kill">"Kill Password(HEX): "</string>
+    <string name="start_add">"Start Add(WORD): "</string>
+    <string name="data_length">"Length(WORD): "</string>
+    <string name="data_write">"Data to be Written(HEX): "</string>
+
+    <string name="tag_uid_list_title">"UID List: "</string>
+    <string name="tag_access_uid">"Selected UID"</string>
+    <string name="data_read">"Data(HEX): "</string>
+    <string name="data_read_len">"Length(HEX): "</string>
+    <string name="data_write_len">"Length(HEX): "</string>
+    <string name="write_round">"Command Repeat: "</string>
+    <string name="write_round_ok">"Succeeded: "</string>
+    <string name="start_add_hex">"Start Add(HEX): "</string>
+
+    <string name="wp_ever_addr">"Permanent Lock Address(HEX): "</string>
+    <string name="get_wp_ever_addr">"Query Lock Status Address(HEX): "</string>
+    <string name="set_wp_ever">"Lock"</string>
+    <string name="get_wp_ever">"Query"</string>
+
+    <string name="locked">"Locked"</string>
+    <string name="unlocked">"Unlock"</string>
+
+
+    <string name="setting_monitor">Activate Serial Port Monitor</string>
+
+    <string name="refresh">Refresh</string>
+
+    <string name="select">Select</string>
+    <string name="read_tag">Read</string>
+    <string name="write_tag">Write</string>
+    <string name="lock_tag">Lock</string>
+    <string name="kill_tag">Kill</string>
+
+    <string name="access_list_data_len">"Data Len"</string>
+    <string name="access_list_data">"Data"</string>
+    <string name="access_list_times">"Operated CNT"</string>
+
+    <string name="save">Save</string>
+    <string name="unsave">Unsave</string>
+
+    <string name="open">Open</string>
+    <string name="close">Close</string>
+    <string name="set">Set</string>
+    <string name="get">Get</string>
+    <string name="send">Send</string>
+    <string name="start_inventory">Inventory</string>
+    <string name="stop_inventory">Stop</string>
+
+    <string name="measure">Measure</string>
+
+
+    <string name="ip_error">IP Format Error(192.168.0.178)</string>
+    <string name="ip_null">IP can not be empty.</string>
+    <string name="port_null">Port No. can not be empty.</string>
+    <string name="ip_connecting">TCP Connecting</string>
+    <string name="ip_connect_timeout">TCP Connection Timeout</string>
+    <string name="ip_connect_fail">TCP Connection Error</string>
+    <string name="ip_connect_success">TCP Connect Successfully</string>
+
+    <string name="no_bluetooth">This device does not support Bluetooth.</string>
+    <string name="bluetooth_connecting">Bluetooth Connecting</string>
+    <string name="bluetooth_connect_timeout">Bluetooth Connection Timeout</string>
+    <string name="bluetooth_connect_fail">Bluetooth Connection Error</string>
+    <string name="bluetooth_connect_success">Bluetooth Connect Successfully</string>
+
+
+    <string name="antenna_empty">At least one antenna must be selected.</string>
+    <string name="repeat_empty">Repetitions can not be empty.</string>
+    <string name="repeat_min">Repetitions is at least 1.</string>
+
+
+    <string name="fast4ant_error">At least one antenna must be selected, at least one polling, repetitions is at least 1.</string>
+    <string name="fast4ant_empty">All content can not be empty.</string>
+
+    <string name="param_unknown_error">Parameter Unknown Error</string>
+    <string name="param_start_addr_error">Start address format error.</string>
+    <string name="param_lockpassword_error">Password format error.</string>
+    <string name="param_killpassword_error">Password format error.</string>
+    <string name="param_password_error">Password format error.</string>
+    <string name="param_data_len_error">Data length format error.</string>
+    <string name="param_data_error">Write Data format error.</string>
+
+    <string name="uid_select">Please select an UID</string>
+    <string name="uid_error">UID format error, Please re-select.</string>
+
+    <string name="param_read_start_addr_error">Read start address format error.</string>
+    <string name="param_read_data_len_error">Read data length format error.</string>
+
+    <string name="param_write_start_addr_error">Write start address format error.</string>
+
+    <string name="param_write_data_error">Write data format error.</string>
+
+    <string name="param_wp_ever_addr_error">Permanent lock address format error.</string>
+    <string name="param_get_wp_ever_addr_error">Query lock status address format error.</string>
+
+    <string name="data">Input Command:</string>
+    <string name="check">Check Sum:</string>
+
+    <string name="mask_start_address">Start address(bit):</string>
+    <string name="mask_len">Mask len(bit):</string>
+    <string name="mask_value">Mask value(hex):</string>
+    <string name="MaskNo">Mask No:</string>
+
+    <string name="set_target_mask">Set tag mask</string>
+    <string name="target">Target:</string>
+    <string name="get_target_mask">Get tag mask</string>
+    <string name="action">Action:</string>
+    <string name="membank">Membank:</string>
+    <string name="clear_target_mask">Clear tag mask</string>
+    <string name="setting_mask_tag">Setting Tag Mask</string>
+    <string name="get_mask_success">Get mask success</string>
+    <string name="parameter_invalid_mask">Invalid parameter</string>
+    <string name="operate_mask">Operate mask</string>
+    <string name="fast_switch">Fast Switch Antenna Mode</string>
+    <string name="ant_1">1ANT</string>
+    <string name="ant_4">4ANT</string>
+    <string name="ant_8">8ANT</string>
+    <string name="buffer_inventory" >Buffer Mode</string>
+    <string name="interval">Interval</string>
+    <string name="repeat">repeat</string>
+    <string name="optimized">Optimization</string>
+    <string name="taget_quantity">Target Quantity</string>
+    <string name="run_times">Run Times</string>
+    <string name="time_interval">Time Interval</string>
+</resources>

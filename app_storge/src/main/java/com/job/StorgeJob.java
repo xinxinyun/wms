@@ -40,7 +40,7 @@ public class StorgeJob extends Job {
     @Override
     public void onRun() throws Throwable {
         Log.i(TAG, "[" + epcCode + "]onRun");
-        this.submitInventory(epcCode);
+        //this.submitInventory(epcCode);
     }
 
     @Override

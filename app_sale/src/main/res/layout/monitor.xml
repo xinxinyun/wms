@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="match_parent"
+    android:background="#EEEEEE"
+    android:gravity="fill_vertical"
+    android:orientation="vertical" >
+    
+	<com.uhf.uhf.TitleGoToMain
+            android:id="@+id/title_goto_main"
+			android:layout_width="fill_parent"
+			android:layout_height="wrap_content" />
+	
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:background="#EEEEEE"
+        android:gravity="fill_vertical"
+        android:orientation="horizontal" >
+
+        <CheckBox
+            android:id="@+id/check_open_monitor"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="7.5sp"
+            android:checked="false"
+            android:text="@string/setting_monitor"
+            android:textColor="#ff222222"
+            android:textSize="12.0sp" />
+
+        <TextView
+            android:id="@+id/refresh"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginBottom="7.5sp"
+            android:layout_marginRight="7.5sp"
+            android:layout_marginTop="7.5sp"
+            android:background="@drawable/button_selector"
+            android:clickable="true"
+            android:gravity="center_horizontal"
+            android:paddingBottom="3.7sp"
+            android:paddingLeft="7.5sp"
+            android:paddingRight="7.5sp"
+            android:paddingTop="3.7sp"
+            android:text="@string/refresh"
+            android:textColor="#ff222222"
+            android:textSize="12.0sp"
+            android:textStyle="bold" />
+    </RelativeLayout>
+
+    <View
+        android:layout_width="fill_parent"
+        android:layout_height="1dip"
+        android:background="#ff555555"
+        android:paddingLeft="7.5sp"
+        android:paddingRight="7.5sp" />
+
+   <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="3.7sp" >
+
+        <TextView
+            android:id="@+id/send_text_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:layout_gravity="center_vertical"
+            android:padding="3.7sp"
+            android:text="@string/data"
+            android:textColor="#ff222222"
+            android:textSize="12.0sp" />
+
+        <com.uhf.uhf.HexEditTextBox
+            android:id="@+id/data_send_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingTop="3.7sp"
+            android:paddingBottom="3.7sp"
+            android:layout_centerVertical="true"
+            android:layout_toRightOf="@id/send_text_view"
+            android:background="@drawable/editbox_background"
+            android:digits="0123456789abcdefABCDEF"
+            android:gravity="center_vertical"
+            android:inputType="text"
+            android:textSize="12sp" />
+    </RelativeLayout>
+    
+    
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="3.7sp" >
+
+        <TextView
+            android:id="@+id/send"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="3.7sp"
+            android:background="@drawable/button_selector"
+            android:clickable="true"
+            android:gravity="center_horizontal"
+            android:paddingLeft="11.2sp"
+            android:paddingRight="11.2sp"
+            android:paddingTop="3.7sp"
+            android:paddingBottom="3.7sp"
+            android:text="@string/send"
+            android:textColor="#ff222222"
+            android:textSize="12.0sp"
+            android:textStyle="bold" />
+
+        <com.uhf.uhf.HexEditTextBox
+            android:id="@+id/data_send_check"
+            android:layout_width="60sp"
+            android:layout_height="wrap_content"
+            android:paddingTop="3.7sp"
+            android:paddingBottom="3.7sp"
+            android:layout_centerVertical="true"
+            android:layout_toLeftOf="@id/send"
+            android:background="@drawable/editbox_background"
+            android:digits="0123456789abcdefABCDEF"
+            android:gravity="center_vertical"
+            android:inputType="text"
+            android:enabled="false"
+            android:textSize="12sp" />
+        
+         <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_gravity="center_vertical"
+            android:layout_toLeftOf="@id/data_send_check"
+            android:padding="3.7sp"
+            android:text="@string/check"
+            android:textColor="#ff222222"
+            android:textSize="12.0sp" />
+
+    </RelativeLayout>
+
+    <View
+        android:layout_width="fill_parent"
+        android:layout_height="1dip"
+        android:background="#ff555555"
+        android:paddingLeft="7.5sp"
+        android:paddingRight="7.5sp" />
+
+    <ListView
+        android:id="@+id/monitor_list_view"
+        android:layout_width="fill_parent"
+        android:layout_height="match_parent"
+        android:divider="#FF222222"
+        android:dividerHeight="1dip"
+        android:drawSelectorOnTop="false"
+        android:listSelector="@android:color/transparent"
+        android:paddingBottom="3.7sp"
+        android:paddingLeft="3.7sp"
+        android:paddingRight="3.7sp"
+        android:paddingTop="3.7sp"
+        android:scrollbars="vertical"
+        android:scrollingCache="false"
+        android:transcriptMode="alwaysScroll" />
+
+</LinearLayout>

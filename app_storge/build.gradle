@@ -5,13 +5,13 @@ android {
     compileSdkVersion 27
     buildToolsVersion '27.0.1'
     defaultConfig {
-        applicationId "com.amr.wms"
+        applicationId "com.wms.storge"
         minSdkVersion 19
         targetSdkVersion 27
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
-        setProperty("archivesBaseName", "wms")
+        setProperty("archivesBaseName", "wstorge")
         multiDexEnabled true
     }
     buildTypes {

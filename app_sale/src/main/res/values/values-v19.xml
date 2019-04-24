@@ -1,0 +1,15 @@
+<resources>
+
+    <style name="MyAppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="android:windowNoTitle">true</item>
+        <!--Toolbar颜色-->
+        <item name="colorPrimary">@android:color/holo_blue_bright</item>
+        <!-- 状态栏颜色 -->
+        <item name="colorPrimaryDark">@android:color/holo_blue_bright</item>
+        <item name="android:windowTranslucentNavigation">true</item>
+        <item name="android:windowTranslucentStatus">true</item>
+    </style>
+
+
+</resources>

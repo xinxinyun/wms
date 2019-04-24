@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:id="@+id/log_linearLayout"
+	android:layout_width="fill_parent"
+	android:layout_height="wrap_content"
+	android:background="#EEEEEE"
+	android:paddingTop="3.7sp"
+	android:orientation="vertical" >
+
+	<TableLayout
+		android:layout_width="fill_parent"
+		android:layout_height="wrap_content"
+		android:paddingLeft="1.0dip"
+		android:shrinkColumns="0"
+		android:stretchColumns="0" >
+		<TableRow
+			android:id="@+id/table_row_log"
+			android:layout_width="fill_parent"
+			android:layout_marginLeft="1.5dip"
+			android:layout_marginRight="1.5dip"
+			android:background="@drawable/table_item_top_selector"
+			android:paddingBottom="3.7dip"
+			android:paddingTop="3.7dip"
+			android:clickable="true" >
+			
+			<LinearLayout
+				android:layout_width="fill_parent"
+				android:layout_height="wrap_content"
+				android:orientation="vertical" >
+
+				<TextView
+				    android:id="@+id/list_text_info"
+					android:layout_width="wrap_content"
+					android:layout_height="fill_parent"
+					android:gravity="center_vertical"
+					android:includeFontPadding="false"
+					android:paddingLeft="12.7dip"
+					android:text="@string/open_caption"
+					android:textColor="#ff222222"
+					android:textSize="12.0sp" />
+
+				<TextView
+				    android:id="@+id/list_text_help"
+				    android:layout_width="wrap_content"
+				    android:layout_height="fill_parent"
+				    android:gravity="center_vertical"
+				    android:includeFontPadding="false"
+				    android:paddingTop="2.9dip"
+				    android:paddingLeft="11.2dip"
+				    android:text=""
+				    android:textColor="#ff777777"
+				    android:textSize="8.9sp" />
+    			</LinearLayout>
+    		<!--  add by lei.li 2016/11/10 -->
+    		<Button
+				    android:id="@+id/clear_log"
+				    android:layout_width="wrap_content"
+				    android:layout_height="fill_parent"
+				    android:gravity="center_vertical"
+				    android:paddingTop="3.0dip"
+				    android:paddingLeft="11.2dip"
+				    android:text="@string/clear_log"
+				    android:textColor="#ff777777"
+				    android:visibility="gone"
+				    android:textSize="8.9sp" />
+    		<!--  add by lei.li 2016/11/10 -->
+
+			<ImageView
+			    android:id="@+id/image_prompt"
+				android:layout_width="wrap_content"
+			    android:layout_height="fill_parent"
+			    android:layout_gravity="right"
+			    android:gravity="center_vertical"
+			    android:paddingRight="11.2dip"
+			    android:paddingBottom="3.7dip"
+				android:paddingTop="3.7dip"
+				android:src="@drawable/up" />
+		</TableRow>
+	</TableLayout>
+
+	<ListView 
+        android:id="@+id/log_list_view"
+        android:layout_width="fill_parent"
+        android:layout_height="150sp"
+        android:drawSelectorOnTop="false"
+        android:scrollbars="vertical"
+        android:paddingLeft="3.7sp"
+        android:paddingTop="3.7sp"
+        android:paddingRight="3.7sp"
+		android:paddingBottom="3.7sp"
+		android:listSelector="@android:color/transparent"
+		android:scrollingCache="false"
+		android:transcriptMode="alwaysScroll"
+        android:divider="@null" />
+</LinearLayout>
