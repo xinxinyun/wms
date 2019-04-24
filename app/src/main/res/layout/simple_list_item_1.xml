@@ -1,14 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal">
 
     <LinearLayout
         android:layout_width="wrap_content"
-        android:layout_height="55dp"
+        android:layout_height="65dp"
         android:layout_marginLeft="17dp"
-        android:gravity="center"
         android:layout_marginRight="6dp"
+        android:gravity="center_vertical|left"
         android:orientation="vertical">
 
         <TextView
@@ -25,7 +26,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="left"
             android:text="Title"
-            android:textColor="@color/black"
+            android:textColor="@color/gray"
             android:textSize="12sp" />
     </LinearLayout>
 
@@ -34,31 +35,31 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical|right"
-        android:layout_marginRight="20dp"
         android:text="0"
-        android:textColor="@color/black"
-        android:textSize="15sp" />
+        android:layout_marginLeft="15dp"
+        android:textColor="@color/red"
+        android:textSize="18sp" />
 
     <TextView
         android:id="@+id/actualNum"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical|right"
-        android:layout_marginRight="20dp"
-        android:text="0"
+        android:text="未盘点"
+        android:layout_marginLeft="12dp"
         android:textColor="@color/red"
-        android:textSize="15sp" />
-
+        android:textSize="14sp" />
 
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginLeft="6dp"
         android:layout_gravity="center_vertical|right">
         <ImageView
             android:id="@+id/iv_image"
             android:layout_width="30dp"
             android:layout_height="30dp"
-            android:src="@drawable/right" />
+            android:src="@drawable/wrong1" />
     </LinearLayout>
 
 </LinearLayout>

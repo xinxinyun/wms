@@ -1,8 +1,6 @@
 package com.uhf.uhf;
 
-import android.content.Context;
 import android.graphics.Color;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -12,16 +10,15 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.BaseAdapter;
-import android.widget.ImageView;
-import android.widget.TextView;
 import android.widget.Toast;
 
+import com.adpter.StorgerAdapter;
 import com.bean.MaterialInfo;
+import com.com.tools.Beeper;
 import com.com.tools.SimpleFooter;
 import com.com.tools.SimpleHeader;
 import com.com.tools.ZrcListView;
+import com.contants.WmsContanst;
 import com.google.gson.Gson;
 import com.module.interaction.ModuleConnector;
 import com.nativec.tools.ModuleManager;
@@ -50,24 +47,25 @@ public class AreaCheckActitity extends AppCompatActivity {
     private static final String TAG = "仓储区域盘点";
     ModuleConnector connector = new ReaderConnector();
     RFIDReaderHelper mReader;
-    /**
-     * 波特率
-     */
-    private int baud = 115200;
-
-    /**
-     * 串口号
-     */
-    private static final String TTYS1 = "/dev/ttyS4";
     private ZrcListView listView;
     private ArrayList<MaterialInfo> materialInfoList;
-    private MyAdapter adapter;
+    private StorgerAdapter adapter;
 
     /**
      * 缓存EPC码
      */
     private ArrayList<String> epcCodeList = new ArrayList<>();
 
+    private SweetAlertDialog pTipDialog;
+
+    private int epcSize = 0;
+
+    /**
+     * 小类汇总,初始10000个大小
+     */
+    private HashMap<String, Integer> playMap = new HashMap<String, Integer>(10000);
+
+    private boolean isSubmit=false;
     /**
      * 异步回调刷新数据
      */
@@ -80,8 +78,8 @@ public class AreaCheckActitity extends AppCompatActivity {
                     adapter.notifyDataSetChanged();
                     break;
                 case 2:
+                    pTipDialog.setContentText("您当前已盘点" + epcSize + "件物资");
                     break;
-
             }
         }
     };
@@ -92,12 +90,32 @@ public class AreaCheckActitity extends AppCompatActivity {
     RXObserver rxObserver = new RXObserver() {
         @Override
         protected void onInventoryTag(RXInventoryTag tag) {
+
             String epcCode = tag.strEPC;
+
             Log.d(TAG, epcCode);
+
             if (!epcCodeList.contains(epcCode)) {
-                scanFridLabel(epcCode);
+
+                epcCodeList.add(epcCode);
+                epcSize++;
+
+
+                //获取条形码值
+               /* String barCode = epcCode.substring(0, 8);
+                if (playMap.containsKey(barCode)) {
+                    playMap.put(barCode, playMap.get(barCode).intValue() + 1);
+                } else {
+                    playMap.put(barCode, 0);
+                }*/
+
+                Message message = Message.obtain();
+                message.what = 2;
+                myHandler.sendMessage(message);
+
+                //调用蜂鸣声提示已扫描到商品
+                Beeper.beep(Beeper.BEEPER_SHORT);
             }
-            epcCodeList.add(epcCode);
         }
 
         @Override
@@ -120,7 +138,20 @@ public class AreaCheckActitity extends AppCompatActivity {
         mToolbarTb.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                finish();
+                if (epcCodeList.size()!=0&&!isSubmit) {
+                    SweetAlertDialog sweetAlertDialog = new SweetAlertDialog(AreaCheckActitity.this, SweetAlertDialog.ERROR_TYPE);
+                    sweetAlertDialog.setContentText("您的盘点结果未提交，请提交盘点结果！");
+                    sweetAlertDialog.setConfirmButton("提交", new SweetAlertDialog.OnSweetClickListener() {
+                        @Override
+                        public void onClick(SweetAlertDialog sweetAlertDialog) {
+                            submitInventory();
+                        }
+                    });
+                    sweetAlertDialog.show();
+                    return;
+                } else {
+                    finish();
+                }
             }
         });
 
@@ -136,12 +167,13 @@ public class AreaCheckActitity extends AppCompatActivity {
         }*/
         StatusBarUtil.setStatusBarColor(this, Color.parseColor("#00CCFF"));
 
-        SweetAlertDialog pDialog = new SweetAlertDialog(this, SweetAlertDialog.PROGRESS_TYPE);
+        /*SweetAlertDialog pDialog = new SweetAlertDialog(this, SweetAlertDialog.PROGRESS_TYPE);
         pDialog.getProgressHelper().setBarColor(Color.parseColor("#A5DC86"));
         pDialog.setTitleText("正在读取物资盘点计划，请稍候");
         pDialog.setCancelable(true);
-        pDialog.show();
-
+        pDialog.show();*/
+        pTipDialog = new SweetAlertDialog(this, SweetAlertDialog.WARNING_TYPE);
+        pTipDialog.setCustomImage(R.drawable.blue_button_background);
         listView = (ZrcListView) findViewById(R.id.zListView);
 
         // 设置默认偏移量，主要用于实现透明标题栏功能。（可选）
@@ -180,33 +212,50 @@ public class AreaCheckActitity extends AppCompatActivity {
                 MaterialInfo materialInfo3 = new MaterialInfo();
                 materialInfo3.setId(3);
                 materialInfo3.setMaterialCode("2000102300426");
-                materialInfo3.setMaterialName("雪花清爽500ml");
+                materialInfo3.setMaterialName("名庄荟奔富麦克斯大师承诺西拉干红葡萄酒");
                 materialInfo3.setSource(50);
 
                 MaterialInfo materialInfo4 = new MaterialInfo();
                 materialInfo4.setId(3);
                 materialInfo4.setMaterialCode("2000102300426");
-                materialInfo4.setMaterialName("雪花清爽500ml");
+                materialInfo4.setMaterialName("名庄荟长城梦坡家园珍酿干红葡萄酒750ml");
                 materialInfo4.setSource(50);
 
                 MaterialInfo materialInfo5 = new MaterialInfo();
                 materialInfo5.setId(3);
                 materialInfo5.setMaterialCode("2000102300426");
-                materialInfo5.setMaterialName("雪花清爽500ml");
+                materialInfo5.setMaterialName("青岛崂山啤酒330ml");
                 materialInfo5.setSource(50);
 
                 MaterialInfo materialInfo6 = new MaterialInfo();
                 materialInfo6.setId(3);
                 materialInfo6.setMaterialCode("2000102300426");
-                materialInfo6.setMaterialName("雪花清爽500ml");
+                materialInfo6.setMaterialName("娃哈哈C驱动柠檬汁碳酸饮料530ml");
                 materialInfo6.setSource(50);
 
                 MaterialInfo materialInfo7 = new MaterialInfo();
                 materialInfo7.setId(3);
                 materialInfo7.setMaterialCode("2000102300426");
-                materialInfo7.setMaterialName("雪花清爽500ml");
+                materialInfo7.setMaterialName("耐豹顺洁滤清器PUK2845(欧曼)1*1");
                 materialInfo7.setSource(50);
 
+                MaterialInfo materialInfo78 = new MaterialInfo();
+                materialInfo78.setId(3);
+                materialInfo78.setMaterialCode("2000102300426");
+                materialInfo78.setMaterialName("耐豹顺洁滤清器PUK2845(欧曼)1*1");
+                materialInfo78.setSource(50);
+
+                MaterialInfo materialInfo79 = new MaterialInfo();
+                materialInfo79.setId(3);
+                materialInfo79.setMaterialCode("2000102300426");
+                materialInfo79.setMaterialName("耐豹顺洁滤清器PUK2845(欧曼)1*1");
+                materialInfo79.setSource(50);
+
+                MaterialInfo materialInfo73 = new MaterialInfo();
+                materialInfo73.setId(3);
+                materialInfo73.setMaterialCode("2000102300426");
+                materialInfo73.setMaterialName("耐豹顺洁滤清器PUK2845(欧曼)1*1");
+                materialInfo73.setSource(50);
 
                 add(materialInfo);
                 add(materialInfo2);
@@ -215,11 +264,15 @@ public class AreaCheckActitity extends AppCompatActivity {
                 add(materialInfo5);
                 add(materialInfo6);
                 add(materialInfo7);
+                add(materialInfo78);
+                add(materialInfo79);
+                add(materialInfo73);
+
             }
         };
 
         //initData();
-        adapter = new MyAdapter(getBaseContext(), materialInfos);
+        adapter = new StorgerAdapter(getBaseContext(), materialInfos);
         listView.setAdapter(adapter);
         //listView.refresh(); // 主动下拉刷新*/
         //pDialog.hide();
@@ -238,38 +291,42 @@ public class AreaCheckActitity extends AppCompatActivity {
         paramsMap.put("userName", "1111");//参数
         paramsMap.put("password", "2222");
 
-        OkhttpUtil.okHttpPost("", paramsMap, headerMap, new CallBackUtil.CallBackDefault() {//回调
-            @Override
-            public void onFailure(Call call, Exception e) {
-                //LogUtil.e(TAG, e.getMessage());
-                //TVAppUtil.showToast("网络异常！请确认是否联网，以及服务器地址是否正确！");
-                //SharedPreferencesUtil.sharePut("newServerAddress","");
-            }
-
-            @Override
-            public void onResponse(Response response) {
-                try {
-                    if (response.isSuccessful()) {
-                        //下载物资清单
-                        String responseBody = response.body().string();
-                        Gson gson = new Gson();
-                        List<MaterialInfo> waitMaterialList = gson.fromJson(responseBody, List.class);
-
-                        adapter = new MyAdapter(getBaseContext(), waitMaterialList);
-
-                        listView.setAdapter(adapter);
-
-                        //插入数据
-                        //必须先初始化
-                        DatabaseUtils.initHelper(getApplication(), "wms.db");
-                        DatabaseUtils.getHelper().saveAll(waitMaterialList);
-                        Log.d(TAG, "插入数据成功");
-
-
+        OkhttpUtil.okHttpPost(WmsContanst.HOST + WmsContanst.STORGE_MATERIALINFL,
+                paramsMap, headerMap, new CallBackUtil.CallBackDefault() {//回调
+                    @Override
+                    public void onFailure(Call call, Exception e) {
+                        SweetAlertDialog sweetAlertDialog = new SweetAlertDialog(getBaseContext(), SweetAlertDialog.ERROR_TYPE);
+                        sweetAlertDialog.setContentText("物资清单下载失败！");
+                        sweetAlertDialog.show();
                     }
-                } catch (Exception e) {
 
-                }
+                    @Override
+                    public void onResponse(Response response) {
+                        try {
+                            if (response.isSuccessful()) {
+                                //下载物资清单
+                                String responseBody = response.body().string();
+                                Gson gson = new Gson();
+                                List<MaterialInfo> waitMaterialList = gson.fromJson(responseBody, List.class);
+
+                                //adapter = new MyAdapter(getBaseContext(), waitMaterialList);
+
+                                listView.setAdapter(adapter);
+                                //String waterialInfoJson=gson.toJson(waitMaterialList);
+
+                                //插入数据
+                                //必须先初始化
+                                //DatabaseUtils.initHelper(getApplication(), "wms.db");
+                                DatabaseUtils.getHelper().saveAll(waitMaterialList);
+                                Log.d(TAG, "插入数据成功");
+
+
+                            }
+                        } catch (Exception e) {
+                            SweetAlertDialog sweetAlertDialog = new SweetAlertDialog(getBaseContext(), SweetAlertDialog.ERROR_TYPE);
+                            sweetAlertDialog.setContentText("物资清单下载失败！");
+                            sweetAlertDialog.show();
+                        }
                 /*try {
                     isLogin = true;
                     Headers responseHeaders = response.headers();
@@ -286,74 +343,116 @@ public class AreaCheckActitity extends AppCompatActivity {
                     } catch (Exception e) {
                     }
                 }*/
-            }
-        });
+                    }
+                });
     }
 
-    private class MyAdapter extends BaseAdapter {
 
-        private Context context;
-        private List<MaterialInfo> materialInfoList;
+    /**
+     * 开始扫描
+     */
+    private void inventoryAction(String flag) {
 
-        public MyAdapter(Context context,
-                         List<MaterialInfo> materialInfoList) {
-            this.context = context;
-            this.materialInfoList = materialInfoList;
+        //开始盘存则清空之前数据，重新盘存,//继续盘存则维持原来数据，累加盘存
+        if ("begin".equals(flag)) {
+            epcSize = 0;
+            epcCodeList.clear();
         }
-
-        @Override
-        public int getCount() {
-            return materialInfoList.size();
-        }
-
-        @Override
-        public Object getItem(int position) {
-            return materialInfoList.get(position);
-        }
-
-        @Override
-        public long getItemId(int position) {
-            return position;
-        }
-
-        @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
-
-            ViewHolder viewHolder = null;
-            if (viewHolder == null) {
-                viewHolder = new ViewHolder();
-                convertView = getLayoutInflater().inflate(R.layout.simple_list_item_1, null);
-                viewHolder.title = (TextView) convertView.findViewById(R.id.tv_title);
-                viewHolder.txCodeTextView = (TextView) convertView.findViewById(R.id.tv_txcode);
-                viewHolder.num = (TextView) convertView.findViewById(R.id.num);
-                viewHolder.actualNum = convertView.findViewById(R.id.actualNum);
-                viewHolder.imageView = (ImageView) convertView.findViewById(R.id.iv_image);
-                convertView.setTag(viewHolder);
-            } else {
-                viewHolder = (ViewHolder) convertView.getTag();
+        //int j=mReader.getFirmwareVersion((byte)0xff);
+        //实时扫描多少个物资
+        if (connector.connectCom("dev/ttyS4", 115200)) {
+            ModuleManager.newInstance().setUHFStatus(true);
+            try {
+                mReader = RFIDReaderHelper.getDefaultHelper();
+                mReader.registerObserver(rxObserver);
+                //设定读取间隔时间
+                Thread.currentThread().sleep(500);
+                mReader.realTimeInventory((byte) 0xff, (byte) 0x01);
+                //int i=mReader.getFirmwareVersion((byte)0xff);
+            } catch (Exception e) {
+                Toast.makeText(getBaseContext(), e.getMessage(), Toast.LENGTH_LONG).show();
+                e.printStackTrace();
+                SweetAlertDialog sweetAlertDialog = new SweetAlertDialog(getBaseContext(), SweetAlertDialog.ERROR_TYPE);
+                sweetAlertDialog.setContentText("RFID设备模块读取失败！");
+                sweetAlertDialog.show();
+                return;
             }
-
-            MaterialInfo waitMaterial = materialInfoList.get(position);
-
-            viewHolder.title.setText(waitMaterial.getMaterialName());
-            viewHolder.num.setText(waitMaterial.getSource().toString());
-            viewHolder.txCodeTextView.setText(waitMaterial.getMaterialCode());
-            viewHolder.actualNum.setText("待盘点");
-            //viewHolder.textView.setOnClickListener(new OnItemChildClickListener(DELETE, position));
-
-            return convertView;
-
+        } else {
+            SweetAlertDialog sweetAlertDialog = new SweetAlertDialog(getBaseContext(), SweetAlertDialog.ERROR_TYPE);
+            sweetAlertDialog.setContentText("RFID设备模块读取失败！");
+            sweetAlertDialog.show();
+            return;
         }
 
-        // ViewHolder用于缓存控件，三个属性分别对应item布局文件的三个控件
-        class ViewHolder {
-            public TextView title;
-            public TextView num;
-            public TextView actualNum;
-            public TextView txCodeTextView;
-            public ImageView imageView;
+        pTipDialog.setContentText("您当前已盘点" + epcSize + "件物资");
+        pTipDialog.setCancelable(true);
 
-        }
+        //结束操作
+        pTipDialog.setConfirmButton("查看盘点结果", new SweetAlertDialog.OnSweetClickListener() {
+            @Override
+            public void onClick(SweetAlertDialog sweetAlertDialog) {
+                //RFID模块下线
+                ModuleManager.newInstance().setUHFStatus(false);
+                ModuleManager.newInstance().release();
+                pTipDialog.hide();
+
+                SweetAlertDialog playDialog = new SweetAlertDialog(getApplicationContext(), SweetAlertDialog.PROGRESS_TYPE);
+                playDialog.setContentText("正在汇总盘点数据，请稍候");
+                playDialog.show();
+
+                //汇总计划列表
+                for (MaterialInfo materialInfo : materialInfoList) {
+                    String materialBarcode = materialInfo.getMaterialBarcode();
+                    materialInfo.setSource(playMap.get(materialBarcode));
+                    adapter.notifyDataSetChanged();
+                }
+
+                playDialog.hide();
+            }
+        });
+
+        pTipDialog.show();
+    }
+
+    /**
+     * 提交盘点结果
+     */
+    private void submitInventory() {
+        HashMap<String, String> headerMap = new HashMap<>();
+        HashMap<String, String> paramsMap = new HashMap<>();
+
+        headerMap.put("Content-Type", OkhttpUtil.CONTENT_TYPE);//头部信息
+        paramsMap.put("userName", "1111");//参数
+        paramsMap.put("password", "2222");
+
+        OkhttpUtil.okHttpPost(WmsContanst.HOST + WmsContanst.STORGE_MATERIALINFL_INVENTORY_SUBMIT,
+                paramsMap, headerMap, new CallBackUtil.CallBackDefault() {//回调
+                    @Override
+                    public void onFailure(Call call, Exception e) {
+                        SweetAlertDialog sweetAlertDialog = new SweetAlertDialog(getBaseContext(), SweetAlertDialog.ERROR_TYPE);
+                        sweetAlertDialog.setContentText("提交盘存结果失败！");
+                        sweetAlertDialog.show();
+                    }
+
+                    @Override
+                    public void onResponse(Response response) {
+                        try {
+                            if (response.isSuccessful()) {
+                                //清空数据
+                                epcCodeList.clear();
+                                epcSize = 0;
+                                isSubmit=true;
+                                Log.d(TAG, "插入数据成功");
+                            }
+                        } catch (Exception e) {
+                            Log.d(TAG, e.getMessage());
+                            e.printStackTrace();
+                            SweetAlertDialog sweetAlertDialog = new SweetAlertDialog(getBaseContext(), SweetAlertDialog.ERROR_TYPE);
+                            sweetAlertDialog.setContentText("提交盘存结果失败！");
+                            sweetAlertDialog.show();
+                        }
+                    }
+                });
     }
 
     @Override
@@ -365,50 +464,24 @@ public class AreaCheckActitity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.toolbar_collection:
-                materialInfoList.clear();
-                distinguishFRIDCode();
+            //开始盘存
+            case R.id.menu_beginInventonry:
+                inventoryAction("begin");
                 break;
-            case R.id.toolbar_share:
-                Toast.makeText(this, "分享", Toast.LENGTH_SHORT).show();
+            case R.id.menu_revertInventory:
+                //盘存复查
+                inventoryAction("continue");
                 break;
-            case R.id.toolbar_fontsize:
-                Toast.makeText(this, "字号", Toast.LENGTH_SHORT).show();
+            case R.id.menu_endInventory:
+                //结束复查，纯粹是为了实现RFID模块掉电的功能
+                ModuleManager.newInstance().setUHFStatus(false);
+                ModuleManager.newInstance().release();
                 break;
-            case android.R.id.home:
-                finish();
+            case R.id.menu_submitInventory:
+                submitInventory();
                 break;
         }
         return super.onOptionsItemSelected(item);
-    }
-
-    /**
-     * 启动RFID扫描
-     */
-    private void distinguishFRIDCode() {
-        if (connector.connectCom("dev/ttyS4", 115200)) {
-            ModuleManager.newInstance().setUHFStatus(true);
-            try {
-                mReader = RFIDReaderHelper.getDefaultHelper();
-                mReader.registerObserver(rxObserver);
-                Thread.currentThread().sleep(500);
-                mReader.realTimeInventory((byte) 0xff, (byte) 0x01);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        } else {
-            Toast.makeText(getBaseContext(), "RFID连接失败", Toast.LENGTH_LONG).show();
-        }
-    }
-
-    /**
-     * 扫描标签数并做汇总
-     *
-     * @param epcCode
-     */
-    private void scanFridLabel(String epcCode) {
-        MyAsyncTask task = new MyAsyncTask();
-        task.execute(epcCode);
     }
 
     @Override
@@ -424,54 +497,29 @@ public class AreaCheckActitity extends AppCompatActivity {
         //当前Activity销售则让RFID模块下线
         ModuleManager.newInstance().setUHFStatus(false);
         ModuleManager.newInstance().release();
+        //epcCodeList.clear();
+        if (pTipDialog != null) {
+            pTipDialog.dismiss();
+            pTipDialog = null;
+        }
     }
 
-    /**
-     * 异步处理机制
-     */
-    class MyAsyncTask extends AsyncTask<String, Void, MaterialInfo> {
-
-        //onPreExecute用于异步处理前的操作
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            //此处将progressBar设置为可见.
+    @Override
+    public void onBackPressed() {
+        //super.onBackPressed();
+        if (epcCodeList.size()!=0&&!isSubmit) {
+            SweetAlertDialog sweetAlertDialog = new SweetAlertDialog(AreaCheckActitity.this, SweetAlertDialog.ERROR_TYPE);
+            sweetAlertDialog.setContentText("您的盘点结果未提交，请提交盘点结果！");
+            sweetAlertDialog.setConfirmButton("提交", new SweetAlertDialog.OnSweetClickListener() {
+                @Override
+                public void onClick(SweetAlertDialog sweetAlertDialog) {
+                    submitInventory();
+                }
+            });
+            sweetAlertDialog.show();
         }
-
-        //在doInBackground方法中进行异步任务的处理.
-        @Override
-        protected MaterialInfo doInBackground(String... params) {
-
-            //RFID扫描返回RFID码
-            String epcCode = params[0];
-
-            //调用本库去查询本地数据库作数量比对
-            String txBarCode=epcCode.substring(0,8);
-
-            //必须先初始化
-            //DatabaseUtils.initHelper(getBaseContext(), "wms.db");
-
-            //创建学生类
-            MaterialInfo materialInfo = new MaterialInfo();
-            materialInfo.setMaterialMode("11111111111");
-
-            //将学生类保存到数据库
-            DatabaseUtils.getHelper().save(materialInfo);
-
-            //DatabaseUtils.getHelper().queryById()
-            materialInfoList.add(materialInfo);
-
-            return materialInfo;
-        }
-
-        //onPostExecute用于UI的更新.此方法的参数为doInBackground方法返回的值.
-        @Override
-        protected void onPostExecute(MaterialInfo materialInfo) {
-            super.onPostExecute(materialInfo);
-
-            Message message = Message.obtain();
-            message.what = 1;
-            message.sendToTarget();
+        else{
+            finish();
         }
     }
 }

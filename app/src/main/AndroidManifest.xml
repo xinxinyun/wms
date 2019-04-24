@@ -32,10 +32,6 @@
             android:label="@string/title_activity_out_time"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name="com.ui.AllAreaActivity"
-            android:label="@string/title_activity_sale"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity
             android:name="com.ui.SaleActivity"
             android:label="@string/title_activity_sale"
             android:theme="@style/AppTheme.NoActionBar" />

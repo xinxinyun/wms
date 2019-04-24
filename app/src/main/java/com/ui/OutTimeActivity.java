@@ -1,23 +1,31 @@
 package com.ui;
 
-import android.content.Context;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.BaseAdapter;
-import android.widget.ImageView;
-import android.widget.TextView;
+import android.widget.Toast;
 
+import com.adpter.SchduleOnAdapter;
 import com.bean.MaterialInfo;
+import com.com.tools.Beeper;
 import com.com.tools.SimpleFooter;
 import com.com.tools.SimpleHeader;
 import com.com.tools.ZrcListView;
+import com.contants.WmsContanst;
 import com.google.gson.Gson;
+import com.module.interaction.ModuleConnector;
+import com.nativec.tools.ModuleManager;
+import com.rfid.RFIDReaderHelper;
+import com.rfid.ReaderConnector;
+import com.rfid.rxobserver.RXObserver;
+import com.rfid.rxobserver.bean.RXInventoryTag;
 import com.uhf.uhf.R;
 import com.util.CallBackUtil;
 import com.util.DatabaseUtils;
@@ -28,32 +36,108 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import cn.pedant.SweetAlert.SweetAlertDialog;
 import okhttp3.Call;
 import okhttp3.Response;
 
 public class OutTimeActivity extends AppCompatActivity {
 
-    private static final String CONTENT_TYPE = "application/json; charset=utf-8";
-
-    private static final String TAG = "AreaCheckActitity";
+    private static final String TAG = "临期商品盘点";
+    ModuleConnector connector = new ReaderConnector();
+    RFIDReaderHelper mReader;
 
     private ZrcListView listView;
-    private Handler handler;
     private ArrayList<MaterialInfo> materialInfoList;
-    private int pageId = -1;
-    private MyAdapter adapter;
+    private SchduleOnAdapter adapter;
+
+    /**
+     * 缓存EPC码
+     */
+    private ArrayList<String> epcCodeList = new ArrayList<>();
+
+    private HashMap<String,Integer> classificationMap=new HashMap<>();
+
+    private SweetAlertDialog pTipDialog;
+
+    private int epcSize = 0;
+
+    /**
+     * 小类汇总,初始10000个大小
+     */
+    private HashMap<String, Integer> playMap = new HashMap<String, Integer>(10000);
+
+    /**
+     * 异步回调刷新数据
+     */
+    private Handler myHandler = new Handler() {
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            switch (msg.what) {
+                case 1:
+                    //动态更新列表内容
+                    adapter.notifyDataSetChanged();
+                    break;
+                case 2:
+                    pTipDialog.setContentText("您当前已盘点" + epcSize + "件物资");
+                    break;
+            }
+        }
+    };
+
+    /**
+     * RFID监听
+     */
+    RXObserver rxObserver = new RXObserver() {
+        @Override
+        protected void onInventoryTag(RXInventoryTag tag) {
+
+            String epcCode = tag.strEPC;
+
+            Log.d(TAG, epcCode);
+
+            if (!epcCodeList.contains(epcCode)&&classificationMap.containsKey(epcCode)) {
+
+                //蜂鸣声提示
+//                Uri uri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+//                Ringtone rt = RingtoneManager.getRingtone(getApplicationContext(), uri);
+//                rt.play();
+                epcCodeList.add(epcCode);
+                epcSize++;
+
+                //获取条形码值
+                String barCode = epcCode.substring(0, 8);
+                if (playMap.containsKey(barCode)) {
+                    playMap.put(barCode, playMap.get(barCode).intValue() + 1);
+                } else {
+                    playMap.put(barCode, 0);
+                }
+
+                Message message = Message.obtain();
+                message.what = 2;
+                myHandler.sendMessage(message);
+
+                //报警提示物资已找到
+                Beeper.beep(Beeper.BEEPER_SHORT);
+            }
+        }
+
+        @Override
+        protected void onInventoryTagEnd(RXInventoryTag.RXInventoryTagEnd endTag) {
+            mReader.realTimeInventory((byte) 0xff, (byte) 0x01);
+        }
+    };
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        setContentView(R.layout.activity_area_check_actitity);
+        setContentView(R.layout.activity_out_time);
 
-        Toolbar mToolbarTb = (Toolbar) findViewById(R.id.toolbarhh);
+        Toolbar mToolbarTb = (Toolbar) findViewById(R.id.outtimeToolbar);
         setSupportActionBar(mToolbarTb);
-        getSupportActionBar().setTitle("        过期商品盘点");
+        getSupportActionBar().setTitle("");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
         mToolbarTb.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -66,18 +150,25 @@ public class OutTimeActivity extends AppCompatActivity {
         StatusBarUtil.setTranslucentStatus(this);
         //一般的手机的状态栏文字和图标都是白色的, 可如果你的应用也是纯白色的, 或导致状态栏文字看不清
         //所以如果你是这种情况,请使用以下代码, 设置状态使用深色文字图标风格, 否则你可以选择性注释掉这个if内容
-        if (!StatusBarUtil.setStatusBarDarkTheme(this, true)) {
+        /*if (!StatusBarUtil.setStatusBarDarkTheme(this, true)) {
             //如果不支持设置深色风格 为了兼容总不能让状态栏白白的看不清, 于是设置一个状态栏颜色为半透明,
             //这样半透明+白=灰, 状态栏的文字能看得清
             StatusBarUtil.setStatusBarColor(this, 0x55000000);
-        }
+        }*/
+        StatusBarUtil.setStatusBarColor(this, Color.parseColor("#00CCFF"));
 
-        listView = (ZrcListView) findViewById(R.id.zListView);
-        handler = new Handler();
+        /*SweetAlertDialog pDialog = new SweetAlertDialog(this, SweetAlertDialog.PROGRESS_TYPE);
+        pDialog.getProgressHelper().setBarColor(Color.parseColor("#A5DC86"));
+        pDialog.setTitleText("正在读取物资盘点计划，请稍候");
+        pDialog.setCancelable(true);
+        pDialog.show();*/
+        pTipDialog = new SweetAlertDialog(this, SweetAlertDialog.WARNING_TYPE);
+        pTipDialog.setCustomImage(R.drawable.blue_button_background);
+        listView = (ZrcListView) findViewById(R.id.zOutTimeListView);
 
         // 设置默认偏移量，主要用于实现透明标题栏功能。（可选）
-        float density = getResources().getDisplayMetrics().density;
-        listView.setFirstTopOffset((int) (50 * density));
+        //float density = getResources().getDisplayMetrics().density;
+        //listView.setFirstTopOffset((int) (50 * density));
 
         // 设置下拉刷新的样式（可选，但如果没有Header则无法下拉刷新）
         SimpleHeader header = new SimpleHeader(this);
@@ -94,68 +185,67 @@ public class OutTimeActivity extends AppCompatActivity {
         listView.setItemAnimForTopIn(R.anim.topitem_in);
         listView.setItemAnimForBottomIn(R.anim.bottomitem_in);
 
-        // 下拉刷新事件回调（可选）
-       /* listView.setOnRefreshStartListener(new OnStartListener() {
-            @Override
-            public void onStart() {
-                refresh();
-            }
-        });*/
-
-        // 加载更多事件回调（可选）
-        /*listView.setOnLoadMoreStartListener(new ZrcListView.OnStartListener() {
-            @Override
-            public void onStart() {
-                loadMore();
-            }
-        });*/
-
-
-
-        List<MaterialInfo> materialInfos=new ArrayList<MaterialInfo>() {
+        List<MaterialInfo> materialInfos = new ArrayList<MaterialInfo>() {
             {
-                MaterialInfo materialInfo=new MaterialInfo();
+                MaterialInfo materialInfo = new MaterialInfo();
                 materialInfo.setId(1);
                 materialInfo.setMaterialName("泸州老窖定制酒U/3 52°500ml");
                 materialInfo.setMaterialCode("2000102300426");
                 materialInfo.setSource(30);
 
-                MaterialInfo materialInfo2=new MaterialInfo();
+                MaterialInfo materialInfo2 = new MaterialInfo();
                 materialInfo2.setId(2);
                 materialInfo2.setMaterialCode("2000102300426");
                 materialInfo2.setMaterialName("青岛纯生啤酒(瓶装)500ml");
                 materialInfo2.setSource(20);
 
-                MaterialInfo materialInfo3=new MaterialInfo();
+                MaterialInfo materialInfo3 = new MaterialInfo();
                 materialInfo3.setId(3);
                 materialInfo3.setMaterialCode("2000102300426");
-                materialInfo3.setMaterialName("雪花清爽500ml");
+                materialInfo3.setMaterialName("名庄荟奔富麦克斯大师承诺西拉干红葡萄酒");
                 materialInfo3.setSource(50);
 
-                MaterialInfo materialInfo4=new MaterialInfo();
+                MaterialInfo materialInfo4 = new MaterialInfo();
                 materialInfo4.setId(3);
                 materialInfo4.setMaterialCode("2000102300426");
-                materialInfo4.setMaterialName("雪花清爽500ml");
+                materialInfo4.setMaterialName("名庄荟长城梦坡家园珍酿干红葡萄酒750ml");
                 materialInfo4.setSource(50);
 
-                MaterialInfo materialInfo5=new MaterialInfo();
+                MaterialInfo materialInfo5 = new MaterialInfo();
                 materialInfo5.setId(3);
                 materialInfo5.setMaterialCode("2000102300426");
-                materialInfo5.setMaterialName("雪花清爽500ml");
+                materialInfo5.setMaterialName("青岛崂山啤酒330ml");
                 materialInfo5.setSource(50);
 
-                MaterialInfo materialInfo6=new MaterialInfo();
+                MaterialInfo materialInfo6 = new MaterialInfo();
                 materialInfo6.setId(3);
                 materialInfo6.setMaterialCode("2000102300426");
-                materialInfo6.setMaterialName("雪花清爽500ml");
+                materialInfo6.setMaterialName("娃哈哈C驱动柠檬汁碳酸饮料530ml");
                 materialInfo6.setSource(50);
 
-                MaterialInfo materialInfo7=new MaterialInfo();
+                MaterialInfo materialInfo7 = new MaterialInfo();
                 materialInfo7.setId(3);
                 materialInfo7.setMaterialCode("2000102300426");
-                materialInfo7.setMaterialName("雪花清爽500ml");
+                materialInfo7.setMaterialName("耐豹顺洁滤清器PUK2845(欧曼)1*1");
                 materialInfo7.setSource(50);
 
+                MaterialInfo materialInfo78 = new MaterialInfo();
+                materialInfo78.setId(3);
+                materialInfo78.setMaterialCode("2000102300426");
+                materialInfo78.setMaterialName("耐豹顺洁滤清器PUK2845(欧曼)1*1");
+                materialInfo78.setSource(50);
+
+                MaterialInfo materialInfo79 = new MaterialInfo();
+                materialInfo79.setId(3);
+                materialInfo79.setMaterialCode("2000102300426");
+                materialInfo79.setMaterialName("耐豹顺洁滤清器PUK2845(欧曼)1*1");
+                materialInfo79.setSource(50);
+
+                MaterialInfo materialInfo73 = new MaterialInfo();
+                materialInfo73.setId(3);
+                materialInfo73.setMaterialCode("2000102300426");
+                materialInfo73.setMaterialName("耐豹顺洁滤清器PUK2845(欧曼)1*1");
+                materialInfo73.setSource(50);
 
                 add(materialInfo);
                 add(materialInfo2);
@@ -164,13 +254,19 @@ public class OutTimeActivity extends AppCompatActivity {
                 add(materialInfo5);
                 add(materialInfo6);
                 add(materialInfo7);
+                add(materialInfo78);
+                add(materialInfo79);
+                add(materialInfo73);
+
             }
         };
 
         //initData();
-        adapter = new MyAdapter(getBaseContext(),materialInfos);
+        adapter = new SchduleOnAdapter(getBaseContext(), materialInfos);
         listView.setAdapter(adapter);
         //listView.refresh(); // 主动下拉刷新*/
+        //pDialog.hide();
+
     }
 
     /**
@@ -185,38 +281,44 @@ public class OutTimeActivity extends AppCompatActivity {
         paramsMap.put("userName", "1111");//参数
         paramsMap.put("password", "2222");
 
-        OkhttpUtil.okHttpPost("", paramsMap, headerMap, new CallBackUtil.CallBackDefault() {//回调
-            @Override
-            public void onFailure(Call call, Exception e) {
-                //LogUtil.e(TAG, e.getMessage());
-                //TVAppUtil.showToast("网络异常！请确认是否联网，以及服务器地址是否正确！");
-                //SharedPreferencesUtil.sharePut("newServerAddress","");
-            }
-
-            @Override
-            public void onResponse(Response response) {
-                try {
-                    if (response.isSuccessful()) {
-                        //下载物资清单
-                        String responseBody = response.body().string();
-                        Gson gson = new Gson();
-                        List<MaterialInfo> waitMaterialList = gson.fromJson(responseBody, List.class);
-
-                        adapter = new MyAdapter(getBaseContext(), waitMaterialList);
-
-                        listView.setAdapter(adapter);
-
-                        //插入数据
-                        //必须先初始化
-                        DatabaseUtils.initHelper(getApplication(), "wms.db");
-                        DatabaseUtils.getHelper().saveAll(waitMaterialList);
-                        Log.d(TAG, "插入数据成功");
-
-
+        OkhttpUtil.okHttpPost(WmsContanst.HOST + WmsContanst.STORGE_MATERIALINFL,
+                paramsMap, headerMap, new CallBackUtil.CallBackDefault() {//回调
+                    @Override
+                    public void onFailure(Call call, Exception e) {
+                        SweetAlertDialog sweetAlertDialog = new SweetAlertDialog(getBaseContext(), SweetAlertDialog.ERROR_TYPE);
+                        sweetAlertDialog.setContentText("物资清单下载失败！");
+                        sweetAlertDialog.show();
                     }
-                } catch (Exception e) {
 
-                }
+                    @Override
+                    public void onResponse(Response response) {
+                        try {
+                            if (response.isSuccessful()) {
+                                //下载物资清单
+                                String responseBody = response.body().string();
+                                Gson gson = new Gson();
+                                List<MaterialInfo> waitMaterialList = gson.fromJson(responseBody, List.class);
+
+                                //转换数据结构，方便实时查找
+                                for(MaterialInfo materialInfo:waitMaterialList){
+                                    classificationMap.put(materialInfo.getMaterialCode(),materialInfo.getSource());
+                                }
+                                //adapter = new MyAdapter(getBaseContext(), waitMaterialList);
+
+                                listView.setAdapter(adapter);
+                                //String waterialInfoJson=gson.toJson(waitMaterialList);
+
+                                //插入数据
+                                //必须先初始化
+                                //DatabaseUtils.initHelper(getApplication(), "wms.db");
+                                DatabaseUtils.getHelper().saveAll(waitMaterialList);
+                                Log.d(TAG, "插入数据成功");
+                            }
+                        } catch (Exception e) {
+                            SweetAlertDialog sweetAlertDialog = new SweetAlertDialog(getBaseContext(), SweetAlertDialog.ERROR_TYPE);
+                            sweetAlertDialog.setContentText("物资清单下载失败！");
+                            sweetAlertDialog.show();
+                        }
                 /*try {
                     isLogin = true;
                     Headers responseHeaders = response.headers();
@@ -233,132 +335,174 @@ public class OutTimeActivity extends AppCompatActivity {
                     } catch (Exception e) {
                     }
                 }*/
+                    }
+                });
+    }
+
+
+    /**
+     * 开始扫描
+     */
+    private void inventoryAction(String flag) {
+
+        //开始盘存则清空之前数据，重新盘存,//继续盘存则维持原来数据，累加盘存
+        if ("begin".equals(flag)) {
+            epcSize = 0;
+            epcCodeList.clear();
+        }
+
+        //实时扫描多少个物资
+        if (connector.connectCom("dev/ttyS4", 115200)) {
+            ModuleManager.newInstance().setUHFStatus(true);
+            try {
+                mReader = RFIDReaderHelper.getDefaultHelper();
+                mReader.registerObserver(rxObserver);
+                //设定读取间隔时间
+                Thread.currentThread().sleep(500);
+                mReader.realTimeInventory((byte) 0xff, (byte) 0x01);
+            } catch (Exception e) {
+                Toast.makeText(getBaseContext(), e.getMessage(), Toast.LENGTH_LONG).show();
+                e.printStackTrace();
+                SweetAlertDialog sweetAlertDialog = new SweetAlertDialog(getBaseContext(), SweetAlertDialog.ERROR_TYPE);
+                sweetAlertDialog.setContentText("RFID设备模块读取失败！");
+                sweetAlertDialog.show();
+                return;
+            }
+        } else {
+            SweetAlertDialog sweetAlertDialog = new SweetAlertDialog(getBaseContext(), SweetAlertDialog.ERROR_TYPE);
+            sweetAlertDialog.setContentText("RFID设备模块读取失败！");
+            sweetAlertDialog.show();
+            return;
+        }
+
+        pTipDialog.setContentText("您当前已盘点" + epcSize + "件物资");
+        pTipDialog.setCancelable(true);
+
+        //结束操作
+        pTipDialog.setConfirmButton("查看盘点结果", new SweetAlertDialog.OnSweetClickListener() {
+            @Override
+            public void onClick(SweetAlertDialog sweetAlertDialog) {
+                //RFID模块下线
+                ModuleManager.newInstance().setUHFStatus(false);
+                ModuleManager.newInstance().release();
+                pTipDialog.hide();
+
+                SweetAlertDialog playDialog = new SweetAlertDialog(getApplicationContext(), SweetAlertDialog.PROGRESS_TYPE);
+                playDialog.setContentText("正在汇总盘点数据，请稍候");
+                playDialog.show();
+
+                //汇总计划列表
+                for (MaterialInfo materialInfo : materialInfoList) {
+                    String materialBarcode = materialInfo.getMaterialBarcode();
+                    materialInfo.setSource(playMap.get(materialBarcode));
+                    adapter.notifyDataSetChanged();
+                }
+
+                playDialog.hide();
             }
         });
+
+        pTipDialog.show();
     }
 
-    /*private void refresh() {
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                int rand = (int) (Math.random() * 2); // 随机数模拟成功失败。这里从有数据开始。
-                if (rand == 0 || pageId == -1) {
-                    pageId = 0;
-                    msgs = new ArrayList<String>();
-                    for (String name : names[0]) {
-                        msgs.add(name);
+    /**
+     * 提交盘点结果
+     */
+    private void submitInventory() {
+
+        HashMap<String, String> headerMap = new HashMap<>();
+        HashMap<String, String> paramsMap = new HashMap<>();
+
+        headerMap.put("Content-Type", OkhttpUtil.CONTENT_TYPE);//头部信息
+        paramsMap.put("userName", "1111");//参数
+        paramsMap.put("password", "2222");
+
+        OkhttpUtil.okHttpPost(WmsContanst.HOST + WmsContanst.STORGE_MATERIALINFL_INVENTORY_SUBMIT,
+                paramsMap, headerMap, new CallBackUtil.CallBackDefault() {//回调
+                    @Override
+                    public void onFailure(Call call, Exception e) {
+                        SweetAlertDialog sweetAlertDialog = new SweetAlertDialog(getBaseContext(), SweetAlertDialog.ERROR_TYPE);
+                        sweetAlertDialog.setContentText("提交盘存结果失败！");
+                        sweetAlertDialog.show();
                     }
-                    adapter.notifyDataSetChanged();
-                    listView.setRefreshSuccess("加载成功"); // 通知加载成功
-                    listView.startLoadMore(); // 开启LoadingMore功能
-                } else {
-                    listView.setRefreshFail("加载失败");
-                }
-            }
-        }, 2 * 1000);
-    }*/
 
-    /*private void loadMore() {
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                pageId++;
-                if (pageId < names.length) {
-                    for (String name : names[pageId]) {
-                        msgs.add(name);
+                    @Override
+                    public void onResponse(Response response) {
+                        try {
+                            if (response.isSuccessful()) {
+                                //下载物资清单
+                                String responseBody = response.body().string();
+                                Gson gson = new Gson();
+                                List<MaterialInfo> waitMaterialList = gson.fromJson(responseBody, List.class);
+
+                                //adapter = new MyAdapter(getBaseContext(), waitMaterialList);
+
+                                listView.setAdapter(adapter);
+                                //String waterialInfoJson=gson.toJson(waitMaterialList);
+
+                                //插入数据
+                                //必须先初始化
+                                //DatabaseUtils.initHelper(getApplication(), "wms.db");
+                                DatabaseUtils.getHelper().saveAll(waitMaterialList);
+                                Log.d(TAG, "插入数据成功");
+                            }
+                        } catch (Exception e) {
+                            Log.d(TAG, e.getMessage());
+                            e.printStackTrace();
+                            SweetAlertDialog sweetAlertDialog = new SweetAlertDialog(getBaseContext(), SweetAlertDialog.ERROR_TYPE);
+                            sweetAlertDialog.setContentText("提交盘存结果失败！");
+                            sweetAlertDialog.show();
+                        }
                     }
-                    adapter.notifyDataSetChanged();
-                    listView.setLoadMoreSuccess();
-                } else {
-                    listView.stopLoadMore();
-                }
-            }
-        }, 2 * 1000);
-    }*/
-
-    private class MyAdapter extends BaseAdapter {
-
-        private Context context;
-        private List<MaterialInfo> materialInfoList;
-
-        public MyAdapter(Context context,
-                         List<MaterialInfo> materialInfoList) {
-            this.context = context;
-            this.materialInfoList = materialInfoList;
-        }
-
-        @Override
-        public int getCount() {
-            return materialInfoList.size();
-        }
-
-        @Override
-        public Object getItem(int position) {
-            return materialInfoList.get(position);
-        }
-
-        @Override
-        public long getItemId(int position) {
-            return position;
-        }
-
-        @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
-
-            MyAdapter.ViewHolder viewHolder = null;
-            if (viewHolder == null) {
-                viewHolder = new MyAdapter.ViewHolder();
-                convertView = getLayoutInflater().inflate(R.layout.simple_list_item_1, null);
-                viewHolder.title = (TextView) convertView.findViewById(R.id.tv_title);
-                viewHolder.num = (TextView) convertView.findViewById(R.id.num);
-                viewHolder.txCodeTextView=(TextView)convertView.findViewById(R.id.tv_txcode);
-                viewHolder.imageView = (ImageView) convertView.findViewById(R.id.iv_image);
-                convertView.setTag(viewHolder);
-            } else {
-                viewHolder = (MyAdapter.ViewHolder) convertView.getTag();
-            }
-
-            MaterialInfo waitMaterial=materialInfoList.get(position);
-
-            viewHolder.title.setText(waitMaterial.getMaterialName());
-            viewHolder.num.setText(waitMaterial.getSource().toString());
-            viewHolder.txCodeTextView.setText(waitMaterial.getMaterialCode());
-
-            //viewHolder.textView.setOnClickListener(new OnItemChildClickListener(DELETE, position));
-
-            return convertView;
-
-
-           /* TextView textView;
-            if (convertView == null) {
-                textView = (TextView) getLayoutInflater().
-                        inflate(android.R.layout.simple_list_item_1, null);
-                textView.setTextColor(Color.BLACK);
-                textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 15);
-            } else {
-                textView = (TextView) convertView;
-            }
-            WaitMaterial waitMaterial=waitMaterialList.get(position);
-            textView.setText();
-            return textView;*/
-        }
-
-        // ViewHolder用于缓存控件，三个属性分别对应item布局文件的三个控件
-        class ViewHolder {
-            public TextView title;
-            public TextView num;
-            public TextView txCodeTextView;
-            public ImageView imageView;
-
-        }
+                });
     }
 
-    //这里是在登录界面label上右上角添加三个点，里面可添加其他功能
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.ccbdmenu, menu);//这里是调用menu文件夹中的main.xml，在登陆界面label右上角的三角里显示其他功能
+        getMenuInflater().inflate(R.menu.ccbdmenu, menu);
         return true;
     }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            //开始盘存
+            case R.id.menu_beginInventonry:
+                inventoryAction("begin");
+                break;
+            case R.id.menu_revertInventory:
+                //盘存复查
+                inventoryAction("continue");
+                break;
+            case R.id.menu_endInventory:
+                //结束复查，纯粹是为了实现RFID模块掉电的功能
+                ModuleManager.newInstance().setUHFStatus(false);
+                ModuleManager.newInstance().release();
+                break;
+            case R.id.menu_submitInventory:
+                submitInventory();
+                break;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (mReader != null) {
+            mReader.unRegisterObserver(rxObserver);
+        }
+        if (connector != null) {
+            connector.disConnect();
+        }
+
+        //当前Activity销售则让RFID模块下线
+        ModuleManager.newInstance().setUHFStatus(false);
+        ModuleManager.newInstance().release();
+        //epcCodeList.clear();
+        if (pTipDialog != null) {
+            pTipDialog.dismiss();
+            pTipDialog = null;
+        }
+    }
 }

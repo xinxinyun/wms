@@ -32,6 +32,8 @@ public class MaterialInfo {
 
     private String orgName;
 
+    private Integer actualNum;
+
     public Integer getId() {
         return id;
     }
@@ -142,5 +144,13 @@ public class MaterialInfo {
 
     public void setOrgName(String orgName) {
         this.orgName = orgName;
+    }
+
+    public Integer getActualNum() {
+        return actualNum;
+    }
+
+    public void setActualNum(Integer actualNum) {
+        this.actualNum = actualNum;
     }
 }
