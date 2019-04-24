@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#FFFFFF"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_alignParentTop="true"
+        android:background="#f6f6f6"
+        android:theme="@style/AppTheme.NoActionBar">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="一物一码"
+            android:textColor="#000000"
+            android:textSize="16sp" />
+
+    </RelativeLayout>
+
+    <android.support.v7.widget.CardView
+        android:id="@+id/cardView"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
+        android:layout_marginBottom="5dp"
+        app:cardBackgroundColor="@android:color/white"
+        app:cardCornerRadius="0dp"
+        app:cardElevation="0.7dp"
+        app:cardMaxElevation="1dp"
+        app:cardPreventCornerOverlap="false"
+        app:cardUseCompatPadding="true"
+        app:contentPaddingBottom="0dp">
+
+        <ImageView
+            android:id="@+id/img"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:contentDescription="CardImageViewDesc"
+            android:scaleType="centerCrop"
+            android:src="@drawable/cc2" />
+    </android.support.v7.widget.CardView>
+
+    <android.support.v7.widget.CardView
+        android:id="@+id/saleCardView"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:layout_margin="4dp"
+        app:cardBackgroundColor="@android:color/white"
+        app:cardCornerRadius="0dp"
+        app:cardElevation="0.7dp"
+        app:cardMaxElevation="1dp"
+        app:cardPreventCornerOverlap="false"
+        app:cardUseCompatPadding="true"
+        app:contentPaddingBottom="0dp">
+        <ImageView
+            android:id="@+id/saleCardViewImg"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:contentDescription="CardImageViewDesc"
+            android:scaleType="centerCrop"
+            android:src="@drawable/sale2" />
+    </android.support.v7.widget.CardView>
+
+    <android.support.v7.widget.CardView
+        android:id="@+id/outTimeCardView"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:layout_margin="4dp"
+        app:cardBackgroundColor="@android:color/white"
+        app:cardCornerRadius="0dp"
+        app:cardElevation="0.7dp"
+        app:cardMaxElevation="1dp"
+        app:cardPreventCornerOverlap="false"
+        app:cardUseCompatPadding="true"
+        app:contentPaddingBottom="0dp">
+        <ImageView
+            android:id="@+id/outTimeCardViewImg"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:contentDescription="CardImageViewDesc"
+            android:scaleType="centerCrop"
+            android:src="@drawable/lq2" />
+    </android.support.v7.widget.CardView>
+
+
+    <android.support.v7.widget.CardView
+        android:id="@+id/aboutCardView"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:layout_margin="4dp"
+        app:cardBackgroundColor="@android:color/white"
+        app:cardCornerRadius="0dp"
+        app:cardElevation="0.7dp"
+        app:cardMaxElevation="1dp"
+        app:cardPreventCornerOverlap="false"
+        app:cardUseCompatPadding="true"
+        app:contentPaddingBottom="0dp">
+        <ImageView
+            android:id="@+id/aboutImg"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:contentDescription="CardImageViewDesc"
+            android:scaleType="centerCrop"
+            android:src="@drawable/about2" />
+    </android.support.v7.widget.CardView>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        android:gravity="center"
+        android:textSize="10dp"
+        android:text="艾默睿 版权所有"/>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:textSize="10dp"
+        android:text="Copyright@2017-2019 aimorui.All Rights Reserved."/>
+
+</LinearLayout>
+
+

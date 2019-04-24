@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="transparent_background_button">#11000000</color>
+    <color name="transparent_background">#ffffffff</color>
+    <color name="light_blue">#0bbbf7</color>
+
+    <color name="Indigo_colorPrimaryDark">#303f9f</color>
+    <color name="Indigo_colorPrimary">#3f51b5</color>
+    <color name="Indigo_nav_color">#4675FF</color>
+    <color name="blue">#3F51B5</color>
+    <color name="blue_dark">#303F9F</color>
+
+    <color name="red">#FF4081</color>
+
+    <color name="transparent">#0000</color>
+
+    <color name="black">#000</color>
+
+    <color name="white">#fff</color>
+
+    <color name="gray">#999</color>
+</resources>

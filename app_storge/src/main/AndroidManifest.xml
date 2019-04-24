@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.uhf.uhf"
+    android:versionCode="11"
+    android:versionName="1.1">
+
+    <uses-sdk android:targetSdkVersion="24" />
+
+    <uses-feature android:name="android.hardware.usb.host" />
+    <uses-feature
+        android:name="android.hardware.bluetooth_le"
+        android:required="true" />
+
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
+    <uses-permission android:name="android.permission.BLUETOOTH" /> <!-- <uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS" /> -->
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.INTERNET" />
+
+    <application
+        android:name=".UHFApplication"
+        android:allowBackup="true"
+        android:icon="@drawable/ic_launcher"
+        android:label="@string/app_name">
+        <activity
+            android:name="com.ui.MainActivity"
+            android:label="@string/title_activity_main"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
+        <activity
+            android:name="com.ui.DbTestActivity"
+            android:label="@string/title_activity_db_test"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".HomeActivity"
+            android:label="@string/app_name"
+            android:launchMode="singleTop"
+            android:theme="@android:style/Theme.NoTitleBar"
+            android:windowSoftInputMode="adjustPan">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+            <!--
+                <intent-filter>
+                    <action android:name="android.hardware.usb.action.USB_DEVICE_ATTACHED" />
+                </intent-filter>
+            -->
+
+            <meta-data
+                android:name="android.hardware.usb.action.USB_DEVICE_ATTACHED"
+                android:resource="@xml/device_filter" />
+        </activity>
+        <!--
+ <activity
+             android:name=".ConnectRs232"
+             android:theme="@android:style/Theme.NoTitleBar"
+             android:windowSoftInputMode="adjustPan"></activity>
+        -->
+        <activity
+            android:name=".ConnectBlueTooth"
+            android:theme="@android:style/Theme.NoTitleBar"
+            android:windowSoftInputMode="adjustPan" />
+        <activity
+            android:name=".ConnectTcpIp"
+            android:theme="@android:style/Theme.NoTitleBar"
+            android:windowSoftInputMode="adjustPan" />
+        <activity
+            android:name=".DeviceListActivity"
+            android:theme="@android:style/Theme.NoTitleBar"
+            android:windowSoftInputMode="adjustPan" />
+        <activity
+            android:name=".setpage.PageReaderMaskTag"
+            android:theme="@android:style/Theme.NoTitleBar"
+            android:windowSoftInputMode="adjustPan" />
+        <activity
+            android:name=".setpage.PageReaderAddress"
+            android:theme="@android:style/Theme.NoTitleBar"
+            android:windowSoftInputMode="adjustPan" />
+        <activity
+            android:name=".setpage.PageReaderIdentifier"
+            android:theme="@android:style/Theme.NoTitleBar"
+            android:windowSoftInputMode="adjustPan" />
+        <activity
+            android:name=".setpage.PageReaderFirmwareVersion"
+            android:theme="@android:style/Theme.NoTitleBar"
+            android:windowSoftInputMode="adjustPan" />
+        <activity
+            android:name=".setpage.PageReaderTemperature"
+            android:theme="@android:style/Theme.NoTitleBar"
+            android:windowSoftInputMode="adjustPan" />
+        <activity
+            android:name=".setpage.PageReaderGpio"
+            android:theme="@android:style/Theme.NoTitleBar"
+            android:windowSoftInputMode="adjustPan" />
+        <activity
+            android:name=".setpage.PageReaderBeeper"
+            android:theme="@android:style/Theme.NoTitleBar"
+            android:windowSoftInputMode="adjustPan" />
+        <activity
+            android:name=".setpage.PageReaderOutPower"
+            android:theme="@android:style/Theme.NoTitleBar"
+            android:windowSoftInputMode="adjustPan" />
+        <activity
+            android:name=".setpage.PageReaderAntenna"
+            android:theme="@android:style/Theme.NoTitleBar"
+            android:windowSoftInputMode="adjustPan" />
+        <activity
+            android:name=".setpage.PageReaderReturnLoss"
+            android:theme="@android:style/Theme.NoTitleBar"
+            android:windowSoftInputMode="adjustPan" />
+        <activity
+            android:name=".setpage.PageReaderAntDetector"
+            android:theme="@android:style/Theme.NoTitleBar"
+            android:windowSoftInputMode="adjustPan" />
+        <activity
+            android:name=".setpage.PageReaderMonza"
+            android:theme="@android:style/Theme.NoTitleBar"
+            android:windowSoftInputMode="adjustPan" />
+        <activity
+            android:name=".setpage.PageReaderRegion"
+            android:theme="@android:style/Theme.NoTitleBar"
+            android:windowSoftInputMode="adjustPan" />
+        <activity
+            android:name=".setpage.PageReaderProfile"
+            android:theme="@android:style/Theme.NoTitleBar"
+            android:windowSoftInputMode="adjustPan" />
+        <activity
+            android:name=".tagpage.PageInventoryReal"
+            android:theme="@android:style/Theme.NoTitleBar"
+            android:windowSoftInputMode="adjustPan" />
+        <activity
+            android:name=".tagpage.PageInventoryBuffer"
+            android:theme="@android:style/Theme.NoTitleBar"
+            android:windowSoftInputMode="adjustPan" />
+        <activity
+            android:name=".tagpage.PageInventoryFast"
+            android:theme="@android:style/Theme.NoTitleBar"
+            android:windowSoftInputMode="adjustPan" />
+        <activity
+            android:name=".tagpage.PageInventoryReal6B"
+            android:theme="@android:style/Theme.NoTitleBar"
+            android:windowSoftInputMode="adjustPan" />
+        <activity
+            android:name=".tagpage.PageTagAccess"
+            android:theme="@android:style/Theme.NoTitleBar"
+            android:windowSoftInputMode="adjustPan" />
+        <activity
+            android:name=".tagpage.PageTag6BAccess"
+            android:theme="@android:style/Theme.NoTitleBar"
+            android:windowSoftInputMode="adjustPan" />
+        <activity
+            android:name=".MainActivity"
+            android:theme="@android:style/Theme.NoTitleBar"
+            android:windowSoftInputMode="adjustPan" />
+        <activity
+            android:name=".Monitor"
+            android:theme="@android:style/Theme.NoTitleBar"
+            android:windowSoftInputMode="adjustPan" />
+        <activity
+            android:name=".Setting"
+            android:theme="@android:style/Theme.NoTitleBar"
+            android:windowSoftInputMode="adjustPan" />
+
+        <receiver android:name=".ConnectOtg">
+            <intent-filter>
+                <action android:name="com.android.example.USB_PERMISSION" />
+            </intent-filter>
+        </receiver>
+
+        <service
+            android:name="com.ble.ble.BleService"
+            android:enabled="true"
+            android:exported="false" />
+    </application>
+
+</manifest>

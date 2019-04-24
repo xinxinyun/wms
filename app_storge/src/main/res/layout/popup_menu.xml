@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="200sp"
+    android:layout_height="wrap_content"
+    android:gravity="center_horizontal"
+    android:background="@drawable/icon_popupwin_menu_bg"
+    android:orientation="vertical" >
+    <LinearLayout
+        android:id="@+id/ly_item1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal" 
+        android:background="@drawable/bg_default_button_selector">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="12.7sp"
+            android:padding="13.5sp"
+            android:textColor="#595d5f"
+            android:text="@string/item_1" />
+        
+    </LinearLayout>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dip"
+        android:background="#eeeeee" />
+    <LinearLayout
+        android:id="@+id/ly_item2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal" 
+        android:background="@drawable/bg_default_button_selector">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingLeft="15.0sp"
+            android:paddingRight="15.0sp"
+            android:visibility="gone" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="12.7sp"
+            android:padding="13.5sp"
+            android:textColor="#595d5f"
+            android:text="@string/item_2" />
+    </LinearLayout>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1sp"
+        android:background="#eeeeee" />
+    <LinearLayout
+        android:id="@+id/ly_item3"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:background="@drawable/bg_default_button_selector" >
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingLeft="15.0sp"
+            android:paddingRight="15.0sp"
+            android:visibility="gone" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="12.7sp"
+            android:padding="13.5sp"
+            android:textColor="#595d5f"
+            android:text="@string/item_3" />
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1sp"
+        android:background="#eeeeee" />
+    <!-- added in order to export excel file -->
+    <LinearLayout
+        android:id="@+id/ly_item1_add1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:background="@drawable/bg_default_button_selector">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="12.7sp"
+            android:padding="13.5sp"
+            android:textColor="#595d5f"
+            android:text="@string/item_add1" />
+
+    </LinearLayout>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1sp"
+        android:background="#eeeeee" />
+    <LinearLayout
+        android:id="@+id/ly_item4"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:background="@drawable/bg_default_button_selector" >
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingLeft="15.0sp"
+            android:paddingRight="15.0sp"
+            android:visibility="gone" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="12.7sp"
+            android:padding="13.5sp"
+            android:textColor="#595d5f"
+            android:text="@string/item_4" />
+    </LinearLayout>
+     <View
+        android:layout_width="match_parent"
+        android:layout_height="1sp"
+        android:background="#eeeeee" />
+    <LinearLayout
+        android:id="@+id/ly_item5"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:background="@drawable/bg_default_button_selector" >
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingLeft="15.0sp"
+            android:paddingRight="15.0sp"
+            android:visibility="gone" />
+
+        <TextView
+            android:id="@+id/langague"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="12.7sp"
+            android:padding="13.5sp"
+            android:textColor="#595d5f"
+            android:text="@string/language" />
+    </LinearLayout>
+
+</LinearLayout>

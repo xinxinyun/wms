@@ -65,7 +65,7 @@ public class AreaCheckActitity extends AppCompatActivity {
      */
     private HashMap<String, Integer> playMap = new HashMap<String, Integer>(10000);
 
-    private boolean isSubmit=false;
+    private boolean isSubmit = false;
     /**
      * 异步回调刷新数据
      */
@@ -138,7 +138,7 @@ public class AreaCheckActitity extends AppCompatActivity {
         mToolbarTb.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (epcCodeList.size()!=0&&!isSubmit) {
+                if (epcCodeList.size() != 0 && !isSubmit) {
                     SweetAlertDialog sweetAlertDialog = new SweetAlertDialog(AreaCheckActitity.this, SweetAlertDialog.ERROR_TYPE);
                     sweetAlertDialog.setContentText("您的盘点结果未提交，请提交盘点结果！");
                     sweetAlertDialog.setConfirmButton("提交", new SweetAlertDialog.OnSweetClickListener() {
@@ -360,7 +360,7 @@ public class AreaCheckActitity extends AppCompatActivity {
         }
         //int j=mReader.getFirmwareVersion((byte)0xff);
         //实时扫描多少个物资
-        if (connector.connectCom("dev/ttyS4", 115200)) {
+        if (connector.connectCom(WmsContanst.TTYS1, WmsContanst.baud)) {
             ModuleManager.newInstance().setUHFStatus(true);
             try {
                 mReader = RFIDReaderHelper.getDefaultHelper();
@@ -441,7 +441,7 @@ public class AreaCheckActitity extends AppCompatActivity {
                                 //清空数据
                                 epcCodeList.clear();
                                 epcSize = 0;
-                                isSubmit=true;
+                                isSubmit = true;
                                 Log.d(TAG, "插入数据成功");
                             }
                         } catch (Exception e) {
@@ -486,6 +486,7 @@ public class AreaCheckActitity extends AppCompatActivity {
 
     @Override
     protected void onDestroy() {
+
         super.onDestroy();
         if (mReader != null) {
             mReader.unRegisterObserver(rxObserver);
@@ -507,7 +508,7 @@ public class AreaCheckActitity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         //super.onBackPressed();
-        if (epcCodeList.size()!=0&&!isSubmit) {
+        if (epcCodeList.size() != 0 && !isSubmit) {
             SweetAlertDialog sweetAlertDialog = new SweetAlertDialog(AreaCheckActitity.this, SweetAlertDialog.ERROR_TYPE);
             sweetAlertDialog.setContentText("您的盘点结果未提交，请提交盘点结果！");
             sweetAlertDialog.setConfirmButton("提交", new SweetAlertDialog.OnSweetClickListener() {
@@ -517,8 +518,7 @@ public class AreaCheckActitity extends AppCompatActivity {
                 }
             });
             sweetAlertDialog.show();
-        }
-        else{
+        } else {
             finish();
         }
     }
