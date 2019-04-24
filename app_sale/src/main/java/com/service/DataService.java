@@ -7,7 +7,6 @@ import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.birbit.android.jobqueue.JobManager;
-import com.com.tools.Beeper;
 import com.contants.WmsContanst;
 import com.job.StorgeJob;
 import com.module.interaction.ModuleConnector;
@@ -45,7 +44,7 @@ public class DataService extends Service {
                 //添加识别码到消息队列。
                 jobManager.addJobInBackground(new StorgeJob(epcCode));
                 //调用蜂鸣声提示已扫描到商品
-                Beeper.beep(Beeper.BEEPER_SHORT);
+                //Beeper.beep(Beeper.BEEPER_SHORT);
             }
         }
 

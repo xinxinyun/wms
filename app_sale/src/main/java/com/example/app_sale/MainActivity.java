@@ -1,4 +1,4 @@
-package com.ui;
+package com.example.app_sale;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -10,13 +10,10 @@ import com.uhf.uhf.R;
 
 public class MainActivity extends AppCompatActivity {
 
-    private static final String TAG = "仓储实时库存监听";
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main2);
+        setContentView(R.layout.activity_main);
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);

@@ -7,6 +7,7 @@ import android.util.Log;
 import com.birbit.android.jobqueue.Job;
 import com.birbit.android.jobqueue.Params;
 import com.birbit.android.jobqueue.RetryConstraint;
+import com.com.tools.Beeper;
 import com.contants.WmsContanst;
 import com.util.CallBackUtil;
 import com.util.OkhttpUtil;
@@ -39,8 +40,10 @@ public class StorgeJob extends Job {
 
     @Override
     public void onRun() throws Throwable {
+        //调用蜂鸣声提示已扫描到商品
+        Beeper.beep(Beeper.BEEPER_SHORT);
         Log.i(TAG, "[" + epcCode + "]onRun");
-        this.submitInventory(epcCode);
+        //this.submitInventory(epcCode);
     }
 
     @Override

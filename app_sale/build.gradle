@@ -5,7 +5,7 @@ android {
     compileSdkVersion 27
     buildToolsVersion '27.0.1'
     defaultConfig {
-        applicationId "com.amr.wms.sale"
+        applicationId "com.wms.sale"
         minSdkVersion 19
         targetSdkVersion 27
         versionCode 1
