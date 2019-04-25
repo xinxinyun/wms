@@ -1,0 +1,113 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="fill_parent"
+  	android:layout_height="fill_parent"
+  	android:orientation="vertical"
+  	android:background="@drawable/gradient_bg">
+  	
+	<com.uhf.uhf.TitleGoToMain
+            android:id="@+id/title_goto_main"
+			android:layout_width="fill_parent"
+			android:layout_height="wrap_content" />
+	
+	<com.uhf.uhf.LogList
+           android:id="@+id/log_list"
+		android:layout_width="fill_parent"
+		android:layout_height="wrap_content"
+           android:layout_alignParentBottom="true" />
+	
+	<ScrollView
+	    android:layout_width="fill_parent"
+	    android:layout_height="wrap_content"
+	    android:fadingEdge="vertical"
+	    android:background="#EEEEEE"
+	    android:fillViewport="true"
+	    android:scrollbars="vertical"
+	    android:layout_above="@id/log_list"
+	    android:layout_below="@id/title_goto_main" >
+
+		<LinearLayout
+		    android:layout_width="fill_parent"
+			android:layout_height="wrap_content"
+			android:orientation="vertical" >
+			
+		    <TextView
+				android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:layout_marginBottom="7.5dip"
+	            android:layout_marginTop="7.5dip"
+	            android:gravity="center_vertical"
+	            android:paddingLeft="3.0dip"
+	            android:text="@string/setting_beeper"
+	            android:textColor="#ff222222"
+	            android:textSize="12.0sp" />
+		    
+
+		        <RadioGroup
+		            android:id="@+id/group_beeper"
+            		android:layout_width="wrap_content"
+		            android:layout_height="wrap_content"
+		            android:paddingLeft="7.5dip"
+					android:paddingTop="3.7dip"
+					android:paddingRight="7.5dip"
+					android:paddingBottom="3.7dip"
+		            android:gravity="left"
+		            android:orientation="vertical" >
+	
+		            <RadioButton
+		                android:id="@+id/set_beeper_quiet"
+		                android:layout_width="wrap_content"
+		                android:layout_height="wrap_content"
+		                android:button="@drawable/radio_button_selector"
+		                android:paddingTop="3.7sp"
+		            	android:paddingBottom="3.7sp"
+		                android:text="@string/beeper_quiet"
+		                android:textColor="#ff222222"
+		                android:textSize="12.0sp"
+		                android:singleLine="true" />
+		
+		            <RadioButton
+		                android:id="@+id/set_beeper_all"
+		                android:layout_width="wrap_content"
+		                android:layout_height="wrap_content"
+		                android:button="@drawable/radio_button_selector"
+		                android:paddingTop="3.7sp"
+		            	android:paddingBottom="3.7sp"
+		                android:text="@string/beeper_all"
+		                android:textColor="#ff222222"
+		                android:textSize="12.0sp"
+		                android:singleLine="true" />
+		            
+		            <RadioButton
+		                android:id="@+id/set_beeper_one"
+		                android:layout_width="wrap_content"
+		                android:layout_height="wrap_content"
+		                android:button="@drawable/radio_button_selector"
+		                android:paddingTop="3.7sp"
+						android:paddingBottom="3.7sp"
+		                android:text="@string/beeper_one"
+		                android:textColor="#ff222222"
+		                android:textSize="12.0sp"
+		                android:singleLine="false" />
+	        	</RadioGroup>
+				
+				<TextView
+				    android:id="@+id/set"
+					android:layout_width="fill_parent"
+					android:layout_height="wrap_content"
+					android:layout_marginLeft="15.0sp"
+					android:layout_marginTop="15.0sp"
+					android:layout_marginRight="15.0sp"
+					android:layout_marginBottom="3.7sp"
+					android:paddingTop="7.5sp"
+					android:paddingBottom="7.5sp"
+					android:gravity="center_horizontal"
+					android:background="@drawable/button_selector"
+					android:text="@string/set"
+					android:textColor="#ff222222"
+					android:textStyle="bold"
+					android:textSize="12.0sp"
+					android:clickable="true" />
+		</LinearLayout>
+	</ScrollView>
+</RelativeLayout>
+

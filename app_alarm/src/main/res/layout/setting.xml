@@ -1,0 +1,878 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="fill_parent"
+  	android:layout_height="fill_parent"
+  	android:orientation="vertical"
+  	android:background="@drawable/gradient_bg">
+  	
+	<com.uhf.uhf.TitleGoToMain
+            android:id="@+id/title_goto_main"
+			android:layout_width="fill_parent"
+			android:layout_height="wrap_content" />
+	
+	<ScrollView
+	    android:layout_width="fill_parent"
+	    android:layout_height="wrap_content"
+	    android:fadingEdge="vertical"
+	    android:background="#EEEEEE"
+	    android:fillViewport="true"
+	    android:scrollbars="vertical"
+	    android:layout_above="@id/log_list"
+	    android:layout_below="@id/title_goto_main" >
+
+		<LinearLayout
+
+		android:layout_width="fill_parent"
+		android:layout_height="wrap_content"
+		android:gravity="fill_vertical"
+		android:orientation="vertical"
+		android:paddingBottom="37.0dip"
+		android:paddingLeft="7.5dip"
+		android:paddingRight="7.5dip"
+		android:paddingTop="7.5dip" >
+		
+	    <TableLayout
+	        android:layout_width="fill_parent"
+	        android:layout_height="wrap_content"
+	        android:paddingTop="7.5dip" >
+	
+	        <TableRow
+	            android:id="@+id/table_row_setting_reset"
+	            android:layout_width="fill_parent"
+	            android:layout_marginLeft="15.0dip"
+	            android:layout_marginRight="15.0dip"
+	            android:background="@drawable/button_selector"
+	            android:gravity="center"
+	            android:paddingBottom="7.5dip"
+	            android:paddingTop="7.5dip"
+	            android:clickable="true" >
+	
+	            <TextView
+	                android:layout_width="wrap_content"
+	                android:layout_height="wrap_content"
+	                android:drawablePadding="7.5dip"
+	                android:text="@string/setting_reset"
+	                android:textColor="#ff222222"
+	                android:textStyle="bold"
+	                android:textSize="13.5sp" />
+	
+	         </TableRow>
+	    </TableLayout>
+
+		<TextView
+			android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="7.5dip"
+            android:layout_marginTop="15.0dip"
+            android:gravity="center_vertical"
+            android:paddingLeft="3.0dip"
+            android:text="@string/setting_base"
+            android:textColor="#ff888888"
+            android:textSize="12.0sp" />
+
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content" >
+
+                <TableLayout
+                    android:id="@+id/tableLayout_setting_base"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingLeft="1.0dip"
+                    android:shrinkColumns="0"
+                    android:stretchColumns="0" >
+
+                    <TableRow
+                        android:id="@+id/table_row_setting_reader_address"
+                        android:layout_width="fill_parent"
+                        android:layout_marginLeft="1.5dip"
+                        android:layout_marginRight="1.5dip"
+                        android:background="@drawable/table_item_top_selector"
+                        android:paddingBottom="7.5dip"
+                        android:paddingTop="7.5dip"
+                        android:clickable="true" >
+
+                        <LinearLayout
+			                android:layout_width="fill_parent"
+			                android:layout_height="wrap_content"
+			                android:orientation="vertical" >
+	                        <TextView
+	                            android:layout_width="wrap_content"
+	                            android:layout_height="fill_parent"
+	                            android:drawablePadding="7.5dip"
+	                            android:gravity="center_vertical"
+	                            android:includeFontPadding="false"
+	                            android:paddingLeft="17.0dip"
+	                            android:text="@string/setting_reader_address"
+	                            android:textColor="#ff222222"
+	                            android:textSize="12.0sp" />
+
+	                        <TextView
+	                            android:id="@+id/text_setting_reader_address"
+	                            android:layout_width="wrap_content"
+	                            android:layout_height="fill_parent"
+	                            android:drawablePadding="7.5dip"
+	                            android:gravity="center_vertical"
+	                            android:includeFontPadding="false"
+	                            android:paddingTop="4.0dip"
+	                            android:paddingLeft="15.0dip"
+	                            android:text=""
+	                            android:textColor="#ff777777"
+	                            android:textSize="12.0sp" />
+                        </LinearLayout>
+
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="fill_parent"
+                            android:layout_gravity="right"
+                            android:gravity="center_vertical"
+                            android:paddingRight="15.0dip"
+                            android:paddingBottom="5.0dip"
+							android:paddingTop="5.0dip"
+                            android:src="@drawable/right" />
+                    </TableRow>
+
+                    <TableRow
+                        android:id="@+id/table_row_setting_identifier"
+                        android:layout_width="fill_parent"
+                        android:layout_marginLeft="2.0dip"
+                        android:layout_marginRight="2.0dip"
+                        android:background="@drawable/table_item_middle_selector"
+                        android:paddingBottom="7.5dip"
+                        android:paddingTop="7.5dip"
+                        android:clickable="true" >
+                        
+                        <LinearLayout
+			                android:layout_width="fill_parent"
+			                android:layout_height="wrap_content"
+			                android:orientation="vertical" >
+	                        <TextView
+	                            android:layout_width="wrap_content"
+	                            android:layout_height="fill_parent"
+	                            android:drawablePadding="7.5dip"
+	                            android:gravity="center_vertical"
+	                            android:includeFontPadding="false"
+	                            android:paddingLeft="17.0dip"
+	                            android:text="@string/setting_identifier"
+	                            android:textColor="#ff222222"
+	                            android:textSize="12.0sp" />
+	                        
+	                        <TextView
+	                            android:id="@+id/text_setting_identifier"
+	                            android:layout_width="wrap_content"
+	                            android:layout_height="fill_parent"
+	                            android:drawablePadding="7.5dip"
+	                            android:gravity="center_vertical"
+	                            android:includeFontPadding="false"
+	                            android:paddingTop="4.0dip"
+	                            android:paddingLeft="15.0dip"
+	                            android:text=""
+	                            android:textColor="#ff777777"
+	                            android:textSize="12.0sp" />
+                        </LinearLayout>
+
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="fill_parent"
+                            android:layout_gravity="right"
+                            android:gravity="center_vertical"
+                            android:paddingRight="15.0dip"
+                            android:paddingBottom="5.0dip"
+							android:paddingTop="5.0dip"
+                            android:src="@drawable/right" />
+                    </TableRow>
+
+                    <TableRow
+                        android:id="@+id/table_row_setting_firmware_version"
+                        android:layout_width="fill_parent"
+                        android:layout_marginLeft="2.0dip"
+                        android:layout_marginRight="2.0dip"
+                        android:background="@drawable/table_item_middle_selector"
+                        android:paddingBottom="7.5dip"
+                        android:paddingTop="7.5dip"
+                        android:clickable="true" >
+
+                      <LinearLayout
+			                android:layout_width="fill_parent"
+			                android:layout_height="wrap_content"
+			                android:orientation="vertical" >
+	                        <TextView
+	                            android:layout_width="wrap_content"
+	                            android:layout_height="fill_parent"
+	                            android:drawablePadding="7.5dip"
+	                            android:gravity="center_vertical"
+	                            android:includeFontPadding="false"
+	                            android:paddingLeft="17.0dip"
+	                            android:text="@string/setting_firmware_version"
+	                            android:textColor="#ff222222"
+	                            android:textSize="12.0sp" />
+	                        
+	                        <TextView
+	                            android:id="@+id/text_setting_firmware_version"
+	                            android:layout_width="wrap_content"
+	                            android:layout_height="fill_parent"
+	                            android:drawablePadding="7.5dip"
+	                            android:gravity="center_vertical"
+	                            android:includeFontPadding="false"
+	                            android:paddingTop="4.0dip"
+	                            android:paddingLeft="15.0dip"
+	                            android:text=""
+	                            android:textColor="#ff777777"
+	                            android:textSize="12.0sp" />
+                        </LinearLayout>
+
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="fill_parent"
+                            android:layout_gravity="right"
+                            android:gravity="center_vertical"
+                            android:paddingRight="15.0dip"
+                            android:paddingBottom="5.0dip"
+							android:paddingTop="5.0dip"
+                            android:src="@drawable/right" />
+                    </TableRow>
+                    
+                    <TableRow
+                        android:id="@+id/table_row_setting_temperature"
+                        android:layout_width="fill_parent"
+                        android:layout_marginLeft="2.0dip"
+                        android:layout_marginRight="2.0dip"
+                        android:background="@drawable/table_item_middle_selector"
+                        android:paddingBottom="7.5dip"
+                        android:paddingTop="7.5dip"
+                        android:clickable="true" >
+
+						<LinearLayout
+							android:layout_width="fill_parent"
+							android:layout_height="wrap_content"
+							android:orientation="vertical" >
+							<TextView
+				            	android:layout_width="wrap_content"
+				            	android:layout_height="fill_parent"
+				            	android:drawablePadding="7.5dip"
+				            	android:gravity="center_vertical"
+				            	android:includeFontPadding="false"
+				           		android:paddingLeft="17.0dip"
+				             	android:text="@string/setting_temperature"
+				             	android:textColor="#ff222222"
+				              	android:textSize="12.0sp" />
+				             
+							<TextView
+				              	android:id="@+id/text_setting_temperature"
+	                            android:layout_width="wrap_content"
+				              	android:layout_height="fill_parent"
+				             	android:drawablePadding="7.5dip"
+				             	android:gravity="center_vertical"
+				             	android:includeFontPadding="false"
+				             	android:paddingTop="4.0dip"
+				             	android:paddingLeft="15.0dip"
+				             	android:text=""
+				             	android:textColor="#ff777777"
+				             	android:textSize="12.0sp" />
+						</LinearLayout>
+
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="fill_parent"
+                            android:layout_gravity="right"
+                            android:gravity="center_vertical"
+                            android:paddingRight="15.0dip"
+                            android:paddingBottom="5.0dip"
+							android:paddingTop="5.0dip"
+                            android:src="@drawable/right" />
+                    </TableRow>
+                    
+                    <TableRow
+                        android:id="@+id/table_row_setting_gpio"
+                        android:layout_width="fill_parent"
+                        android:layout_marginLeft="2.0dip"
+                        android:layout_marginRight="2.0dip"
+                        android:background="@drawable/table_item_middle_selector"
+                        android:paddingBottom="7.5dip"
+                        android:paddingTop="7.5dip"
+                        android:clickable="true" >
+
+						<LinearLayout
+							android:layout_width="fill_parent"
+							android:layout_height="wrap_content"
+							android:orientation="vertical" >
+							<TextView
+				            	android:layout_width="wrap_content"
+				            	android:layout_height="fill_parent"
+				            	android:drawablePadding="7.5dip"
+				            	android:gravity="center_vertical"
+				            	android:includeFontPadding="false"
+				           		android:paddingLeft="17.0dip"
+				             	android:text="@string/setting_gpio"
+				             	android:textColor="#ff222222"
+				              	android:textSize="12.0sp" />
+				             
+							<TextView
+				              	android:id="@+id/text_setting_gpio"
+	                            android:layout_width="wrap_content"
+				              	android:layout_height="fill_parent"
+				             	android:drawablePadding="7.5dip"
+				             	android:gravity="center_vertical"
+				             	android:includeFontPadding="false"
+				             	android:paddingTop="4.0dip"
+				             	android:paddingLeft="15.0dip"
+				             	android:text=""
+				             	android:textColor="#ff777777"
+				             	android:textSize="12.0sp" />
+						</LinearLayout>
+
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="fill_parent"
+                            android:layout_gravity="right"
+                            android:gravity="center_vertical"
+                            android:paddingRight="15.0dip"
+                            android:paddingBottom="5.0dip"
+							android:paddingTop="5.0dip"
+                            android:src="@drawable/right" />
+                    </TableRow>
+                    
+                    <TableRow
+                        android:id="@+id/table_row_setting_beeper"
+                        android:layout_width="fill_parent"
+                        android:layout_marginLeft="2.0dip"
+                        android:layout_marginRight="2.0dip"
+                        android:background="@drawable/table_item_bottom_selector"
+                        android:paddingBottom="7.5dip"
+                        android:paddingTop="7.5dip"
+                        android:clickable="true" >
+
+						<LinearLayout
+							android:layout_width="fill_parent"
+							android:layout_height="wrap_content"
+							android:orientation="vertical" >
+							<TextView
+				            	android:layout_width="wrap_content"
+				            	android:layout_height="fill_parent"
+				            	android:drawablePadding="7.5dip"
+				            	android:gravity="center_vertical"
+				            	android:includeFontPadding="false"
+				           		android:paddingLeft="17.0dip"
+				             	android:text="@string/setting_beeper"
+				             	android:textColor="#ff222222"
+				              	android:textSize="12.0sp" />
+				             
+							<TextView
+				              	android:id="@+id/text_setting_beeper"
+	                            android:layout_width="wrap_content"
+				              	android:layout_height="fill_parent"
+				             	android:drawablePadding="7.5dip"
+				             	android:gravity="center_vertical"
+				             	android:includeFontPadding="false"
+				             	android:paddingTop="4.0dip"
+				             	android:paddingLeft="15.0dip"
+				             	android:text=""
+				             	android:textColor="#ff777777"
+				             	android:textSize="12.0sp" />
+						</LinearLayout>
+
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="fill_parent"
+                            android:layout_gravity="right"
+                            android:gravity="center_vertical"
+                            android:paddingRight="15.0dip"
+                            android:paddingBottom="5.0dip"
+							android:paddingTop="5.0dip"
+                            android:src="@drawable/right" />
+                    </TableRow>
+                </TableLayout>
+            </LinearLayout>
+
+		<TextView
+			android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="7.5dip"
+            android:layout_marginTop="15.0dip"
+            android:gravity="center_vertical"
+            android:paddingLeft="4.0dip"
+            android:text="@string/setting_rf"
+            android:textColor="#ff888888"
+            android:textSize="12.0sp" />
+
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content" >
+
+                <TableLayout
+                    android:id="@+id/tableLayout_setting_rf"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingLeft="1.0dip"
+                    android:shrinkColumns="0"
+                    android:stretchColumns="0" >
+
+                    <TableRow
+                        android:id="@+id/table_row_setting_out_power"
+                        android:layout_width="fill_parent"
+                        android:layout_marginLeft="2.0dip"
+                        android:layout_marginRight="2.0dip"
+                        android:background="@drawable/table_item_top_selector"
+                        android:paddingBottom="7.5dip"
+                        android:paddingTop="7.5dip"
+                        android:clickable="true" >
+                        
+                        <LinearLayout
+			                android:layout_width="fill_parent"
+			                android:layout_height="wrap_content"
+			                android:orientation="vertical" >
+	                        <TextView
+	                            android:layout_width="wrap_content"
+	                            android:layout_height="fill_parent"
+	                            android:drawablePadding="7.5dip"
+	                            android:gravity="center_vertical"
+	                            android:includeFontPadding="false"
+	                            android:paddingLeft="17.0dip"
+	                            android:text="@string/setting_out_power"
+	                            android:textColor="#ff222222"
+	                            android:textSize="12.0sp" />
+	                        
+	                        <TextView
+	                            android:id="@+id/text_setting_out_power"
+	                            android:layout_width="wrap_content"
+	                            android:layout_height="fill_parent"
+	                            android:drawablePadding="7.5dip"
+	                            android:gravity="center_vertical"
+	                            android:includeFontPadding="false"
+	                            android:paddingTop="4.0dip"
+	                            android:paddingLeft="15.0dip"
+	                            android:text=""
+	                            android:textColor="#ff777777"
+	                            android:textSize="12.0sp" />
+                        </LinearLayout>
+
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="fill_parent"
+                            android:layout_gravity="right"
+                            android:gravity="center_vertical"
+                            android:paddingRight="15.0dip"
+                            android:paddingBottom="5.0dip"
+							android:paddingTop="5.0dip"
+                            android:src="@drawable/right" />
+                    </TableRow>
+
+                    <TableRow
+                        android:id="@+id/table_row_setting_antenna"
+                        android:layout_width="fill_parent"
+                        android:layout_marginLeft="2.0dip"
+                        android:layout_marginRight="2.0dip"
+                        android:background="@drawable/table_item_middle_selector"
+                        android:paddingBottom="7.5dip"
+                        android:paddingTop="7.5dip"
+                        android:clickable="true" >
+
+                      <LinearLayout
+			                android:layout_width="fill_parent"
+			                android:layout_height="wrap_content"
+			                android:orientation="vertical" >
+	                        <TextView
+	                            android:layout_width="wrap_content"
+	                            android:layout_height="fill_parent"
+	                            android:drawablePadding="7.5dip"
+	                            android:gravity="center_vertical"
+	                            android:includeFontPadding="false"
+	                            android:paddingLeft="17.0dip"
+	                            android:text="@string/setting_antenna"
+	                            android:textColor="#ff222222"
+	                            android:textSize="12.0sp" />
+	                        
+	                        <TextView
+	                            android:id="@+id/text_setting_antenna"
+	                            android:layout_width="wrap_content"
+	                            android:layout_height="fill_parent"
+	                            android:drawablePadding="7.5dip"
+	                            android:gravity="center_vertical"
+	                            android:includeFontPadding="false"
+	                            android:paddingTop="4.0dip"
+	                            android:paddingLeft="15.0dip"
+	                            android:text=""
+	                            android:textColor="#ff777777"
+	                            android:textSize="12.0sp" />
+                        </LinearLayout>
+
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="fill_parent"
+                            android:layout_gravity="right"
+                            android:gravity="center_vertical"
+                            android:paddingRight="15.0dip"
+                            android:paddingBottom="5.0dip"
+							android:paddingTop="5.0dip"
+                            android:src="@drawable/right" />
+                    </TableRow>
+
+                    
+                    <TableRow
+                        android:id="@+id/table_row_setting_return_loss"
+                        android:layout_width="fill_parent"
+                        android:layout_marginLeft="2.0dip"
+                        android:layout_marginRight="2.0dip"
+                        android:background="@drawable/table_item_middle_selector"
+                        android:paddingBottom="7.5dip"
+                        android:paddingTop="7.5dip"
+                        android:clickable="true" >
+
+						<LinearLayout
+							android:layout_width="fill_parent"
+							android:layout_height="wrap_content"
+							android:orientation="vertical" >
+							<TextView
+				            	android:layout_width="wrap_content"
+				            	android:layout_height="fill_parent"
+				            	android:drawablePadding="7.5dip"
+				            	android:gravity="center_vertical"
+				            	android:includeFontPadding="false"
+				           		android:paddingLeft="17.0dip"
+				             	android:text="@string/setting_return_loss"
+				             	android:textColor="#ff222222"
+				              	android:textSize="12.0sp" />
+				             
+							<TextView
+				              	android:id="@+id/text_setting_return_loss"
+	                            android:layout_width="wrap_content"
+				              	android:layout_height="fill_parent"
+				             	android:drawablePadding="7.5dip"
+				             	android:gravity="center_vertical"
+				             	android:includeFontPadding="false"
+				             	android:paddingTop="4.0dip"
+				             	android:paddingLeft="15.0dip"
+				             	android:text=""
+				             	android:textColor="#ff777777"
+				             	android:textSize="12.0sp" />
+						</LinearLayout>
+
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="fill_parent"
+                            android:layout_gravity="right"
+                            android:gravity="center_vertical"
+                            android:paddingRight="15.0dip"
+                            android:paddingBottom="5.0dip"
+							android:paddingTop="5.0dip"
+                            android:src="@drawable/right" />
+                    </TableRow>
+                    
+                    <TableRow
+                        android:id="@+id/table_row_setting_ant_detector"
+                        android:layout_width="fill_parent"
+                        android:layout_marginLeft="2.0dip"
+                        android:layout_marginRight="2.0dip"
+                        android:background="@drawable/table_item_middle_selector"
+                        android:paddingBottom="7.5dip"
+                        android:paddingTop="7.5dip"
+                        android:clickable="true" >
+
+						<LinearLayout
+							android:layout_width="fill_parent"
+							android:layout_height="wrap_content"
+							android:orientation="vertical" >
+							<TextView
+				            	android:layout_width="wrap_content"
+				            	android:layout_height="fill_parent"
+				            	android:drawablePadding="7.5dip"
+				            	android:gravity="center_vertical"
+				            	android:includeFontPadding="false"
+				           		android:paddingLeft="17.0dip"
+				             	android:text="@string/setting_ant_detector"
+				             	android:textColor="#ff222222"
+				              	android:textSize="12.0sp" />
+				             
+							<TextView
+				              	android:id="@+id/text_setting_ant_detector"
+	                            android:layout_width="wrap_content"
+				              	android:layout_height="fill_parent"
+				             	android:drawablePadding="7.5dip"
+				             	android:gravity="center_vertical"
+				             	android:includeFontPadding="false"
+				             	android:paddingTop="4.0dip"
+				             	android:paddingLeft="15.0dip"
+				             	android:text=""
+				             	android:textColor="#ff777777"
+				             	android:textSize="12.0sp" />
+						</LinearLayout>
+
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="fill_parent"
+                            android:layout_gravity="right"
+                            android:gravity="center_vertical"
+                            android:paddingRight="15.0dip"
+                            android:paddingBottom="5.0dip"
+							android:paddingTop="5.0dip"
+                            android:src="@drawable/right" />
+                    </TableRow>
+                    
+                <TableRow
+                        android:id="@+id/table_row_setting_monza"
+                        android:layout_width="fill_parent"
+                        android:layout_marginLeft="2.0dip"
+                        android:layout_marginRight="2.0dip"
+                        android:background="@drawable/table_item_middle_selector"
+                        android:paddingBottom="7.5dip"
+                        android:paddingTop="7.5dip"
+                        android:clickable="true" >
+
+						<LinearLayout
+							android:layout_width="fill_parent"
+							android:layout_height="wrap_content"
+							android:orientation="vertical" >
+							<TextView
+				            	android:layout_width="wrap_content"
+				            	android:layout_height="fill_parent"
+				            	android:drawablePadding="7.5dip"
+				            	android:gravity="center_vertical"
+				            	android:includeFontPadding="false"
+				           		android:paddingLeft="17.0dip"
+				             	android:text="@string/setting_monza"
+				             	android:textColor="#ff222222"
+				              	android:textSize="12.0sp" />
+				             
+							<TextView
+				              	android:id="@+id/text_setting_monza"
+	                            android:layout_width="wrap_content"
+				              	android:layout_height="fill_parent"
+				             	android:drawablePadding="7.5dip"
+				             	android:gravity="center_vertical"
+				             	android:includeFontPadding="false"
+				             	android:paddingTop="4.0dip"
+				             	android:paddingLeft="15.0dip"
+				             	android:text=""
+				             	android:textColor="#ff777777"
+				             	android:textSize="12.0sp" />
+						</LinearLayout>
+
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="fill_parent"
+                            android:layout_gravity="right"
+                            android:gravity="center_vertical"
+                            android:paddingRight="15.0dip"
+                            android:paddingBottom="5.0dip"
+							android:paddingTop="5.0dip"
+                            android:src="@drawable/right" />
+                    </TableRow>
+
+					<TableRow
+						android:id="@+id/table_row_setting_mask_tag"
+						android:layout_width="fill_parent"
+						android:layout_marginLeft="2.0dip"
+						android:layout_marginRight="2.0dip"
+						android:background="@drawable/table_item_middle_selector"
+						android:paddingBottom="7.5dip"
+						android:paddingTop="7.5dip"
+						android:clickable="true" >
+
+						<LinearLayout
+							android:layout_width="fill_parent"
+							android:layout_height="wrap_content"
+							android:orientation="vertical" >
+							<TextView
+								android:layout_width="wrap_content"
+								android:layout_height="fill_parent"
+								android:drawablePadding="7.5dip"
+								android:gravity="center_vertical"
+								android:includeFontPadding="false"
+								android:paddingLeft="17.0dip"
+								android:text="@string/setting_mask_tag"
+								android:textColor="#ff222222"
+								android:textSize="12.0sp" />
+
+							<TextView
+								android:id="@+id/text_setting_mask_tag"
+								android:layout_width="wrap_content"
+								android:layout_height="fill_parent"
+								android:drawablePadding="7.5dip"
+								android:gravity="center_vertical"
+								android:includeFontPadding="false"
+								android:paddingTop="4.0dip"
+								android:paddingLeft="15.0dip"
+								android:text=""
+								android:textColor="#ff777777"
+								android:textSize="12.0sp" />
+						</LinearLayout>
+
+						<ImageView
+							android:layout_width="wrap_content"
+							android:layout_height="fill_parent"
+							android:layout_gravity="right"
+							android:gravity="center_vertical"
+							android:paddingRight="15.0dip"
+							android:paddingBottom="5.0dip"
+							android:paddingTop="5.0dip"
+							android:src="@drawable/right" />
+					</TableRow>
+                    
+                <TableRow
+                        android:id="@+id/table_row_setting_region"
+                        android:layout_width="fill_parent"
+                        android:layout_marginLeft="2.0dip"
+                        android:layout_marginRight="2.0dip"
+                        android:background="@drawable/table_item_middle_selector"
+                        android:paddingBottom="7.5dip"
+                        android:paddingTop="7.5dip"
+                        android:clickable="true" >
+
+						<LinearLayout
+							android:layout_width="fill_parent"
+							android:layout_height="wrap_content"
+							android:orientation="vertical" >
+							<TextView
+				            	android:layout_width="wrap_content"
+				            	android:layout_height="fill_parent"
+				            	android:drawablePadding="7.5dip"
+				            	android:gravity="center_vertical"
+				            	android:includeFontPadding="false"
+				           		android:paddingLeft="17.0dip"
+				             	android:text="@string/setting_region"
+				             	android:textColor="#ff222222"
+				              	android:textSize="12.0sp" />
+				             
+							<TextView
+				              	android:id="@+id/text_setting_region"
+	                            android:layout_width="wrap_content"
+				              	android:layout_height="fill_parent"
+				             	android:drawablePadding="7.5dip"
+				             	android:gravity="center_vertical"
+				             	android:includeFontPadding="false"
+				             	android:paddingTop="4.0dip"
+				             	android:paddingLeft="15.0dip"
+				             	android:text=""
+				             	android:textColor="#ff777777"
+				             	android:textSize="12.0sp" />
+						</LinearLayout>
+
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="fill_parent"
+                            android:layout_gravity="right"
+                            android:gravity="center_vertical"
+                            android:paddingRight="15.0dip"
+                            android:paddingBottom="5.0dip"
+							android:paddingTop="5.0dip"
+                            android:src="@drawable/right" />
+                    </TableRow>
+                    
+                    <TableRow
+                        android:id="@+id/table_row_setting_profile"
+                        android:layout_width="fill_parent"
+                        android:layout_marginLeft="2.0dip"
+                        android:layout_marginRight="2.0dip"
+                        android:background="@drawable/table_item_middle_selector"
+                        android:paddingBottom="7.5dip"
+                        android:paddingTop="7.5dip"
+                        android:clickable="true" >
+
+						<LinearLayout
+							android:layout_width="fill_parent"
+							android:layout_height="wrap_content"
+							android:orientation="vertical" >
+							<TextView
+				            	android:layout_width="wrap_content"
+				            	android:layout_height="fill_parent"
+				            	android:drawablePadding="7.5dip"
+				            	android:gravity="center_vertical"
+				            	android:includeFontPadding="false"
+				           		android:paddingLeft="17.0dip"
+				             	android:text="@string/setting_profile"
+				             	android:textColor="#ff222222"
+				              	android:textSize="12.0sp" />
+				             
+							<TextView
+				              	android:id="@+id/text_setting_profile"
+	                            android:layout_width="wrap_content"
+				              	android:layout_height="fill_parent"
+				             	android:drawablePadding="7.5dip"
+				             	android:gravity="center_vertical"
+				             	android:includeFontPadding="false"
+				             	android:paddingTop="4.0dip"
+				             	android:paddingLeft="15.0dip"
+				             	android:text=""
+				             	android:textColor="#ff777777"
+				             	android:textSize="12.0sp" />
+						</LinearLayout>
+
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="fill_parent"
+                            android:layout_gravity="right"
+                            android:gravity="center_vertical"
+                            android:paddingRight="15.0dip"
+                            android:paddingBottom="5.0dip"
+							android:paddingTop="5.0dip"
+                            android:src="@drawable/right" />
+                    </TableRow>
+                    
+                    <TableRow
+                        android:id="@+id/table_row_monitor"
+                        android:layout_width="fill_parent"
+                        android:layout_marginLeft="2.0dip"
+                        android:layout_marginRight="2.0dip"
+                        android:background="@drawable/table_item_bottom_selector"
+                        android:paddingBottom="7.5dip"
+                        android:paddingTop="7.5dip"
+                        android:clickable="true" >
+
+						<LinearLayout
+							android:layout_width="fill_parent"
+							android:layout_height="wrap_content"
+							android:orientation="vertical" >
+							<TextView
+				            	android:layout_width="wrap_content"
+				            	android:layout_height="fill_parent"
+				            	android:drawablePadding="7.5dip"
+				            	android:gravity="center_vertical"
+				            	android:includeFontPadding="false"
+				           		android:paddingLeft="17.0dip"
+				             	android:text="@string/setting_row_monitor"
+				             	android:textColor="#ff222222"
+				              	android:textSize="12.0sp" />
+				             
+							<TextView
+				              	android:id="@+id/text_setting_monitor"
+	                            android:layout_width="wrap_content"
+				              	android:layout_height="fill_parent"
+				             	android:drawablePadding="7.5dip"
+				             	android:gravity="center_vertical"
+				             	android:includeFontPadding="false"
+				             	android:paddingTop="4.0dip"
+				             	android:paddingLeft="15.0dip"
+				             	android:text=""
+				             	android:textColor="#ff777777"
+				             	android:textSize="12.0sp" />
+						</LinearLayout>
+
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="fill_parent"
+                            android:layout_gravity="right"
+                            android:gravity="center_vertical"
+                            android:paddingRight="15.0dip"
+                            android:paddingBottom="5.0dip"
+							android:paddingTop="5.0dip"
+                            android:src="@drawable/right" />
+                    </TableRow>
+                </TableLayout>
+            </LinearLayout>
+            
+            <TextView
+                android:id="@+id/version_info"
+	            android:layout_width="fill_parent"
+				android:layout_height="fill_parent"
+				android:drawablePadding="7.5dip"
+				android:gravity="center_vertical|center_horizontal"
+				android:includeFontPadding="false"
+				android:layout_marginTop="20dp"
+				android:paddingTop="4.0dip"
+				android:paddingLeft="15.0dip"
+				android:textColor="#ff777777"
+				android:textSize="25.0sp" />
+        </LinearLayout>
+    
+</ScrollView>
+
+</RelativeLayout>

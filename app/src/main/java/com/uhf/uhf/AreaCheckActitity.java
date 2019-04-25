@@ -165,7 +165,7 @@ public class AreaCheckActitity extends AppCompatActivity {
             //这样半透明+白=灰, 状态栏的文字能看得清
             StatusBarUtil.setStatusBarColor(this, 0x55000000);
         }*/
-        StatusBarUtil.setStatusBarColor(this, Color.parseColor("#00CCFF"));
+        StatusBarUtil.setStatusBarColor(this, Color.parseColor("#3fb1f0"));
 
         /*SweetAlertDialog pDialog = new SweetAlertDialog(this, SweetAlertDialog.PROGRESS_TYPE);
         pDialog.getProgressHelper().setBarColor(Color.parseColor("#A5DC86"));

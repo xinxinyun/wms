@@ -2,6 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
+    android:background="@color/white"
     android:orientation="horizontal">
 
     <LinearLayout
@@ -26,7 +27,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="left"
             android:text="Title"
-            android:textColor="@color/gray"
+            android:textColor="#999999"
             android:textSize="12sp" />
     </LinearLayout>
 
@@ -37,7 +38,7 @@
         android:layout_gravity="center_vertical|right"
         android:text="0"
         android:layout_marginLeft="15dp"
-        android:textColor="@color/red"
+        android:textColor="#f20813"
         android:textSize="18sp" />
 
     <TextView
@@ -47,19 +48,19 @@
         android:layout_gravity="center_vertical|right"
         android:text="未盘点"
         android:layout_marginLeft="12dp"
-        android:textColor="@color/red"
-        android:textSize="14sp" />
+        android:textColor="#f20813"
+        android:textSize="26px" />
 
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="6dp"
+        android:layout_marginLeft="25dp"
         android:layout_gravity="center_vertical|right">
         <ImageView
             android:id="@+id/iv_saleImage"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:src="@drawable/wrong1" />
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:src="@drawable/nocheck" />
     </LinearLayout>
 
 </LinearLayout>

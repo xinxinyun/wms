@@ -10,7 +10,7 @@
         android:id="@+id/toolbarhh"
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:background="#00CCFF"
+        android:background="#3fb1f0"
         android:minHeight="?android:attr/actionBarSize"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
         app:theme="@style/Base.AppTheme">
@@ -19,7 +19,8 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:text="仓储区域盘点"
-            android:textSize="16sp" />
+            android:textColor="@color/white"
+            android:textSize="30px" />
     </android.support.v7.widget.Toolbar>
 
     <com.com.tools.ZrcListView

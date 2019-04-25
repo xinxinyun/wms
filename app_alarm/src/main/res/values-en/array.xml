@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    
+	<string-array name="antenna_list">
+		<item>"Antenna 1"</item>
+		<item>"Antenna 2"</item>
+		<item>"Antenna 3"</item>
+		<item>"Antenna 4"</item>
+	</string-array>
+	
+</resources>

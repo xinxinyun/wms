@@ -1,1 +1,1 @@
-include ':app', ':usbSerialForAndroid', ':app_storge', ':app_sale'
+include ':app', ':usbSerialForAndroid', ':app_storge', ':app_sale', ':app_alarm'
