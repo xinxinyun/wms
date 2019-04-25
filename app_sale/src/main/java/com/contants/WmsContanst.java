@@ -45,4 +45,6 @@ public interface WmsContanst {
      */
     public static final String TTYS1 = "/dev/ttyS4";
 
+    public static final String TTYMXC2 = "/dev/ttymxc2";
+
 }

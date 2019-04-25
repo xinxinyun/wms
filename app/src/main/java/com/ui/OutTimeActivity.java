@@ -97,10 +97,6 @@ public class OutTimeActivity extends AppCompatActivity {
 
             if (!epcCodeList.contains(epcCode)&&classificationMap.containsKey(epcCode)) {
 
-                //蜂鸣声提示
-//                Uri uri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-//                Ringtone rt = RingtoneManager.getRingtone(getApplicationContext(), uri);
-//                rt.play();
                 epcCodeList.add(epcCode);
                 epcSize++;
 

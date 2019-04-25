@@ -20,9 +20,15 @@ public class MainActivity extends AppCompatActivity {
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        toolbar.setTitle("门店消磁程序");
+        toolbar.setTitle("仓库过库程序");
 
-        Intent intent=new Intent(this, DataService.class);
-        startService(intent);
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                Intent intent=new Intent(MainActivity.this, DataService.class);
+                startService(intent);
+            }
+        }).start();
+
     }
 }

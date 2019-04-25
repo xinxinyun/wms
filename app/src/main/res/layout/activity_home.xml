@@ -112,20 +112,6 @@
             android:src="@drawable/about2" />
     </android.support.v7.widget.CardView>
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="30dp"
-        android:gravity="center"
-        android:textSize="10dp"
-        android:text="艾默睿 版权所有"/>
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:textSize="10dp"
-        android:text="Copyright@2017-2019 aimorui.All Rights Reserved."/>
-
 </LinearLayout>
 
 

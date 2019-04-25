@@ -20,7 +20,7 @@ public class StorgeJob extends Job {
 
     public static final int PRIORITY = 1;
     private String epcCode;
-    String TAG = "StorgeJob";
+    String TAG = "仓储库存监听队列任务";
     int sleepTime;
 
     public StorgeJob(String epcCode) {

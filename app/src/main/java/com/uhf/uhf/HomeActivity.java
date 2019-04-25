@@ -6,12 +6,11 @@ import android.os.Bundle;
 import android.support.v7.widget.CardView;
 import android.view.View;
 
+import com.ui.AboutActivity;
 import com.ui.OutTimeActivity;
 import com.ui.SaleActivity;
 import com.ui.base.BaseActivity;
 import com.util.StatusBarUtil;
-
-import cn.pedant.SweetAlert.SweetAlertDialog;
 
 //
 public class HomeActivity extends BaseActivity implements View.OnClickListener {
@@ -64,9 +63,8 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener {
                 startActivity(allAreacardViewIntent);
                 break;
             case R.id.aboutCardView:
-                SweetAlertDialog sweetAlertDialog = new SweetAlertDialog(this, SweetAlertDialog.NORMAL_TYPE);
-                sweetAlertDialog.setContentText("睿平台是艾睿默公司倾情打造的智能仓库管理平台，欢迎您的使用。");
-                sweetAlertDialog.show();
+                Intent aboutIntent = new Intent().setClass(HomeActivity.this, AboutActivity.class);
+                startActivity(aboutIntent);
             default:
                 return;
         }

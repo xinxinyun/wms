@@ -7,7 +7,6 @@ import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.birbit.android.jobqueue.JobManager;
-import com.com.tools.Beeper;
 import com.contants.WmsContanst;
 import com.job.StorgeJob;
 import com.module.interaction.ModuleConnector;
@@ -20,6 +19,9 @@ import com.uhf.uhf.UHFApplication;
 
 import java.util.ArrayList;
 
+/**
+ * 数据服务
+ */
 public class DataService extends Service {
 
     private static final String TAG = "仓储库存监听";
@@ -37,15 +39,17 @@ public class DataService extends Service {
      * RFID监听
      */
     RXObserver rxObserver = new RXObserver() {
+
         @Override
         protected void onInventoryTag(RXInventoryTag tag) {
             String epcCode = tag.strEPC;
+            //防止重复读取RFID信息
             if (!epcCodeList.contains(epcCode)) {
                 epcCodeList.add(epcCode);
-                //添加识别码到消息队列。
                 jobManager.addJobInBackground(new StorgeJob(epcCode));
+
                 //调用蜂鸣声提示已扫描到商品
-                Beeper.beep(Beeper.BEEPER_SHORT);
+                //Beeper.beep(Beeper.BEEPER_SHORT);
             }
         }
 
@@ -91,8 +95,13 @@ public class DataService extends Service {
      */
     private void startup() {
 
+        //如果设备在连接状态，则直接退出
+        if(connector.isConnected()){
+            return;
+        }
+
         //实时扫描多少个物资
-        if (!connector.connectCom(WmsContanst.TTYS1, WmsContanst.baud)) {
+        if (!connector.connectCom(WmsContanst.TTYMXC2, WmsContanst.baud)) {
             return;
         }
 
@@ -104,6 +113,8 @@ public class DataService extends Service {
             //设定读取间隔时间
             Thread.currentThread().sleep(500);
             mReader.realTimeInventory((byte) 0xff, (byte) 0x01);
+            //设置工作天线频率
+            //mReader.setOutputPower();
         } catch (Exception e) {
             Log.v(TAG, "RFID设备调取失败"+e.getMessage());
             e.printStackTrace();

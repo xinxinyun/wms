@@ -40,6 +40,7 @@ public class DataService extends Service {
         protected void onInventoryTag(RXInventoryTag tag) {
             String epcCode = tag.strEPC;
             if (!epcCodeList.contains(epcCode)) {
+                Log.v(TAG, "[" + epcCode + "]onRun");
                 epcCodeList.add(epcCode);
                 //添加识别码到消息队列。
                 jobManager.addJobInBackground(new StorgeJob(epcCode));
@@ -90,21 +91,25 @@ public class DataService extends Service {
      */
     private void startup() {
 
-        //实时扫描多少个物资
-        if (!connector.connectCom(WmsContanst.TTYS1, WmsContanst.baud)) {
+        //连接状态直接返回
+        if (connector.isConnected())
             return;
-        }
-
-        ModuleManager.newInstance().setUHFStatus(true);
 
         try {
+            //实时扫描多少个物资
+            if (!connector.connectCom(WmsContanst.TTYMXC2, WmsContanst.baud)) {
+                return;
+            }
+
+            ModuleManager.newInstance().setUHFStatus(true);
+
             mReader = RFIDReaderHelper.getDefaultHelper();
             mReader.registerObserver(rxObserver);
             //设定读取间隔时间
             Thread.currentThread().sleep(500);
             mReader.realTimeInventory((byte) 0xff, (byte) 0x01);
         } catch (Exception e) {
-            Log.v(TAG, "RFID设备调取失败"+e.getMessage());
+            Log.v(TAG, "RFID设备调取失败" + e.getMessage());
             e.printStackTrace();
             return;
         }

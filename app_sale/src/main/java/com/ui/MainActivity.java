@@ -10,7 +10,7 @@ import com.uhf.uhf.R;
 
 public class MainActivity extends AppCompatActivity {
 
-    private static final String TAG = "仓储实时库存监听";
+    private static final String TAG = "销售实时库存监听";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -22,7 +22,12 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         toolbar.setTitle("门店消磁程序");
 
-        Intent intent=new Intent(this, DataService.class);
-        startService(intent);
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                Intent intent=new Intent(MainActivity.this, DataService.class);
+                startService(intent);
+            }
+        }).start();
     }
 }

@@ -14,6 +14,7 @@ import android.widget.Toast;
 
 import com.adpter.SaleAdapter;
 import com.bean.MaterialInfo;
+import com.com.tools.Beeper;
 import com.com.tools.SimpleFooter;
 import com.com.tools.SimpleHeader;
 import com.com.tools.ZrcListView;
@@ -25,6 +26,7 @@ import com.rfid.RFIDReaderHelper;
 import com.rfid.ReaderConnector;
 import com.rfid.rxobserver.RXObserver;
 import com.rfid.rxobserver.bean.RXInventoryTag;
+import com.uhf.uhf.AreaCheckActitity;
 import com.uhf.uhf.R;
 import com.util.CallBackUtil;
 import com.util.DatabaseUtils;
@@ -60,6 +62,8 @@ public class SaleActivity extends AppCompatActivity {
      * 小类汇总,初始10000个大小
      */
     private HashMap<String, Integer> playMap = new HashMap<String, Integer>(10000);
+
+    private boolean isSubmit = false;
 
     /**
      * 异步回调刷新数据
@@ -111,7 +115,8 @@ public class SaleActivity extends AppCompatActivity {
                 message.what = 2;
                 myHandler.sendMessage(message);
 
-//                Beeper.beep(Beeper.BEEPER);
+                //调用蜂鸣声提示已扫描到商品
+                Beeper.beep(Beeper.BEEPER_SHORT);
             }
         }
 
@@ -135,7 +140,20 @@ public class SaleActivity extends AppCompatActivity {
         mToolbarTb.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                finish();
+                if (epcCodeList.size() != 0 && !isSubmit) {
+                    SweetAlertDialog sweetAlertDialog = new SweetAlertDialog(SaleActivity.this, SweetAlertDialog.ERROR_TYPE);
+                    sweetAlertDialog.setContentText("您的盘点结果未提交，请提交盘点结果！");
+                    sweetAlertDialog.setConfirmButton("提交", new SweetAlertDialog.OnSweetClickListener() {
+                        @Override
+                        public void onClick(SweetAlertDialog sweetAlertDialog) {
+                            submitInventory();
+                        }
+                    });
+                    sweetAlertDialog.show();
+                    return;
+                } else {
+                    finish();
+                }
             }
         });
 
@@ -421,20 +439,7 @@ public class SaleActivity extends AppCompatActivity {
                     public void onResponse(Response response) {
                         try {
                             if (response.isSuccessful()) {
-                                //下载物资清单
-                                String responseBody = response.body().string();
-                                Gson gson = new Gson();
-                                List<MaterialInfo> waitMaterialList = gson.fromJson(responseBody, List.class);
-
-                                //adapter = new MyAdapter(getBaseContext(), waitMaterialList);
-
-                                listView.setAdapter(adapter);
-                                //String waterialInfoJson=gson.toJson(waitMaterialList);
-
-                                //插入数据
-                                //必须先初始化
-                                //DatabaseUtils.initHelper(getApplication(), "wms.db");
-                                DatabaseUtils.getHelper().saveAll(waitMaterialList);
+                                isSubmit=true;
                                 Log.d(TAG, "插入数据成功");
                             }
                         } catch (Exception e) {
@@ -494,6 +499,24 @@ public class SaleActivity extends AppCompatActivity {
         if (pTipDialog != null) {
             pTipDialog.dismiss();
             pTipDialog = null;
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+        //super.onBackPressed();
+        if (epcCodeList.size() != 0 && !isSubmit) {
+            SweetAlertDialog sweetAlertDialog = new SweetAlertDialog(SaleActivity.this, SweetAlertDialog.ERROR_TYPE);
+            sweetAlertDialog.setContentText("您的盘点结果未提交，请提交盘点结果！");
+            sweetAlertDialog.setConfirmButton("提交", new SweetAlertDialog.OnSweetClickListener() {
+                @Override
+                public void onClick(SweetAlertDialog sweetAlertDialog) {
+                    submitInventory();
+                }
+            });
+            sweetAlertDialog.show();
+        } else {
+            finish();
         }
     }
 }
