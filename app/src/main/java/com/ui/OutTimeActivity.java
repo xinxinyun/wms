@@ -185,6 +185,20 @@ public class OutTimeActivity extends AppCompatActivity {
                 initData(pDialog);
             }
         }).start();
+
+        listView.refresh(); // 主动下拉刷新
+
+        // 下拉刷新事件回调（可选）
+        listView.setOnRefreshStartListener(new ZrcListView.OnStartListener() {
+            @Override
+            public void onStart() {
+                refresh();
+            }
+        });
+    }
+
+    private void refresh(){
+
     }
 
     /**

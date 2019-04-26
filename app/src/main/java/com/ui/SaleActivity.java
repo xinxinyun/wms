@@ -33,6 +33,7 @@ import com.util.OkhttpUtil;
 import com.util.StatusBarUtil;
 
 import java.lang.reflect.Type;
+import java.net.SocketTimeoutException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -228,7 +229,11 @@ public class SaleActivity extends AppCompatActivity {
                     @Override
                     public void onFailure(Call call, Exception e) {
                         prgorssDialog.hide();
-                        SweetAlertDialog sweetAlertDialog = new SweetAlertDialog(getBaseContext(), SweetAlertDialog.ERROR_TYPE);
+                        String errMsg="物资清单下载失败！";
+                        if(e instanceof SocketTimeoutException){
+                            errMsg="网络连接超时";
+                        }
+                        SweetAlertDialog sweetAlertDialog = new SweetAlertDialog(SaleActivity.this, SweetAlertDialog.ERROR_TYPE);
                         sweetAlertDialog.setContentText("物资清单下载失败！");
                         sweetAlertDialog.show();
                     }

@@ -1,5 +1,6 @@
 package com.job;
 
+import android.media.MediaPlayer;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
@@ -8,6 +9,7 @@ import com.birbit.android.jobqueue.Job;
 import com.birbit.android.jobqueue.Params;
 import com.birbit.android.jobqueue.RetryConstraint;
 import com.contants.WmsContanst;
+import com.uhf.uhf.R;
 import com.util.CallBackUtil;
 import com.util.OkhttpUtil;
 
@@ -57,7 +59,7 @@ public class StorgeJob extends Job {
     /**
      * 查询商品是否已销售
      */
-    private void submitInventory(String epcCode) {
+    private void submitInventory(final String epcCode) {
 
         HashMap<String, String> headerMap = new HashMap<>();
         HashMap<String, String> paramsMap = new HashMap<>();
@@ -78,6 +80,20 @@ public class StorgeJob extends Job {
                             if (response.isSuccessful()) {
                                 Log.d(TAG, "提交成功");
                             }
+
+                            Log.d(TAG, "【RFID号为】"+epcCode+"的商品未销售，非法出门，报警启动");
+
+                            MediaPlayer player=MediaPlayer.create(getApplicationContext(), R.raw.jb);
+                            player.start();
+
+                            try {
+                                Thread.sleep(10000);
+                            }catch (Exception e){
+                                e.printStackTrace();
+                            }
+
+                            player.stop();
+
                         } catch (Exception e) {
                             Log.d(TAG, e.getMessage());
                             e.printStackTrace();

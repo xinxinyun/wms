@@ -74,6 +74,7 @@ public class Beeper {
        // mSoundPool.load(context, R.raw.beeper,1);
         mSoundPool.load(context, R.raw.beeper,BEEPER);
         mSoundPool.load(context, R.raw.beeper_short,BEEPER_SHORT);
+        mSoundPool.load(context,R.raw.jb,BEEPER);
     }
     public static void  beep(int soundID){
         if (mQuite) {

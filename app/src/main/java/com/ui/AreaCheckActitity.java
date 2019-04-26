@@ -33,6 +33,7 @@ import com.util.OkhttpUtil;
 import com.util.StatusBarUtil;
 
 import java.lang.reflect.Type;
+import java.net.SocketTimeoutException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -185,7 +186,7 @@ public class AreaCheckActitity extends AppCompatActivity {
         listView = (ZrcListView) findViewById(R.id.zListView);
 
         // 设置下拉刷新的样式（可选，但如果没有Header则无法下拉刷新）
-        SimpleHeader header = new SimpleHeader(this);
+        final SimpleHeader header = new SimpleHeader(this);
         header.setTextColor(0xff0066aa);
         header.setCircleColor(0xff33bbee);
         listView.setHeadable(header);
@@ -211,6 +212,20 @@ public class AreaCheckActitity extends AppCompatActivity {
                 initData();
             }
         }).start();
+
+        // 下拉刷新事件回调（可选）
+        listView.setOnRefreshStartListener(new ZrcListView.OnStartListener() {
+            @Override
+            public void onStart() {
+                refresh();
+
+            }
+        });
+        //listView.refresh();
+    }
+
+    private void refresh(){
+        this.initData();
     }
 
     /**
@@ -230,8 +245,18 @@ public class AreaCheckActitity extends AppCompatActivity {
                     @Override
                     public void onFailure(Call call, Exception e) {
                         prgorssDialog.hide();
+                        String errMsg="物资清单下载失败！";
+                        if(e instanceof SocketTimeoutException){
+                            errMsg="网络连接超时";
+                        }
                         SweetAlertDialog sweetAlertDialog = new SweetAlertDialog(AreaCheckActitity.this, SweetAlertDialog.ERROR_TYPE);
-                        sweetAlertDialog.setContentText("物资清单下载失败！");
+                        sweetAlertDialog.setContentText(errMsg);
+                        sweetAlertDialog.setConfirmButton("确定", new SweetAlertDialog.OnSweetClickListener() {
+                            @Override
+                            public void onClick(SweetAlertDialog sweetAlertDialog) {
+                                sweetAlertDialog.hide();
+                            }
+                        });
                         sweetAlertDialog.show();
                     }
 
@@ -264,6 +289,7 @@ public class AreaCheckActitity extends AppCompatActivity {
                         }
                     }
                 });
+
     }
 
 
