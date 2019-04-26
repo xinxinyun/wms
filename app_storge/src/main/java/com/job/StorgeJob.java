@@ -8,13 +8,15 @@ import com.birbit.android.jobqueue.Job;
 import com.birbit.android.jobqueue.Params;
 import com.birbit.android.jobqueue.RetryConstraint;
 import com.contants.WmsContanst;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.util.CallBackUtil;
 import com.util.OkhttpUtil;
 
+import java.lang.reflect.Type;
 import java.util.HashMap;
 
 import okhttp3.Call;
-import okhttp3.Response;
 
 public class StorgeJob extends Job {
 
@@ -57,30 +59,37 @@ public class StorgeJob extends Job {
     /**
      * 销售库存扣减
      */
-    private void submitInventory(String epcCode) {
+    private void submitInventory(final String epcCode) {
 
         HashMap<String, String> headerMap = new HashMap<>();
         HashMap<String, String> paramsMap = new HashMap<>();
 
         headerMap.put("Content-Type", OkhttpUtil.CONTENT_TYPE);//头部信息
-        paramsMap.put("epcCode", epcCode);
+        paramsMap.put("data", epcCode);
 
-        OkhttpUtil.okHttpPost(WmsContanst.HOST + WmsContanst.STORGE_MATERIALINFL_INVENTORY_SUBMIT,
-                paramsMap, headerMap, new CallBackUtil.CallBackDefault() {//回调
+        final Gson gson = new Gson();
+        OkhttpUtil.okHttpPostJson(WmsContanst.STORGE_MATERIALINFL_INVENTORY_SUBMIT,
+                gson.toJson(paramsMap), new CallBackUtil.CallBackString() {//回调
                     @Override
                     public void onFailure(Call call, Exception e) {
                         Log.d(TAG, e.getMessage());
+                        Log.d(TAG, "["+epcCode+"]库存检验失败");
                     }
 
                     @Override
-                    public void onResponse(Response response) {
+                    public void onResponse(String response) {
                         try {
-                            if (response.isSuccessful()) {
-                                Log.d(TAG, "提交成功");
+                            Type type = new TypeToken<HashMap<String, String>>() {
+                            }.getType();
+                            HashMap<String, String> respData = gson.fromJson(response, type);
+                            if ("0".equals(respData.get("code"))) {
+                                Log.d(TAG, "["+epcCode+"]库存检验成功");
+                            }else{
+                                Log.d(TAG, "["+epcCode+"]库存检验失败");
                             }
                         } catch (Exception e) {
-                            Log.d(TAG, e.getMessage());
-                            e.printStackTrace();
+                            Log.d(TAG, "["+epcCode+"]库存检验失败");
+                            Log.d(TAG, e.toString());
                         }
                     }
                 });
