@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.bean.MaterialInfo;
@@ -53,6 +54,7 @@ public class SaleAdapter extends BaseAdapter {
             viewHolder.num = (TextView) convertView.findViewById(R.id.saleNum);
             viewHolder.actualNum = convertView.findViewById(R.id.actualSaleNum);
             viewHolder.imageView = (ImageView) convertView.findViewById(R.id.iv_saleImage);
+            viewHolder.saleLayout = (LinearLayout) convertView.findViewById(R.id.saleLayout);
             convertView.setTag(viewHolder);
         } else {
             viewHolder = (ViewHolder) convertView.getTag();
@@ -64,12 +66,15 @@ public class SaleAdapter extends BaseAdapter {
 
         viewHolder.title.setText(waitMaterial.getMaterialName());
         viewHolder.num.setText(num.toString());
-        viewHolder.txCodeTextView.setText(waitMaterial.getMaterialCode());
+        viewHolder.txCodeTextView.setText(waitMaterial.getMaterialBarcode());
         viewHolder.actualNum.setText(actualNum==0?"未盘点":actualNum.toString());
 
         //不同状态右侧图标显示不同
         if (actualNum == num) {
-            viewHolder.imageView.setBackgroundResource(R.drawable.right);
+            viewHolder.actualNum.setText("      " + actualNum);
+            viewHolder.imageView.setImageResource(R.drawable.right);
+            LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) viewHolder.saleLayout.getLayoutParams();
+            params.setMargins(65, 0, 0, 0);
         } else if (actualNum > num) {
             viewHolder.imageView.setVisibility(View.GONE);
             viewHolder.actualNum.setText("+" + (actualNum - num));
@@ -89,6 +94,6 @@ public class SaleAdapter extends BaseAdapter {
         public TextView actualNum;
         public TextView txCodeTextView;
         public ImageView imageView;
-
+        public LinearLayout saleLayout;
     }
 }

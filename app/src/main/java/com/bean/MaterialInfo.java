@@ -34,6 +34,10 @@ public class MaterialInfo {
 
     private Integer actualNum;
 
+    private String fridCode;
+
+    private boolean isInventory=false;
+
     public Integer getId() {
         return id;
     }
@@ -152,5 +156,21 @@ public class MaterialInfo {
 
     public void setActualNum(Integer actualNum) {
         this.actualNum = actualNum;
+    }
+
+    public String getFridCode() {
+        return fridCode;
+    }
+
+    public void setFridCode(String fridCode) {
+        this.fridCode = fridCode;
+    }
+
+    public boolean isInventory() {
+        return isInventory;
+    }
+
+    public void setInventory(boolean inventory) {
+        isInventory = inventory;
     }
 }

@@ -1,4 +1,4 @@
-package com.uhf.uhf;
+package com.ui;
 
 import android.content.Intent;
 import android.graphics.Color;
@@ -6,9 +6,7 @@ import android.os.Bundle;
 import android.support.v7.widget.CardView;
 import android.view.View;
 
-import com.ui.AboutActivity;
-import com.ui.OutTimeActivity;
-import com.ui.SaleActivity;
+import com.uhf.uhf.R;
 import com.ui.base.BaseActivity;
 import com.util.StatusBarUtil;
 

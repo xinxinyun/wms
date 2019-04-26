@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.bean.MaterialInfo;
@@ -56,28 +57,35 @@ public class SchduleOnAdapter extends BaseAdapter {
             viewHolder.num = (TextView) convertView.findViewById(R.id.tv_schedule_num);
             viewHolder.actualNum = convertView.findViewById(R.id.tv_actual_schedule_num);
             viewHolder.imageView = (ImageView) convertView.findViewById(R.id.iv_scheduleImage);
+            viewHolder.iv_scheduleImage_layout = (LinearLayout) convertView.findViewById(R.id.iv_scheduleImage_layout);
             convertView.setTag(viewHolder);
         } else {
             viewHolder = (ViewHolder) convertView.getTag();
         }
 
         MaterialInfo waitMaterial = materialInfoList.get(position);
-        Integer num = waitMaterial.getSource() == null ? 0 : waitMaterial.getSource();
+        Integer num = 1;
         Integer actualNum = waitMaterial.getActualNum() == null ? 0 : waitMaterial.getActualNum();
 
         viewHolder.title.setText(waitMaterial.getMaterialName());
-        viewHolder.num.setText(num.toString());
-        viewHolder.txCodeTextView.setText(waitMaterial.getMaterialCode());
-        viewHolder.actualNum.setText(actualNum==0?"未盘点":actualNum.toString());
+        viewHolder.num.setText("1");
+        viewHolder.txCodeTextView.setText(waitMaterial.getMaterialBarcode());
+        viewHolder.actualNum.setText(actualNum == 0 ? "未盘点" : actualNum.toString());
+
+        //是否盘点标志位
+        boolean isInventory = waitMaterial.isInventory();
 
         if (actualNum == num) {
-            viewHolder.imageView.setBackgroundResource(R.drawable.right);
+            viewHolder.actualNum.setText("      " + actualNum);
+            viewHolder.imageView.setImageResource(R.drawable.right);
+            LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) viewHolder.iv_scheduleImage_layout.getLayoutParams();
+            params.setMargins(55, 0, 0, 0);
         } else if (actualNum > num) {
             viewHolder.imageView.setVisibility(View.GONE);
             viewHolder.actualNum.setText("+" + (actualNum - num));
-        } else if (actualNum < num && actualNum != 0) {
-            viewHolder.imageView.setVisibility(View.GONE);
-            viewHolder.actualNum.setText("" + (actualNum - num));
+        } else if (actualNum < num && isInventory) {
+            viewHolder.actualNum.setText("      " + (actualNum - num));
+            viewHolder.imageView.setBackgroundResource(R.drawable.wrong1);
         }
 
         return convertView;
@@ -85,12 +93,12 @@ public class SchduleOnAdapter extends BaseAdapter {
     }
 
     // ViewHolder用于缓存控件，三个属性分别对应item布局文件的三个控件
-    class ViewHolder {
+    public static class ViewHolder {
         public TextView title;
         public TextView num;
         public TextView actualNum;
         public TextView txCodeTextView;
         public ImageView imageView;
-
+        public LinearLayout iv_scheduleImage_layout;
     }
 }

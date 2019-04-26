@@ -20,26 +20,24 @@ import com.com.tools.SimpleHeader;
 import com.com.tools.ZrcListView;
 import com.contants.WmsContanst;
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.module.interaction.ModuleConnector;
 import com.nativec.tools.ModuleManager;
 import com.rfid.RFIDReaderHelper;
 import com.rfid.ReaderConnector;
 import com.rfid.rxobserver.RXObserver;
 import com.rfid.rxobserver.bean.RXInventoryTag;
-import com.uhf.uhf.AreaCheckActitity;
 import com.uhf.uhf.R;
 import com.util.CallBackUtil;
-import com.util.DatabaseUtils;
 import com.util.OkhttpUtil;
 import com.util.StatusBarUtil;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
 import cn.pedant.SweetAlert.SweetAlertDialog;
 import okhttp3.Call;
-import okhttp3.Response;
 
 public class SaleActivity extends AppCompatActivity {
     private static final String TAG = "销售区域盘点";
@@ -65,6 +63,8 @@ public class SaleActivity extends AppCompatActivity {
 
     private boolean isSubmit = false;
 
+    private SweetAlertDialog prgorssDialog;
+
     /**
      * 异步回调刷新数据
      */
@@ -74,7 +74,26 @@ public class SaleActivity extends AppCompatActivity {
             switch (msg.what) {
                 case 1:
                     //动态更新列表内容
-                    adapter.notifyDataSetChanged();
+                    //动态更新列表内容
+                    Gson gson = new Gson();
+                    Type type = new TypeToken<ArrayList<MaterialInfo>>() {
+                    }.getType();
+                    materialInfoList = gson.fromJson(msg.obj.toString(), type);
+
+                    adapter = new SaleAdapter(getBaseContext(), materialInfoList);
+                    listView.setAdapter(adapter);
+
+                    SweetAlertDialog sweetAlertDialog = new SweetAlertDialog(SaleActivity.this, SweetAlertDialog.SUCCESS_TYPE);
+                    sweetAlertDialog.setContentText("物资清单下载成功！");
+                    sweetAlertDialog.setConfirmButton("开始盘点", new SweetAlertDialog.OnSweetClickListener() {
+                        @Override
+                        public void onClick(SweetAlertDialog sweetAlertDialog) {
+                            inventoryAction("begin");
+                            sweetAlertDialog.hide();
+                        }
+                    });
+                    sweetAlertDialog.setCancelable(true);
+                    sweetAlertDialog.show();
                     break;
                 case 2:
                     pTipDialog.setContentText("您当前已盘点" + epcSize + "件物资");
@@ -96,10 +115,6 @@ public class SaleActivity extends AppCompatActivity {
 
             if (!epcCodeList.contains(epcCode)) {
 
-                //蜂鸣声提示
-//                Uri uri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-//                Ringtone rt = RingtoneManager.getRingtone(getApplicationContext(), uri);
-//                rt.play();
                 epcCodeList.add(epcCode);
                 epcSize++;
 
@@ -160,27 +175,12 @@ public class SaleActivity extends AppCompatActivity {
         StatusBarUtil.setRootViewFitsSystemWindows(this, true);
         //设置状态栏透明
         StatusBarUtil.setTranslucentStatus(this);
-        //一般的手机的状态栏文字和图标都是白色的, 可如果你的应用也是纯白色的, 或导致状态栏文字看不清
-        //所以如果你是这种情况,请使用以下代码, 设置状态使用深色文字图标风格, 否则你可以选择性注释掉这个if内容
-        /*if (!StatusBarUtil.setStatusBarDarkTheme(this, true)) {
-            //如果不支持设置深色风格 为了兼容总不能让状态栏白白的看不清, 于是设置一个状态栏颜色为半透明,
-            //这样半透明+白=灰, 状态栏的文字能看得清
-            StatusBarUtil.setStatusBarColor(this, 0x55000000);
-        }*/
+
         StatusBarUtil.setStatusBarColor(this, Color.parseColor("#00CCFF"));
 
-        /*SweetAlertDialog pDialog = new SweetAlertDialog(this, SweetAlertDialog.PROGRESS_TYPE);
-        pDialog.getProgressHelper().setBarColor(Color.parseColor("#A5DC86"));
-        pDialog.setTitleText("正在读取物资盘点计划，请稍候");
-        pDialog.setCancelable(true);
-        pDialog.show();*/
         pTipDialog = new SweetAlertDialog(this, SweetAlertDialog.WARNING_TYPE);
         pTipDialog.setCustomImage(R.drawable.blue_button_background);
         listView = (ZrcListView) findViewById(R.id.zsaleListView);
-
-        // 设置默认偏移量，主要用于实现透明标题栏功能。（可选）
-        //float density = getResources().getDisplayMetrics().density;
-        //listView.setFirstTopOffset((int) (50 * density));
 
         // 设置下拉刷新的样式（可选，但如果没有Header则无法下拉刷新）
         SimpleHeader header = new SimpleHeader(this);
@@ -197,88 +197,18 @@ public class SaleActivity extends AppCompatActivity {
         listView.setItemAnimForTopIn(R.anim.topitem_in);
         listView.setItemAnimForBottomIn(R.anim.bottomitem_in);
 
-        List<MaterialInfo> materialInfos = new ArrayList<MaterialInfo>() {
-            {
-                MaterialInfo materialInfo = new MaterialInfo();
-                materialInfo.setId(1);
-                materialInfo.setMaterialName("泸州老窖定制酒U/3 52°500ml");
-                materialInfo.setMaterialCode("2000102300426");
-                materialInfo.setSource(30);
+        prgorssDialog = new SweetAlertDialog(SaleActivity.this, SweetAlertDialog.PROGRESS_TYPE);
+        prgorssDialog.getProgressHelper().setBarColor(Color.parseColor("#A5DC86"));
+        prgorssDialog.setTitleText("正在读取物资盘点清单，请稍候");
+        prgorssDialog.setCancelable(false);
+        prgorssDialog.show();
 
-                MaterialInfo materialInfo2 = new MaterialInfo();
-                materialInfo2.setId(2);
-                materialInfo2.setMaterialCode("2000102300426");
-                materialInfo2.setMaterialName("青岛纯生啤酒(瓶装)500ml");
-                materialInfo2.setSource(20);
-
-                MaterialInfo materialInfo3 = new MaterialInfo();
-                materialInfo3.setId(3);
-                materialInfo3.setMaterialCode("2000102300426");
-                materialInfo3.setMaterialName("名庄荟奔富麦克斯大师承诺西拉干红葡萄酒");
-                materialInfo3.setSource(50);
-
-                MaterialInfo materialInfo4 = new MaterialInfo();
-                materialInfo4.setId(3);
-                materialInfo4.setMaterialCode("2000102300426");
-                materialInfo4.setMaterialName("名庄荟长城梦坡家园珍酿干红葡萄酒750ml");
-                materialInfo4.setSource(50);
-
-                MaterialInfo materialInfo5 = new MaterialInfo();
-                materialInfo5.setId(3);
-                materialInfo5.setMaterialCode("2000102300426");
-                materialInfo5.setMaterialName("青岛崂山啤酒330ml");
-                materialInfo5.setSource(50);
-
-                MaterialInfo materialInfo6 = new MaterialInfo();
-                materialInfo6.setId(3);
-                materialInfo6.setMaterialCode("2000102300426");
-                materialInfo6.setMaterialName("娃哈哈C驱动柠檬汁碳酸饮料530ml");
-                materialInfo6.setSource(50);
-
-                MaterialInfo materialInfo7 = new MaterialInfo();
-                materialInfo7.setId(3);
-                materialInfo7.setMaterialCode("2000102300426");
-                materialInfo7.setMaterialName("耐豹顺洁滤清器PUK2845(欧曼)1*1");
-                materialInfo7.setSource(50);
-
-                MaterialInfo materialInfo78 = new MaterialInfo();
-                materialInfo78.setId(3);
-                materialInfo78.setMaterialCode("2000102300426");
-                materialInfo78.setMaterialName("耐豹顺洁滤清器PUK2845(欧曼)1*1");
-                materialInfo78.setSource(50);
-
-                MaterialInfo materialInfo79 = new MaterialInfo();
-                materialInfo79.setId(3);
-                materialInfo79.setMaterialCode("2000102300426");
-                materialInfo79.setMaterialName("耐豹顺洁滤清器PUK2845(欧曼)1*1");
-                materialInfo79.setSource(50);
-
-                MaterialInfo materialInfo73 = new MaterialInfo();
-                materialInfo73.setId(3);
-                materialInfo73.setMaterialCode("2000102300426");
-                materialInfo73.setMaterialName("耐豹顺洁滤清器PUK2845(欧曼)1*1");
-                materialInfo73.setSource(50);
-
-                add(materialInfo);
-                add(materialInfo2);
-                add(materialInfo3);
-                add(materialInfo4);
-                add(materialInfo5);
-                add(materialInfo6);
-                add(materialInfo7);
-                add(materialInfo78);
-                add(materialInfo79);
-                add(materialInfo73);
-
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                initData();
             }
-        };
-
-        //initData();
-        adapter = new SaleAdapter(getBaseContext(), materialInfos);
-        listView.setAdapter(adapter);
-        //listView.refresh(); // 主动下拉刷新*/
-        //pDialog.hide();
-
+        }).start();
     }
 
     /**
@@ -290,61 +220,38 @@ public class SaleActivity extends AppCompatActivity {
         HashMap<String, String> paramsMap = new HashMap<>();
 
         headerMap.put("Content-Type", OkhttpUtil.CONTENT_TYPE);//头部信息
-        paramsMap.put("userName", "1111");//参数
-        paramsMap.put("password", "2222");
+        paramsMap.put("inventoryArea", "1");//参数
+        Gson gson = new Gson();
 
-        OkhttpUtil.okHttpPost(WmsContanst.HOST + WmsContanst.STORGE_MATERIALINFL,
-                paramsMap, headerMap, new CallBackUtil.CallBackDefault() {//回调
+        OkhttpUtil.okHttpPostJson(WmsContanst.STORGE_MATERIALINFL,
+                gson.toJson(paramsMap), headerMap, new CallBackUtil.CallBackString() {//回调
                     @Override
                     public void onFailure(Call call, Exception e) {
+                        prgorssDialog.hide();
                         SweetAlertDialog sweetAlertDialog = new SweetAlertDialog(getBaseContext(), SweetAlertDialog.ERROR_TYPE);
                         sweetAlertDialog.setContentText("物资清单下载失败！");
                         sweetAlertDialog.show();
                     }
 
                     @Override
-                    public void onResponse(Response response) {
+                    public void onResponse(String response) {
                         try {
-                            if (response.isSuccessful()) {
-                                //下载物资清单
-                                String responseBody = response.body().string();
-                                Gson gson = new Gson();
-                                List<MaterialInfo> waitMaterialList = gson.fromJson(responseBody, List.class);
+                            prgorssDialog.hide();
 
-                                //adapter = new MyAdapter(getBaseContext(), waitMaterialList);
+                            //String responseStr=response.body().string();
 
-                                listView.setAdapter(adapter);
-                                //String waterialInfoJson=gson.toJson(waitMaterialList);
+                            Message message = Message.obtain();
+                            message.what = 1;
+                            message.obj = response;
 
-                                //插入数据
-                                //必须先初始化
-                                //DatabaseUtils.initHelper(getApplication(), "wms.db");
-                                DatabaseUtils.getHelper().saveAll(waitMaterialList);
-                                Log.d(TAG, "插入数据成功");
-
-
-                            }
+                            myHandler.sendMessage(message);
                         } catch (Exception e) {
+                            prgorssDialog.hide();
+                            Log.e(TAG, e.toString());
                             SweetAlertDialog sweetAlertDialog = new SweetAlertDialog(getBaseContext(), SweetAlertDialog.ERROR_TYPE);
                             sweetAlertDialog.setContentText("物资清单下载失败！");
                             sweetAlertDialog.show();
                         }
-                /*try {
-                    isLogin = true;
-                    Headers responseHeaders = response.headers();
-                    String c = responseHeaders.get("Set-Cookie");//cookie的处理
-                    TVAppUtil.setCookie(c);
-                    updateReportData();
-                    HandlerUtil.sendTimingRequest();
-                } catch (Exception e) {
-                    LogUtil.e(TAG, e.getMessage());
-                    TVAppUtil.showToast("登录异常！");
-                } finally {
-                    try {
-                        response.body().close();
-                    } catch (Exception e) {
-                    }
-                }*/
                     }
                 });
     }
@@ -359,6 +266,11 @@ public class SaleActivity extends AppCompatActivity {
         if ("begin".equals(flag)) {
             epcSize = 0;
             epcCodeList.clear();
+        }
+
+        //int j=mReader.getFirmwareVersion((byte)0xff);
+        if (connector.isConnected()) {
+            return;
         }
 
         //实时扫描多少个物资
@@ -397,15 +309,18 @@ public class SaleActivity extends AppCompatActivity {
                 ModuleManager.newInstance().release();
                 pTipDialog.hide();
 
-                SweetAlertDialog playDialog = new SweetAlertDialog(getApplicationContext(), SweetAlertDialog.PROGRESS_TYPE);
+                SweetAlertDialog playDialog = new SweetAlertDialog(SaleActivity.this, SweetAlertDialog.PROGRESS_TYPE);
                 playDialog.setContentText("正在汇总盘点数据，请稍候");
                 playDialog.show();
 
                 //汇总计划列表
+                //转换数据结构，汇总结果
                 for (MaterialInfo materialInfo : materialInfoList) {
-                    String materialBarcode = materialInfo.getMaterialBarcode();
-                    materialInfo.setSource(playMap.get(materialBarcode));
-                    adapter.notifyDataSetChanged();
+                    String materialBarCode = materialInfo.getMaterialBarcode();
+                    if (playMap.containsKey(materialBarCode)) {
+                        materialInfo.setActualNum(playMap.get(materialBarCode));
+                        materialInfo.setInventory(true);
+                    }
                 }
 
                 playDialog.hide();
@@ -423,28 +338,46 @@ public class SaleActivity extends AppCompatActivity {
         HashMap<String, String> paramsMap = new HashMap<>();
 
         headerMap.put("Content-Type", OkhttpUtil.CONTENT_TYPE);//头部信息
-        paramsMap.put("userName", "1111");//参数
-        paramsMap.put("password", "2222");
 
-        OkhttpUtil.okHttpPost(WmsContanst.HOST + WmsContanst.STORGE_MATERIALINFL_INVENTORY_SUBMIT,
-                paramsMap, headerMap, new CallBackUtil.CallBackDefault() {//回调
+        paramsMap.put("inventoryArea", "1");//参数
+        Gson gson = new Gson();
+        paramsMap.put("data", gson.toJson(materialInfoList));
+
+        final SweetAlertDialog pDialog = new SweetAlertDialog(SaleActivity.this, SweetAlertDialog.PROGRESS_TYPE);
+        pDialog.getProgressHelper().setBarColor(Color.parseColor("#A5DC86"));
+        pDialog.setTitleText("正在提交物资盘点清单，请稍候");
+        pDialog.setCancelable(false);
+        pDialog.show();
+
+        OkhttpUtil.okHttpPostJson(WmsContanst.HOST + WmsContanst.STORGE_MATERIALINFL_INVENTORY_SUBMIT,
+                gson.toJson(paramsMap), headerMap, new CallBackUtil.CallBackString() {//回调
                     @Override
                     public void onFailure(Call call, Exception e) {
+                        pDialog.hide();
                         SweetAlertDialog sweetAlertDialog = new SweetAlertDialog(getBaseContext(), SweetAlertDialog.ERROR_TYPE);
                         sweetAlertDialog.setContentText("提交盘存结果失败！");
                         sweetAlertDialog.show();
                     }
 
                     @Override
-                    public void onResponse(Response response) {
+                    public void onResponse(String response) {
                         try {
-                            if (response.isSuccessful()) {
-                                isSubmit=true;
-                                Log.d(TAG, "插入数据成功");
-                            }
+                            pDialog.hide();
+                            SweetAlertDialog sweetAlertDialog = new SweetAlertDialog(SaleActivity.this,
+                                    SweetAlertDialog.SUCCESS_TYPE);
+                            sweetAlertDialog.setContentText("销售区域盘点结果提交成功！");
+                            sweetAlertDialog.setConfirmButton("确定", new SweetAlertDialog.OnSweetClickListener() {
+                                @Override
+                                public void onClick(SweetAlertDialog sweetAlertDialog) {
+                                    sweetAlertDialog.hide();
+                                }
+                            });
+                            sweetAlertDialog.setCancelable(true);
+                            sweetAlertDialog.show();
                         } catch (Exception e) {
                             Log.d(TAG, e.getMessage());
                             e.printStackTrace();
+                            pDialog.hide();
                             SweetAlertDialog sweetAlertDialog = new SweetAlertDialog(getBaseContext(), SweetAlertDialog.ERROR_TYPE);
                             sweetAlertDialog.setContentText("提交盘存结果失败！");
                             sweetAlertDialog.show();
@@ -468,6 +401,7 @@ public class SaleActivity extends AppCompatActivity {
                 break;
             case R.id.menu_revertInventory:
                 //盘存复查
+                pTipDialog.show();
                 inventoryAction("continue");
                 break;
             case R.id.menu_endInventory:

@@ -49,9 +49,10 @@
         android:text="未盘点"
         android:layout_marginLeft="12dp"
         android:textColor="#f20813"
-        android:textSize="26px" />
+        android:textSize="18sp" />
 
     <LinearLayout
+        android:id="@+id/saleLayout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="25dp"

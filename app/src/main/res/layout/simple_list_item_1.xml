@@ -39,7 +39,7 @@
         android:text="0"
         android:layout_marginLeft="15dp"
         android:textColor="#f20813"
-        android:textSize="26px" />
+        android:textSize="18sp" />
 
     <TextView
         android:id="@+id/actualNum"
@@ -49,9 +49,10 @@
         android:text="未盘点"
         android:layout_marginLeft="12dp"
         android:textColor="#f20813"
-        android:textSize="26px" />
+        android:textSize="18sp" />
 
     <LinearLayout
+        android:id="@+id/storgeLayout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="20dp"

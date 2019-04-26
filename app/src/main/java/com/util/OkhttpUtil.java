@@ -204,6 +204,19 @@ public class OkhttpUtil {
 
     }
 
+    /**
+     * post请求，可以传递参数
+     *
+     * @param url：url
+     * @param
+     * @param callBack：回调接口，onFailure方法在请求失败时调用，onResponse方法在请求成功后调用，这两个方法都执行在UI线程。
+     */
+
+    public static void okHttpPostJson(String url, CallBackUtil callBack) {
+
+        okHttpPostJson(url, "", null, callBack);
+
+    }
 
     /**
      * post请求，可以传递参数

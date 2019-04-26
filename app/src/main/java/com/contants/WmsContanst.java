@@ -8,12 +8,12 @@ public interface WmsContanst {
     /**
      * 主机IP
      */
-    public static final String HOST = "http://127.0.0.1";
+    public static final String HOST = "http://140.143.58.93:8888/api";
 
     /**
      * 仓储库存物资清单
      */
-    public static final String STORGE_MATERIALINFL = HOST + "/api/getMaa";
+    public static final String STORGE_MATERIALINFL = HOST + "/materialCheck/getAdvanceCheckList";
 
     /**
      * 仓储库存物资清单盘点结果提交
@@ -33,7 +33,7 @@ public interface WmsContanst {
     /**
      * 临期物资清单
      */
-    public static final String OUTTIME_INVENTORY_SUBMIT = HOST + "/api/getMaa";
+    public static final String OUTTIME_INVENTORY_SUBMIT = HOST + "/materialCheck/getAdvanceCheckList";
 
     /**
      * 波特率
@@ -44,5 +44,8 @@ public interface WmsContanst {
      * 串口号
      */
     public static final String TTYS1 = "/dev/ttyS4";
+
+    public static final String CONTENT_TYPE = "application/json; charset=utf-8";
+
 
 }
