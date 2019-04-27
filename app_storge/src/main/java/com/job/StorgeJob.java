@@ -4,16 +4,16 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
+import com.alibaba.fastjson.JSON;
+import com.bean.ResultBean;
 import com.birbit.android.jobqueue.Job;
 import com.birbit.android.jobqueue.Params;
 import com.birbit.android.jobqueue.RetryConstraint;
 import com.contants.WmsContanst;
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 import com.util.CallBackUtil;
 import com.util.OkhttpUtil;
 
-import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import okhttp3.Call;
@@ -42,7 +42,7 @@ public class StorgeJob extends Job {
     @Override
     public void onRun() throws Throwable {
         Log.i(TAG, "[" + epcCode + "]onRun");
-        //this.submitInventory(epcCode);
+        this.submitInventory(epcCode);
     }
 
     @Override
@@ -53,7 +53,7 @@ public class StorgeJob extends Job {
     @Override
     protected RetryConstraint shouldReRunOnThrowable(@NonNull Throwable throwable, int runCount, int maxRunCount) {
         //重试机制为3次，再次失败则放弃任务
-        return RetryConstraint.createExponentialBackoff(runCount, 3);
+        return RetryConstraint.createExponentialBackoff(runCount, 1);
     }
 
     /**
@@ -62,33 +62,36 @@ public class StorgeJob extends Job {
     private void submitInventory(final String epcCode) {
 
         HashMap<String, String> headerMap = new HashMap<>();
-        HashMap<String, String> paramsMap = new HashMap<>();
+        HashMap<String, Object> paramsMap = new HashMap<>();
 
         headerMap.put("Content-Type", OkhttpUtil.CONTENT_TYPE);//头部信息
-        paramsMap.put("data", epcCode);
+        paramsMap.put("token", "wms");
 
-        final Gson gson = new Gson();
+        HashMap<String, Object> dataMap = new HashMap<>();
+        dataMap.put("type", "1");
+        ArrayList<String> fridList=new ArrayList<>();
+        fridList.add(epcCode);
+        dataMap.put("list", fridList);
+
+        paramsMap.put("data", dataMap);
+        Log.d(TAG,JSON.toJSONString(paramsMap));
         OkhttpUtil.okHttpPostJson(WmsContanst.STORGE_MATERIALINFL_INVENTORY_SUBMIT,
-                gson.toJson(paramsMap), new CallBackUtil.CallBackString() {//回调
+                JSON.toJSONString(paramsMap),headerMap, new CallBackUtil.CallBackString() {
                     @Override
                     public void onFailure(Call call, Exception e) {
                         Log.d(TAG, e.getMessage());
-                        Log.d(TAG, "["+epcCode+"]库存检验失败");
+                        Log.d(TAG, "[" + epcCode + "]仓储库出入库失败");
                     }
 
                     @Override
                     public void onResponse(String response) {
                         try {
-                            Type type = new TypeToken<HashMap<String, String>>() {
-                            }.getType();
-                            HashMap<String, String> respData = gson.fromJson(response, type);
-                            if ("0".equals(respData.get("code"))) {
-                                Log.d(TAG, "["+epcCode+"]库存检验成功");
-                            }else{
-                                Log.d(TAG, "["+epcCode+"]库存检验失败");
-                            }
+
+                            ResultBean resultBean = JSON.parseObject(response, ResultBean.class);
+                            String respMsg = resultBean.getCode() == 0 ? "成功" : "失败";
+                            Log.d(TAG, "[" + epcCode + "]仓储库出入库"+respMsg);
                         } catch (Exception e) {
-                            Log.d(TAG, "["+epcCode+"]库存检验失败");
+                            Log.d(TAG, "[" + epcCode + "]仓储库出入库失败");
                             Log.d(TAG, e.toString());
                         }
                     }
