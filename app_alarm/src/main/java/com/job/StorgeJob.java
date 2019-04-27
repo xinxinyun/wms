@@ -83,17 +83,21 @@ public class StorgeJob extends Job {
 
                             Log.d(TAG, "【RFID号为】"+epcCode+"的商品未销售，非法出门，报警启动");
 
-                            MediaPlayer player=MediaPlayer.create(getApplicationContext(), R.raw.jb);
-                            player.start();
-
-                            try {
-                                Thread.sleep(10000);
-                            }catch (Exception e){
-                                e.printStackTrace();
-                            }
-
-                            player.stop();
-
+                            new Thread(new Runnable(){
+                                public void run(){
+                                    try {
+                                        MediaPlayer player= MediaPlayer.create(getApplicationContext(), R.raw.jb);
+                                        if(!player.isPlaying()) {
+                                            player.start();
+                                        }
+                                        Thread.sleep(10000);
+                                        player.stop();
+                                    } catch (InterruptedException e) {
+                                        Log.e(TAG, "SLEEP throw e: "+ e.toString());
+                                        e.printStackTrace();
+                                    }
+                                }
+                            }).start();
                         } catch (Exception e) {
                             Log.d(TAG, e.getMessage());
                             e.printStackTrace();

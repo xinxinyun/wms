@@ -11,19 +11,19 @@ public interface WmsContanst {
     public static final String HOST = "http://140.143.58.93:8888/api";
 
     /**
-     * 仓储库存物资清单
+     * 物资盘点清单
      */
-    public static final String STORGE_MATERIALINFL = HOST + "/materialCheck/getAdvanceCheckList";
+    public static final String STORGE_MATERIALINFL = HOST + "/materialCheck/getInventoryRfidList";
 
     /**
      * 仓储库存物资清单盘点结果提交
      */
-    public static final String STORGE_MATERIALINFL_INVENTORY_SUBMIT = HOST + "/api/getMaa";
+    public static final String STORGE_MATERIALINFL_INVENTORY_SUBMIT = HOST + "/materialCheck/commitInventoryCheckRfid";
 
     /**
      * 销售库存物资清单
      */
-    public static final String SALE_MATERIALINFL = HOST + "/api/getMaa";
+    public static final String SALE_MATERIALINFL = HOST + "/materialCheck/getInventoryRfidList";
 
     /**
      * 销售库存物资清单盘点结果提交

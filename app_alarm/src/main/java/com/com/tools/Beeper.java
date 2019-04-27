@@ -15,6 +15,7 @@ import com.util.PreferenceUtil;
 public class Beeper {
     public static final int BEEPER = 1;
     public static final int BEEPER_SHORT = 2;
+    public static final int BEEPER_JB = 2;
     private static boolean mQuite = false;
     private static boolean mBeepInventoried = false;
     public static String BEEPER_MODEL = "beeper_model";
@@ -74,7 +75,7 @@ public class Beeper {
        // mSoundPool.load(context, R.raw.beeper,1);
         mSoundPool.load(context, R.raw.beeper,BEEPER);
         mSoundPool.load(context, R.raw.beeper_short,BEEPER_SHORT);
-        mSoundPool.load(context,R.raw.jb,BEEPER);
+        mSoundPool.load(context,R.raw.jb,BEEPER_JB);
     }
     public static void  beep(int soundID){
         if (mQuite) {
@@ -87,8 +88,8 @@ public class Beeper {
             mSoundPool.play(BEEPER_SHORT,1, 1, 0, 0, 1);
         } else if (soundID == BEEPER_SHORT && !mBeepPerTag){
             mBeepInventoried = true;
-        } else {
-
+        } else if(soundID == BEEPER_JB){
+            mSoundPool.play(BEEPER_JB,1, 1, 0, 0, 1);
         }
     }
 

@@ -9,7 +9,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.bean.MaterialInfo;
+import com.bean.MaterialOnSchedule;
 import com.uhf.uhf.R;
 
 import java.util.List;
@@ -20,11 +20,11 @@ import java.util.List;
 public class SchduleOnAdapter extends BaseAdapter {
 
     private Context context;
-    private List<MaterialInfo> materialInfoList;
+    private List<MaterialOnSchedule> materialInfoList;
     private LayoutInflater mInflater;//布局装载器对象
 
     public SchduleOnAdapter(Context context,
-                            List<MaterialInfo> materialInfoList) {
+                            List<MaterialOnSchedule> materialInfoList) {
         this.context = context;
         this.materialInfoList = materialInfoList;
         this.mInflater = LayoutInflater.from(context);
@@ -63,9 +63,9 @@ public class SchduleOnAdapter extends BaseAdapter {
             viewHolder = (ViewHolder) convertView.getTag();
         }
 
-        MaterialInfo waitMaterial = materialInfoList.get(position);
+        MaterialOnSchedule waitMaterial = materialInfoList.get(position);
         Integer num = 1;
-        Integer actualNum = waitMaterial.getActualNum() == null ? 0 : waitMaterial.getActualNum();
+        Integer actualNum = waitMaterial.getCheckQuantity() == null ? 0 : waitMaterial.getCheckQuantity();
 
         viewHolder.title.setText(waitMaterial.getMaterialName());
         viewHolder.num.setText("1");

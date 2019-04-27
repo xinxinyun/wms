@@ -4,7 +4,6 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
       <module fileurl="file://$PROJECT_DIR$/app_alarm/app_alarm.iml" filepath="$PROJECT_DIR$/app_alarm/app_alarm.iml" />
-      <module fileurl="file://$PROJECT_DIR$/app_alarm_test/app_alarm_test.iml" filepath="$PROJECT_DIR$/app_alarm_test/app_alarm_test.iml" />
       <module fileurl="file://$PROJECT_DIR$/app_sale/app_sale.iml" filepath="$PROJECT_DIR$/app_sale/app_sale.iml" />
       <module fileurl="file://$PROJECT_DIR$/app_storge/app_storge.iml" filepath="$PROJECT_DIR$/app_storge/app_storge.iml" />
       <module fileurl="file://$PROJECT_DIR$/usbSerialForAndroid/usbSerialForAndroid.iml" filepath="$PROJECT_DIR$/usbSerialForAndroid/usbSerialForAndroid.iml" />

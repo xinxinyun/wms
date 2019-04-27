@@ -61,8 +61,8 @@ public class SaleAdapter extends BaseAdapter {
         }
 
         MaterialInfo waitMaterial = materialInfoList.get(position);
-        Integer num = waitMaterial.getSource() == null ? 0 : waitMaterial.getSource();
-        Integer actualNum = waitMaterial.getActualNum() == null ? 0 : waitMaterial.getActualNum();
+        Integer num = waitMaterial.getAccountQuantity() == null ? 0 : waitMaterial.getAccountQuantity();
+        Integer actualNum = waitMaterial.getCheckQuantity() == null ? 0 : waitMaterial.getCheckQuantity();
 
         viewHolder.title.setText(waitMaterial.getMaterialName());
         viewHolder.num.setText(num.toString());
@@ -71,7 +71,7 @@ public class SaleAdapter extends BaseAdapter {
 
         //不同状态右侧图标显示不同
         if (actualNum == num) {
-            viewHolder.actualNum.setText("      " + actualNum);
+            viewHolder.actualNum.setText("   " + actualNum);
             viewHolder.imageView.setImageResource(R.drawable.right);
             LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) viewHolder.saleLayout.getLayoutParams();
             params.setMargins(65, 0, 0, 0);

@@ -14,6 +14,7 @@ import android.widget.Toast;
 
 import com.adpter.SchduleOnAdapter;
 import com.bean.MaterialInfo;
+import com.bean.MaterialOnSchedule;
 import com.com.tools.Beeper;
 import com.com.tools.SimpleFooter;
 import com.com.tools.SimpleHeader;
@@ -34,6 +35,7 @@ import com.util.StatusBarUtil;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import cn.pedant.SweetAlert.SweetAlertDialog;
 import okhttp3.Call;
@@ -45,7 +47,7 @@ public class OutTimeActivity extends AppCompatActivity {
     RFIDReaderHelper mReader;
 
     private ZrcListView listView;
-    private ArrayList<MaterialInfo> materialInfoList;
+    private ArrayList<MaterialOnSchedule> materialInfoList;
     private SchduleOnAdapter adapter;
 
     /**
@@ -69,11 +71,12 @@ public class OutTimeActivity extends AppCompatActivity {
                 case 1:
                     //动态更新列表内容
                     Gson gson = new Gson();
-                    Type type = new TypeToken<ArrayList<MaterialInfo>>() {}.getType();
-                    materialInfoList =gson.fromJson(msg.obj.toString(),type);
+                    Type type = new TypeToken<ArrayList<MaterialOnSchedule>>() {
+                    }.getType();
+                    materialInfoList = gson.fromJson(msg.obj.toString(), type);
 
                     //转换数据结构，方便实时查找
-                    for (MaterialInfo materialInfo : materialInfoList) {
+                    for (MaterialOnSchedule materialInfo : materialInfoList) {
                         rfidList.add(materialInfo.getFridCode());
                     }
 
@@ -93,6 +96,8 @@ public class OutTimeActivity extends AppCompatActivity {
                     sweetAlertDialog.show();
                     break;
                 case 2:
+                    //报警提示物资已找到
+                    Beeper.beep(Beeper.BEEPER_SHORT);
                     pTipDialog.setContentText("您当前已找到" + epcSize + "件物资");
                     break;
             }
@@ -108,10 +113,12 @@ public class OutTimeActivity extends AppCompatActivity {
 
             String epcCode = tag.strEPC;
 
-            Log.d(TAG, epcCode);
+
 
             //如果不是重复扫描并且包含在物资盘点清单中，则直接蜂鸣声音并更新数量&& rfidList.contains(epcCode)
-            if (!epcCodeList.contains(epcCode) ) {
+            if (!epcCodeList.contains(epcCode)) {
+
+                Log.d(TAG, epcCode);
 
                 epcCodeList.add(epcCode);
                 epcSize++;
@@ -119,9 +126,6 @@ public class OutTimeActivity extends AppCompatActivity {
                 Message message = Message.obtain();
                 message.what = 2;
                 myHandler.sendMessage(message);
-
-                //报警提示物资已找到
-                Beeper.beep(Beeper.BEEPER_SHORT);
             }
         }
 
@@ -186,18 +190,18 @@ public class OutTimeActivity extends AppCompatActivity {
             }
         }).start();
 
-        listView.refresh(); // 主动下拉刷新
+        //listView.refresh(); // 主动下拉刷新
 
         // 下拉刷新事件回调（可选）
-        listView.setOnRefreshStartListener(new ZrcListView.OnStartListener() {
+       /* listView.setOnRefreshStartListener(new ZrcListView.OnStartListener() {
             @Override
             public void onStart() {
                 refresh();
             }
-        });
+        });*/
     }
 
-    private void refresh(){
+    private void refresh() {
 
     }
 
@@ -206,7 +210,13 @@ public class OutTimeActivity extends AppCompatActivity {
      */
     private void initData(final SweetAlertDialog pDialog) {
 
-        OkhttpUtil.okHttpPostJson(WmsContanst.OUTTIME_INVENTORY_SUBMIT,"",
+        HashMap<String,String> paramMap=new HashMap<>();
+        paramMap.put("token","wms");
+
+        Gson gson=new Gson();
+        String paramValue=gson.toJson(paramMap);
+
+        OkhttpUtil.okHttpPostJson(WmsContanst.OUTTIME_INVENTORY_SUBMIT,paramValue,
                 new CallBackUtil.CallBackString() {//回调
                     @Override
                     public void onFailure(Call call, Exception e) {
@@ -219,17 +229,17 @@ public class OutTimeActivity extends AppCompatActivity {
                     }
 
                     @Override
-                    public void onResponse(String  response) {
+                    public void onResponse(String response) {
                         try {
-                           // if (response.isSuccessful()) {
-                                //下载物资清单
-                                //String responseBody = response.body().string();
-                                pDialog.hide();
-                                Message message = Message.obtain();
-                                message.what = 1;
-                                message.obj = response;
+                            // if (response.isSuccessful()) {
+                            //下载物资清单
+                            //String responseBody = response.body().string();
+                            pDialog.hide();
+                            Message message = Message.obtain();
+                            message.what = 1;
+                            message.obj = response;
 
-                                myHandler.sendMessage(message);
+                            myHandler.sendMessage(message);
 
                             //}
                         } catch (Exception e) {
@@ -292,8 +302,8 @@ public class OutTimeActivity extends AppCompatActivity {
             @Override
             public void onClick(SweetAlertDialog sweetAlertDialog) {
                 //RFID模块下线
-                ModuleManager.newInstance().setUHFStatus(false);
-                ModuleManager.newInstance().release();
+                //ModuleManager.newInstance().setUHFStatus(false);
+                //ModuleManager.newInstance().release();
                 pTipDialog.hide();
 
                 SweetAlertDialog playDialog = new SweetAlertDialog(OutTimeActivity.this, SweetAlertDialog.PROGRESS_TYPE);
@@ -303,10 +313,9 @@ public class OutTimeActivity extends AppCompatActivity {
                 //汇总计划列表
                 for (MaterialInfo materialInfo : materialInfoList) {
                     String materialBarcode = materialInfo.getFridCode();
-                   // if(epcCodeList.contains(materialBarcode)){
-                        materialInfo.setActualNum(1);
-                        materialInfo.setInventory(true);
-                    //}
+                    if (epcCodeList.contains(materialBarcode)) {
+                        materialInfo.setCheckQuantity(1);
+                    }
                 }
                 adapter.notifyDataSetChanged();
                 playDialog.hide();

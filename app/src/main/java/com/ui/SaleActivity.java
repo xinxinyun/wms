@@ -221,7 +221,8 @@ public class SaleActivity extends AppCompatActivity {
         HashMap<String, String> paramsMap = new HashMap<>();
 
         headerMap.put("Content-Type", OkhttpUtil.CONTENT_TYPE);//头部信息
-        paramsMap.put("inventoryArea", "1");//参数
+        paramsMap.put("token", "wms");//参数
+        paramsMap.put("data", "2");//参数
         Gson gson = new Gson();
 
         OkhttpUtil.okHttpPostJson(WmsContanst.STORGE_MATERIALINFL,
@@ -229,9 +230,9 @@ public class SaleActivity extends AppCompatActivity {
                     @Override
                     public void onFailure(Call call, Exception e) {
                         prgorssDialog.hide();
-                        String errMsg="物资清单下载失败！";
-                        if(e instanceof SocketTimeoutException){
-                            errMsg="网络连接超时";
+                        String errMsg = "物资清单下载失败！";
+                        if (e instanceof SocketTimeoutException) {
+                            errMsg = "网络连接超时";
                         }
                         SweetAlertDialog sweetAlertDialog = new SweetAlertDialog(SaleActivity.this, SweetAlertDialog.ERROR_TYPE);
                         sweetAlertDialog.setContentText("物资清单下载失败！");
@@ -242,7 +243,6 @@ public class SaleActivity extends AppCompatActivity {
                     public void onResponse(String response) {
                         try {
                             prgorssDialog.hide();
-
                             //String responseStr=response.body().string();
 
                             Message message = Message.obtain();
@@ -323,8 +323,7 @@ public class SaleActivity extends AppCompatActivity {
                 for (MaterialInfo materialInfo : materialInfoList) {
                     String materialBarCode = materialInfo.getMaterialBarcode();
                     if (playMap.containsKey(materialBarCode)) {
-                        materialInfo.setActualNum(playMap.get(materialBarCode));
-                        materialInfo.setInventory(true);
+                        materialInfo.setCheckQuantity(playMap.get(materialBarCode));
                     }
                 }
 
@@ -339,14 +338,21 @@ public class SaleActivity extends AppCompatActivity {
      * 提交盘点结果
      */
     private void submitInventory() {
+
         HashMap<String, String> headerMap = new HashMap<>();
-        HashMap<String, String> paramsMap = new HashMap<>();
+        HashMap<String, Object> paramsMap = new HashMap<>();
 
         headerMap.put("Content-Type", OkhttpUtil.CONTENT_TYPE);//头部信息
 
-        paramsMap.put("inventoryArea", "1");//参数
+        paramsMap.put("token", "wms");
+
         Gson gson = new Gson();
-        paramsMap.put("data", gson.toJson(materialInfoList));
+
+        HashMap<String, Object> dataMap = new HashMap<>();
+        dataMap.put("type", "2");
+        dataMap.put("list", materialInfoList);
+
+        paramsMap.put("data", dataMap);
 
         final SweetAlertDialog pDialog = new SweetAlertDialog(SaleActivity.this, SweetAlertDialog.PROGRESS_TYPE);
         pDialog.getProgressHelper().setBarColor(Color.parseColor("#A5DC86"));
@@ -368,9 +374,11 @@ public class SaleActivity extends AppCompatActivity {
                     public void onResponse(String response) {
                         try {
                             pDialog.hide();
+                            String respMsg="0".equals(response)?"成功":"失败";
+
                             SweetAlertDialog sweetAlertDialog = new SweetAlertDialog(SaleActivity.this,
                                     SweetAlertDialog.SUCCESS_TYPE);
-                            sweetAlertDialog.setContentText("销售区域盘点结果提交成功！");
+                            sweetAlertDialog.setContentText("销售区域盘点结果提交"+respMsg+"！");
                             sweetAlertDialog.setConfirmButton("确定", new SweetAlertDialog.OnSweetClickListener() {
                                 @Override
                                 public void onClick(SweetAlertDialog sweetAlertDialog) {

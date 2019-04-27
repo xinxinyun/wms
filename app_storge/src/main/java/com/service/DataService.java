@@ -45,6 +45,7 @@ public class DataService extends Service {
             String epcCode = tag.strEPC;
             //防止重复读取RFID信息
             if (!epcCodeList.contains(epcCode)) {
+                Log.i(TAG,"------------------>"+epcCode);
                 epcCodeList.add(epcCode);
                 jobManager.addJobInBackground(new StorgeJob(epcCode));
 

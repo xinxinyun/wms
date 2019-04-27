@@ -61,8 +61,8 @@ public class StorgerAdapter extends BaseAdapter {
         }
 
         MaterialInfo waitMaterial = materialInfoList.get(position);
-        Integer num = waitMaterial.getSource() == null ? 0 : waitMaterial.getSource();
-        Integer actualNum = waitMaterial.getActualNum() == null ? 0 : waitMaterial.getActualNum();
+        Integer num = waitMaterial.getAccountQuantity() == null ? 0 : waitMaterial.getAccountQuantity();
+        Integer actualNum = waitMaterial.getCheckQuantity() == null ? 0 : waitMaterial.getCheckQuantity();
 
         viewHolder.title.setText(waitMaterial.getMaterialName());
         viewHolder.num.setText(num.toString());
@@ -70,16 +70,18 @@ public class StorgerAdapter extends BaseAdapter {
         viewHolder.actualNum.setText(actualNum==0?"未盘点":actualNum.toString());
 
         if (actualNum == num) {
-            viewHolder.actualNum.setText("      " + actualNum);
+            viewHolder.actualNum.setText(actualNum);
             viewHolder.imageView.setImageResource(R.drawable.right);
             LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) viewHolder.scheduleImageLayout.getLayoutParams();
-            params.setMargins(75, 0, 0, 0);
+            params.setMargins(70, 0, 0, 0);
         } else if (actualNum > num) {
             viewHolder.imageView.setVisibility(View.GONE);
             viewHolder.actualNum.setText("+" + (actualNum - num));
         } else if (actualNum < num && actualNum != 0) {
-            viewHolder.actualNum.setText("      " + (actualNum - num));
-            viewHolder.imageView.setBackgroundResource(R.drawable.wrong1);
+            viewHolder.actualNum.setText("  "+actualNum);
+            viewHolder.imageView.setBackgroundResource(R.drawable.nocheck);
+            LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) viewHolder.scheduleImageLayout.getLayoutParams();
+            params.setMargins(70, 0, 0, 0);
         }
 
         return convertView;

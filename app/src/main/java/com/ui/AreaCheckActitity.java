@@ -80,8 +80,9 @@ public class AreaCheckActitity extends AppCompatActivity {
                     //动态更新列表内容
                     //动态更新列表内容
                     Gson gson = new Gson();
-                    Type type = new TypeToken<ArrayList<MaterialInfo>>() {}.getType();
-                    materialInfoList =gson.fromJson(msg.obj.toString(),type);
+                    Type type = new TypeToken<ArrayList<MaterialInfo>>() {
+                    }.getType();
+                    materialInfoList = gson.fromJson(msg.obj.toString(), type);
 
                     adapter = new StorgerAdapter(getBaseContext(), materialInfoList);
                     listView.setAdapter(adapter);
@@ -213,18 +214,9 @@ public class AreaCheckActitity extends AppCompatActivity {
             }
         }).start();
 
-        // 下拉刷新事件回调（可选）
-        listView.setOnRefreshStartListener(new ZrcListView.OnStartListener() {
-            @Override
-            public void onStart() {
-                refresh();
-
-            }
-        });
-        //listView.refresh();
     }
 
-    private void refresh(){
+    private void refresh() {
         this.initData();
     }
 
@@ -237,17 +229,18 @@ public class AreaCheckActitity extends AppCompatActivity {
         HashMap<String, String> paramsMap = new HashMap<>();
 
         headerMap.put("Content-Type", OkhttpUtil.CONTENT_TYPE);//头部信息
-        paramsMap.put("inventoryArea", "1");//参数
-        Gson gson=new Gson();
+        paramsMap.put("token", "wms");//参数
+        paramsMap.put("data", "1");//参数
+        Gson gson = new Gson();
 
         OkhttpUtil.okHttpPostJson(WmsContanst.STORGE_MATERIALINFL,
                 gson.toJson(paramsMap), headerMap, new CallBackUtil.CallBackString() {//回调
                     @Override
                     public void onFailure(Call call, Exception e) {
                         prgorssDialog.hide();
-                        String errMsg="物资清单下载失败！";
-                        if(e instanceof SocketTimeoutException){
-                            errMsg="网络连接超时";
+                        String errMsg = "物资清单下载失败！";
+                        if (e instanceof SocketTimeoutException) {
+                            errMsg = "网络连接超时";
                         }
                         SweetAlertDialog sweetAlertDialog = new SweetAlertDialog(AreaCheckActitity.this, SweetAlertDialog.ERROR_TYPE);
                         sweetAlertDialog.setContentText(errMsg);
@@ -263,29 +256,19 @@ public class AreaCheckActitity extends AppCompatActivity {
                     @Override
                     public void onResponse(String response) {
                         try {
-                           // if (response.isSuccessful()) {
+                            prgorssDialog.hide();
 
-                                prgorssDialog.hide();
+                            Message message = Message.obtain();
+                            message.what = 1;
+                            message.obj = response;
 
-                                //String responseStr=response.body().string();
-
-                                Message message = Message.obtain();
-                                message.what = 1;
-                                message.obj = response;
-
-                                myHandler.sendMessage(message);
-
-                            //}
+                            myHandler.sendMessage(message);
                         } catch (Exception e) {
                             prgorssDialog.hide();
                             Log.e(TAG, e.toString());
                             SweetAlertDialog sweetAlertDialog = new SweetAlertDialog(AreaCheckActitity.this, SweetAlertDialog.ERROR_TYPE);
                             sweetAlertDialog.setContentText("物资清单下载失败！");
                             sweetAlertDialog.show();
-                        }finally {
-                            /*if(response!=null){
-                                response.close();
-                            }*/
                         }
                     }
                 });
@@ -305,7 +288,7 @@ public class AreaCheckActitity extends AppCompatActivity {
         }
 
         //int j=mReader.getFirmwareVersion((byte)0xff);
-        if(connector.isConnected()){
+        if (connector.isConnected()) {
             return;
         }
 
@@ -353,10 +336,9 @@ public class AreaCheckActitity extends AppCompatActivity {
                 //汇总计划列表
                 //转换数据结构，汇总结果
                 for (MaterialInfo materialInfo : materialInfoList) {
-                    String materialBarCode=materialInfo.getMaterialBarcode();
-                    if(playMap.containsKey(materialBarCode)){
-                        materialInfo.setActualNum(playMap.get(materialBarCode));
-                        materialInfo.setInventory(true);
+                    String materialBarCode = materialInfo.getMaterialBarcode();
+                    if (playMap.containsKey(materialBarCode)) {
+                        materialInfo.setCheckQuantity(playMap.get(materialBarCode));
                     }
                 }
                 adapter.notifyDataSetChanged();
@@ -373,12 +355,18 @@ public class AreaCheckActitity extends AppCompatActivity {
      */
     private void submitInventory() {
         HashMap<String, String> headerMap = new HashMap<>();
-        HashMap<String, String> paramsMap = new HashMap<>();
+        HashMap<String, Object> paramsMap = new HashMap<>();
 
         headerMap.put("Content-Type", OkhttpUtil.CONTENT_TYPE);//头部信息
-        paramsMap.put("inventoryArea", "1");//参数
-        Gson gson=new Gson();
-        paramsMap.put("data", gson.toJson(materialInfoList));
+        paramsMap.put("token","wms");
+
+        Gson gson = new Gson();
+
+        HashMap<String,Object> dataMap=new HashMap<>();
+        dataMap.put("type","1");
+        dataMap.put("list",materialInfoList);
+
+        paramsMap.put("data",dataMap);
 
         final SweetAlertDialog pDialog = new SweetAlertDialog(AreaCheckActitity.this, SweetAlertDialog.PROGRESS_TYPE);
         pDialog.getProgressHelper().setBarColor(Color.parseColor("#A5DC86"));
@@ -386,7 +374,7 @@ public class AreaCheckActitity extends AppCompatActivity {
         pDialog.setCancelable(false);
         pDialog.show();
 
-        OkhttpUtil.okHttpPostJson( WmsContanst.STORGE_MATERIALINFL_INVENTORY_SUBMIT,
+        OkhttpUtil.okHttpPostJson(WmsContanst.STORGE_MATERIALINFL_INVENTORY_SUBMIT,
                 gson.toJson(paramsMap), headerMap, new CallBackUtil.CallBackString() {//回调
                     @Override
                     public void onFailure(Call call, Exception e) {
@@ -399,17 +387,17 @@ public class AreaCheckActitity extends AppCompatActivity {
                     public void onResponse(String response) {
                         try {
                             //if (response.isSuccessful()) {
-                                pDialog.hide();
-                                SweetAlertDialog sweetAlertDialog = new SweetAlertDialog(AreaCheckActitity.this, SweetAlertDialog.SUCCESS_TYPE);
-                                sweetAlertDialog.setContentText("销售区域盘点结果提交成功！");
-                                sweetAlertDialog.setConfirmButton("确定", new SweetAlertDialog.OnSweetClickListener() {
-                                    @Override
-                                    public void onClick(SweetAlertDialog sweetAlertDialog) {
-                                        sweetAlertDialog.hide();
-                                    }
-                                });
-                                sweetAlertDialog.setCancelable(true);
-                                sweetAlertDialog.show();
+                            pDialog.hide();
+                            SweetAlertDialog sweetAlertDialog = new SweetAlertDialog(AreaCheckActitity.this, SweetAlertDialog.SUCCESS_TYPE);
+                            sweetAlertDialog.setContentText("销售区域盘点结果提交成功！");
+                            sweetAlertDialog.setConfirmButton("确定", new SweetAlertDialog.OnSweetClickListener() {
+                                @Override
+                                public void onClick(SweetAlertDialog sweetAlertDialog) {
+                                    sweetAlertDialog.hide();
+                                }
+                            });
+                            sweetAlertDialog.setCancelable(true);
+                            sweetAlertDialog.show();
                             //}
                         } catch (Exception e) {
                             pDialog.hide();

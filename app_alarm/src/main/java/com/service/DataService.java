@@ -17,24 +17,54 @@ import com.rfid.rxobserver.RXObserver;
 import com.rfid.rxobserver.bean.RXInventoryTag;
 import com.uhf.uhf.UHFApplication;
 
+import java.util.ArrayList;
+
 /**
  * 数据服务
  */
 public class DataService extends Service {
 
-    private static final String TAG = "门店警报监听";
+    private static final String TAG = "仓储库存监听";
+    ModuleConnector connector = new ReaderConnector();
+    RFIDReaderHelper mReader;
 
     private JobManager jobManager;
 
-    private RFIDReaderHelper rfidReaderHelper;
+    /**
+     * 缓存EPC码
+     */
+    private ArrayList<String> epcCodeList = new ArrayList<>();
 
-    private ModuleConnector connector;
+    /**
+     * RFID监听
+     */
+    RXObserver rxObserver = new RXObserver() {
+        @Override
+        protected void onInventoryTag(RXInventoryTag tag) {
+            String epcCode = tag.strEPC;
+            if (!epcCodeList.contains(epcCode)) {
+                Log.v(TAG, "[" + epcCode + "]onRun");
+
+                epcCodeList.add(epcCode);
+                //添加识别码到消息队列。
+                jobManager.addJobInBackground(new StorgeJob(epcCode));
+                //调用蜂鸣声提示已扫描到商品
+                //Beeper.beep(Beeper.BEEPER_SHORT);
+            }
+        }
+
+        @Override
+        protected void onInventoryTagEnd(RXInventoryTag.RXInventoryTagEnd endTag) {
+            mReader.realTimeInventory((byte) 0xff, (byte) 0x01);
+        }
+    };
+
 
     @Override
     public void onCreate() {
         super.onCreate();
         jobManager = UHFApplication.getJobManager();
-        startRfidDevice();
+        startup();
         Log.v(TAG, "OnCreate 服务启动时调用");
     }
 
@@ -63,45 +93,25 @@ public class DataService extends Service {
     /**
      * 启动程序开始扫描
      */
-    private void startRfidDevice() {
+    private void startup() {
 
-        ///初始化连接器
-        connector = new ReaderConnector();
-
-        //如果设备在连接状态，则直接退出
-        if (connector.isConnected() ||
-                    !connector.connectCom(WmsContanst.TTYMXC3, WmsContanst.BJQ_BAUD)) {
+        //连接状态直接返回
+        if (connector.isConnected())
             return;
-        }
 
         try {
-            //FRID模块上电
+            //实时扫描多少个物资
+            if (!connector.connectCom(WmsContanst.TTYMXC2, WmsContanst.baud)) {
+                return;
+            }
+
             ModuleManager.newInstance().setUHFStatus(true);
 
-            rfidReaderHelper = RFIDReaderHelper.getDefaultHelper();
-
-            rfidReaderHelper.registerObserver(new RXObserver() {
-                @Override
-                protected void onInventoryTag(RXInventoryTag tag) {
-                    //实时监听返回读取数据
-                    String epcCode = tag.strEPC;
-                    //加入任务队列
-                    jobManager.addJobInBackground(new StorgeJob(epcCode));
-                }
-
-                @Override
-                protected void onInventoryTagEnd(RXInventoryTag.RXInventoryTagEnd endTag) {
-                    rfidReaderHelper.realTimeInventory((byte) 0xff, (byte) 0x01);
-                }
-            });
-
+            mReader = RFIDReaderHelper.getDefaultHelper();
+            mReader.registerObserver(rxObserver);
             //设定读取间隔时间
-            Thread.currentThread().sleep(1000);
-            rfidReaderHelper.realTimeInventory((byte) 0xff, (byte) 0x01);
-            //设置天线输出功率
-            //设置四根天线的功率，默认为26
-            rfidReaderHelper.setOutputPower((byte)0xff, (byte) 20,(byte) 20,(byte)0,(byte)0 );
-
+            Thread.currentThread().sleep(500);
+            mReader.realTimeInventory((byte) 0xff, (byte) 0x01);
         } catch (Exception e) {
             Log.v(TAG, "RFID设备调取失败" + e.getMessage());
             e.printStackTrace();
@@ -109,11 +119,7 @@ public class DataService extends Service {
         }
     }
 
-    /**
-     * 关闭RFID设备
-     */
     private void shutdown() {
-        connector.disConnect();
         //RFID模块下线
         ModuleManager.newInstance().setUHFStatus(false);
         ModuleManager.newInstance().release();
