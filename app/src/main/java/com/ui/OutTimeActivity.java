@@ -10,7 +10,6 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Toast;
 
 import com.adpter.SchduleOnAdapter;
 import com.bean.MaterialInfo;
@@ -43,23 +42,27 @@ import okhttp3.Call;
 public class OutTimeActivity extends AppCompatActivity {
 
     private static final String TAG = "临期商品盘点";
+
     ModuleConnector connector = new ReaderConnector();
     RFIDReaderHelper mReader;
+    ModuleManager moduleManager = ModuleManager.newInstance();
 
     private ZrcListView listView;
     private ArrayList<MaterialOnSchedule> materialInfoList;
     private SchduleOnAdapter adapter;
-
-    /**
-     * 缓存EPC码
-     */
-    private ArrayList<String> epcCodeList = new ArrayList<>();
 
     private ArrayList<String> rfidList = new ArrayList<>();
 
     private SweetAlertDialog pTipDialog;
 
     private int epcSize = 0;
+
+    private SweetAlertDialog prgorssDialog;
+
+    /**
+     * 缓存EPC码
+     */
+    private ArrayList<String> epcCodeList = new ArrayList<>();
 
     /**
      * 异步回调刷新数据
@@ -88,8 +91,9 @@ public class OutTimeActivity extends AppCompatActivity {
                     sweetAlertDialog.setConfirmButton("开始盘点", new SweetAlertDialog.OnSweetClickListener() {
                         @Override
                         public void onClick(SweetAlertDialog sweetAlertDialog) {
-                            inventoryAction("begin");
                             sweetAlertDialog.hide();
+                            inventoryAction("begin");
+
                         }
                     });
                     sweetAlertDialog.setCancelable(true);
@@ -113,19 +117,20 @@ public class OutTimeActivity extends AppCompatActivity {
 
             String epcCode = tag.strEPC;
 
-
-
             //如果不是重复扫描并且包含在物资盘点清单中，则直接蜂鸣声音并更新数量&& rfidList.contains(epcCode)
             if (!epcCodeList.contains(epcCode)) {
+                //if (rfidList.contains(epcCode)) {
 
                 Log.d(TAG, epcCode);
-
                 epcCodeList.add(epcCode);
                 epcSize++;
 
                 Message message = Message.obtain();
                 message.what = 2;
                 myHandler.sendMessage(message);
+
+
+                //}
             }
         }
 
@@ -177,16 +182,16 @@ public class OutTimeActivity extends AppCompatActivity {
         listView.setItemAnimForTopIn(R.anim.topitem_in);
         listView.setItemAnimForBottomIn(R.anim.bottomitem_in);
 
-        final SweetAlertDialog pDialog = new SweetAlertDialog(OutTimeActivity.this, SweetAlertDialog.PROGRESS_TYPE);
-        pDialog.getProgressHelper().setBarColor(Color.parseColor("#A5DC86"));
-        pDialog.setTitleText("正在读取物资盘点清单，请稍候");
-        pDialog.setCancelable(false);
-        pDialog.show();
+        prgorssDialog = new SweetAlertDialog(OutTimeActivity.this, SweetAlertDialog.PROGRESS_TYPE);
+        prgorssDialog.getProgressHelper().setBarColor(Color.parseColor("#A5DC86"));
+        prgorssDialog.setTitleText("正在读取物资盘点清单，请稍候");
+        prgorssDialog.setCancelable(false);
+        prgorssDialog.show();
 
         new Thread(new Runnable() {
             @Override
             public void run() {
-                initData(pDialog);
+                initData();
             }
         }).start();
 
@@ -201,28 +206,24 @@ public class OutTimeActivity extends AppCompatActivity {
         });*/
     }
 
-    private void refresh() {
-
-    }
-
     /**
      * 下载仓储区域盘点物资清单
      */
-    private void initData(final SweetAlertDialog pDialog) {
+    private void initData() {
 
-        HashMap<String,String> paramMap=new HashMap<>();
-        paramMap.put("token","wms");
+        HashMap<String, String> paramMap = new HashMap<>();
+        paramMap.put("token", "wms");
 
-        Gson gson=new Gson();
-        String paramValue=gson.toJson(paramMap);
+        Gson gson = new Gson();
+        String paramValue = gson.toJson(paramMap);
 
-        OkhttpUtil.okHttpPostJson(WmsContanst.OUTTIME_INVENTORY_SUBMIT,paramValue,
+        OkhttpUtil.okHttpPostJson(WmsContanst.OUTTIME_INVENTORY_SUBMIT, paramValue,
                 new CallBackUtil.CallBackString() {//回调
                     @Override
                     public void onFailure(Call call, Exception e) {
                         e.printStackTrace();
                         Log.e(TAG, e.getMessage());
-                        pDialog.hide();
+                        prgorssDialog.hide();
                         SweetAlertDialog sweetAlertDialog = new SweetAlertDialog(OutTimeActivity.this, SweetAlertDialog.ERROR_TYPE);
                         sweetAlertDialog.setContentText("物资清单下载失败！");
                         sweetAlertDialog.show();
@@ -234,7 +235,7 @@ public class OutTimeActivity extends AppCompatActivity {
                             // if (response.isSuccessful()) {
                             //下载物资清单
                             //String responseBody = response.body().string();
-                            pDialog.hide();
+                            prgorssDialog.hide();
                             Message message = Message.obtain();
                             message.what = 1;
                             message.obj = response;
@@ -243,7 +244,7 @@ public class OutTimeActivity extends AppCompatActivity {
 
                             //}
                         } catch (Exception e) {
-                            pDialog.hide();
+                            prgorssDialog.hide();
                             Log.e(TAG, e.toString());
                             SweetAlertDialog sweetAlertDialog = new SweetAlertDialog(OutTimeActivity.this, SweetAlertDialog.ERROR_TYPE);
                             sweetAlertDialog.setContentText("物资清单下载失败！");
@@ -262,32 +263,41 @@ public class OutTimeActivity extends AppCompatActivity {
         //开始盘存则清空之前数据，重新盘存,//继续盘存则维持原来数据，累加盘存
         if ("begin".equals(flag)) {
             epcSize = 0;
+            //rfidList.clear();
             epcCodeList.clear();
         }
 
-        //如果设备连接状态，直接返回
-        if (connector.isConnected()) {
-            return;
-        }
+        try {
 
-        //实时扫描多少个物资
-        if (connector.connectCom("dev/ttyS4", 115200)) {
-            ModuleManager.newInstance().setUHFStatus(true);
-            try {
-                mReader = RFIDReaderHelper.getDefaultHelper();
-                mReader.registerObserver(rxObserver);
-                //设定读取间隔时间
-                Thread.currentThread().sleep(500);
-                mReader.realTimeInventory((byte) 0xff, (byte) 0x01);
-            } catch (Exception e) {
-                Toast.makeText(getBaseContext(), e.getMessage(), Toast.LENGTH_LONG).show();
-                e.printStackTrace();
-                SweetAlertDialog sweetAlertDialog = new SweetAlertDialog(getBaseContext(), SweetAlertDialog.ERROR_TYPE);
-                sweetAlertDialog.setContentText("RFID设备模块读取失败！");
-                sweetAlertDialog.show();
-                return;
+            if (!moduleManager.getUHFStatus()) {
+                moduleManager.setUHFStatus(true);
             }
-        } else {
+
+            if (!connector.isConnected()) {
+                //实时扫描多少个物资
+                if (!connector.connectCom(WmsContanst.TTYS1, WmsContanst.baud)) {
+                    final SweetAlertDialog sweetAlertDialog3 = new SweetAlertDialog(getBaseContext(), SweetAlertDialog.ERROR_TYPE);
+                    sweetAlertDialog3.setContentText("RFID设备模块读取失败！");
+                    sweetAlertDialog3.setConfirmButton("确定", new SweetAlertDialog.OnSweetClickListener() {
+                        @Override
+                        public void onClick(SweetAlertDialog sweetAlertDialog) {
+                            sweetAlertDialog3.hide();
+                        }
+                    });
+                    sweetAlertDialog3.show();
+                    return;
+                }
+            }
+            if (mReader == null) {
+                mReader = RFIDReaderHelper.getDefaultHelper();
+            }
+            mReader.registerObserver(rxObserver);
+            //设定读取间隔时间
+            Thread.currentThread().sleep(500);
+            mReader.realTimeInventory((byte) 0xff, (byte) 0x01);
+        } catch (Exception e) {
+            Log.d(TAG, e.toString());
+            e.printStackTrace();
             SweetAlertDialog sweetAlertDialog = new SweetAlertDialog(getBaseContext(), SweetAlertDialog.ERROR_TYPE);
             sweetAlertDialog.setContentText("RFID设备模块读取失败！");
             sweetAlertDialog.show();
@@ -295,30 +305,34 @@ public class OutTimeActivity extends AppCompatActivity {
         }
 
         pTipDialog.setContentText("您当前已盘点" + epcSize + "件物资");
-        pTipDialog.setCancelable(true);
+        pTipDialog.setCancelable(false);
 
         //结束操作
         pTipDialog.setConfirmButton("查看盘点结果", new SweetAlertDialog.OnSweetClickListener() {
             @Override
             public void onClick(SweetAlertDialog sweetAlertDialog) {
                 //RFID模块下线
-                //ModuleManager.newInstance().setUHFStatus(false);
-                //ModuleManager.newInstance().release();
+                //moduleManager.setUHFStatus(false);
+                //moduleManager.release();
+                //当前Activity销售则让RFID模块下线
+                //moduleManager.setUHFStatus(false);
+                moduleManager.release();
+                mReader.unRegisterObserver(rxObserver);
                 pTipDialog.hide();
 
-                SweetAlertDialog playDialog = new SweetAlertDialog(OutTimeActivity.this, SweetAlertDialog.PROGRESS_TYPE);
-                playDialog.setContentText("正在汇总盘点数据，请稍候");
-                playDialog.show();
+//                SweetAlertDialog playDialog = new SweetAlertDialog(OutTimeActivity.this, SweetAlertDialog.PROGRESS_TYPE);
+//                playDialog.setContentText("正在汇总盘点数据，请稍候");
+//                playDialog.show();
 
                 //汇总计划列表
                 for (MaterialInfo materialInfo : materialInfoList) {
-                    String materialBarcode = materialInfo.getFridCode();
-                    if (epcCodeList.contains(materialBarcode)) {
+                    String fridCode = materialInfo.getFridCode();
+                    if (rfidList.contains(fridCode)) {
                         materialInfo.setCheckQuantity(1);
                     }
                 }
                 adapter.notifyDataSetChanged();
-                playDialog.hide();
+                //playDialog.hide();
             }
         });
 
@@ -358,17 +372,19 @@ public class OutTimeActivity extends AppCompatActivity {
         if (mReader != null) {
             mReader.unRegisterObserver(rxObserver);
         }
-        if (connector != null) {
-            connector.disConnect();
-        }
 
         //当前Activity销售则让RFID模块下线
-        ModuleManager.newInstance().setUHFStatus(false);
-        ModuleManager.newInstance().release();
+        moduleManager.setUHFStatus(false);
+        moduleManager.release();
         //epcCodeList.clear();
+//        if (connector != null) {
+//            connector.disConnect();
+//        }
         if (pTipDialog != null) {
             pTipDialog.dismiss();
             pTipDialog = null;
+            prgorssDialog.dismiss();
+            prgorssDialog = null;
         }
     }
 }

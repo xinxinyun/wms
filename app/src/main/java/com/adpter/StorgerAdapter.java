@@ -67,7 +67,7 @@ public class StorgerAdapter extends BaseAdapter {
         viewHolder.title.setText(waitMaterial.getMaterialName());
         viewHolder.num.setText(num.toString());
         viewHolder.txCodeTextView.setText(waitMaterial.getMaterialBarcode());
-        viewHolder.actualNum.setText(actualNum==0?"未盘点":actualNum.toString());
+        viewHolder.actualNum.setText(actualNum.toString());
 
         if (actualNum == num) {
             viewHolder.actualNum.setText(actualNum);

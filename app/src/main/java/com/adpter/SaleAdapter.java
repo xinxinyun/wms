@@ -67,7 +67,7 @@ public class SaleAdapter extends BaseAdapter {
         viewHolder.title.setText(waitMaterial.getMaterialName());
         viewHolder.num.setText(num.toString());
         viewHolder.txCodeTextView.setText(waitMaterial.getMaterialBarcode());
-        viewHolder.actualNum.setText(actualNum==0?"未盘点":actualNum.toString());
+        viewHolder.actualNum.setText(actualNum.toString());
 
         //不同状态右侧图标显示不同
         if (actualNum == num) {

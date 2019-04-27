@@ -37,7 +37,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical|right"
         android:text="0"
-        android:layout_marginLeft="15dp"
+        android:layout_marginLeft="30dp"
         android:textColor="#f20813"
         android:textSize="18sp" />
 
@@ -47,8 +47,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical|right"
-        android:text="未盘点"
-        android:layout_marginLeft="12dp"
+        android:text="0"
+        android:layout_marginLeft="25dp"
         android:textColor="#f20813"
         android:textSize="18sp" />
 
@@ -56,13 +56,13 @@
         android:id="@+id/iv_scheduleImage_layout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="16dp"
+        android:layout_marginLeft="25dp"
         android:layout_gravity="center_vertical|right">
         <ImageView
             android:id="@+id/iv_scheduleImage"
             android:layout_width="20dp"
             android:layout_height="20dp"
-            android:src="@drawable/nocheck" />
+            android:src="@drawable/wrong1" />
     </LinearLayout>
 
 </LinearLayout>

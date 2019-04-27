@@ -11,11 +11,11 @@
         android:orderInCategory="2"
         android:title="物资盘存复查"
         app:showAsAction="never" />
-    <item
+   <!-- <item
         android:id="@+id/menu_endInventory"
         android:orderInCategory="3"
         android:title="结束物资盘存"
-        app:showAsAction="never" />
+        app:showAsAction="never" />-->
     <item
         android:id="@+id/menu_submitInventory"
         android:orderInCategory="3"

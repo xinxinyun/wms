@@ -10,10 +10,11 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Toast;
 
 import com.adpter.StorgerAdapter;
+import com.alibaba.fastjson.JSON;
 import com.bean.MaterialInfo;
+import com.bean.ResultBean;
 import com.com.tools.Beeper;
 import com.com.tools.SimpleFooter;
 import com.com.tools.SimpleHeader;
@@ -48,6 +49,8 @@ public class AreaCheckActitity extends AppCompatActivity {
     private static final String TAG = "仓储区域盘点";
     ModuleConnector connector = new ReaderConnector();
     RFIDReaderHelper mReader;
+    ModuleManager moduleManager=ModuleManager.newInstance();
+
     private ZrcListView listView;
     private ArrayList<MaterialInfo> materialInfoList;
     private StorgerAdapter adapter;
@@ -162,9 +165,11 @@ public class AreaCheckActitity extends AppCompatActivity {
                 if (epcCodeList.size() != 0 && !isSubmit) {
                     SweetAlertDialog sweetAlertDialog = new SweetAlertDialog(AreaCheckActitity.this, SweetAlertDialog.ERROR_TYPE);
                     sweetAlertDialog.setContentText("您的盘点结果未提交，请提交盘点结果！");
+                    sweetAlertDialog.setCancelable(false);
                     sweetAlertDialog.setConfirmButton("提交", new SweetAlertDialog.OnSweetClickListener() {
                         @Override
                         public void onClick(SweetAlertDialog sweetAlertDialog) {
+                            sweetAlertDialog.hide();
                             submitInventory();
                         }
                     });
@@ -288,29 +293,56 @@ public class AreaCheckActitity extends AppCompatActivity {
         }
 
         //int j=mReader.getFirmwareVersion((byte)0xff);
-        if (connector.isConnected()) {
-            return;
-        }
-
-        //实时扫描多少个物资
-        if (connector.connectCom(WmsContanst.TTYS1, WmsContanst.baud)) {
-            ModuleManager.newInstance().setUHFStatus(true);
-            try {
-                mReader = RFIDReaderHelper.getDefaultHelper();
-                mReader.registerObserver(rxObserver);
-                //设定读取间隔时间
-                Thread.currentThread().sleep(500);
-                mReader.realTimeInventory((byte) 0xff, (byte) 0x01);
-                //int i=mReader.getFirmwareVersion((byte)0xff);
-            } catch (Exception e) {
-                Toast.makeText(getBaseContext(), e.getMessage(), Toast.LENGTH_LONG).show();
-                e.printStackTrace();
-                SweetAlertDialog sweetAlertDialog = new SweetAlertDialog(getBaseContext(), SweetAlertDialog.ERROR_TYPE);
-                sweetAlertDialog.setContentText("RFID设备模块读取失败！");
-                sweetAlertDialog.show();
+//        if (connector.isConnected()) {
+//            return;
+//        }
+        if ("continue".equals(flag)) {
+            if (isSubmit) {
+                final SweetAlertDialog sweetAlertDialog2 = new SweetAlertDialog(AreaCheckActitity.this, SweetAlertDialog.WARNING_TYPE);
+                sweetAlertDialog2.setContentText("盘点结果已经提交，请重新开始盘点！");
+                sweetAlertDialog2.setConfirmButton("确定", new SweetAlertDialog.OnSweetClickListener() {
+                    @Override
+                    public void onClick(SweetAlertDialog sweetAlertDialog) {
+                        sweetAlertDialog2.hide();
+                    }
+                });
+                sweetAlertDialog2.show();
                 return;
             }
-        } else {
+            pTipDialog.show();
+        }
+
+        try {
+
+            if (!moduleManager.getUHFStatus()) {
+                moduleManager.setUHFStatus(true);
+            }
+
+            if (!connector.isConnected()) {
+                //实时扫描多少个物资
+                if (!connector.connectCom(WmsContanst.TTYS1, WmsContanst.baud)) {
+                    final SweetAlertDialog sweetAlertDialog3 = new SweetAlertDialog(getBaseContext(), SweetAlertDialog.ERROR_TYPE);
+                    sweetAlertDialog3.setContentText("RFID设备模块读取失败！");
+                    sweetAlertDialog3.setConfirmButton("确定", new SweetAlertDialog.OnSweetClickListener() {
+                        @Override
+                        public void onClick(SweetAlertDialog sweetAlertDialog) {
+                            sweetAlertDialog3.hide();
+                        }
+                    });
+                    sweetAlertDialog3.show();
+                    return;
+                }
+            }
+            if (mReader == null) {
+                mReader = RFIDReaderHelper.getDefaultHelper();
+            }
+            mReader.registerObserver(rxObserver);
+            //设定读取间隔时间
+            Thread.currentThread().sleep(500);
+            mReader.realTimeInventory((byte) 0xff, (byte) 0x01);
+        } catch (Exception e) {
+            Log.d(TAG, e.toString());
+            e.printStackTrace();
             SweetAlertDialog sweetAlertDialog = new SweetAlertDialog(getBaseContext(), SweetAlertDialog.ERROR_TYPE);
             sweetAlertDialog.setContentText("RFID设备模块读取失败！");
             sweetAlertDialog.show();
@@ -318,20 +350,20 @@ public class AreaCheckActitity extends AppCompatActivity {
         }
 
         pTipDialog.setContentText("您当前已盘点" + epcSize + "件物资");
-        pTipDialog.setCancelable(true);
+        pTipDialog.setCancelable(false);
 
         //结束操作
         pTipDialog.setConfirmButton("查看盘点结果", new SweetAlertDialog.OnSweetClickListener() {
             @Override
             public void onClick(SweetAlertDialog sweetAlertDialog) {
-                //RFID模块下线
-                ModuleManager.newInstance().setUHFStatus(false);
-                ModuleManager.newInstance().release();
-                pTipDialog.hide();
 
-                SweetAlertDialog playDialog = new SweetAlertDialog(AreaCheckActitity.this, SweetAlertDialog.PROGRESS_TYPE);
-                playDialog.setContentText("正在汇总盘点数据，请稍候");
-                playDialog.show();
+                moduleManager.release();
+                mReader.unRegisterObserver(rxObserver);
+                //RFID模块下线
+                pTipDialog.hide();
+//                SweetAlertDialog playDialog = new SweetAlertDialog(AreaCheckActitity.this, SweetAlertDialog.PROGRESS_TYPE);
+//                playDialog.setContentText("正在汇总盘点数据，请稍候");
+//                playDialog.show();
 
                 //汇总计划列表
                 //转换数据结构，汇总结果
@@ -342,7 +374,7 @@ public class AreaCheckActitity extends AppCompatActivity {
                     }
                 }
                 adapter.notifyDataSetChanged();
-                playDialog.hide();
+                //playDialog.hide();
 
             }
         });
@@ -354,19 +386,18 @@ public class AreaCheckActitity extends AppCompatActivity {
      * 提交盘点结果
      */
     private void submitInventory() {
+
         HashMap<String, String> headerMap = new HashMap<>();
         HashMap<String, Object> paramsMap = new HashMap<>();
 
         headerMap.put("Content-Type", OkhttpUtil.CONTENT_TYPE);//头部信息
-        paramsMap.put("token","wms");
+        paramsMap.put("token", "wms");
 
-        Gson gson = new Gson();
+        HashMap<String, Object> dataMap = new HashMap<>();
+        dataMap.put("type", "1");
+        dataMap.put("list", materialInfoList);
 
-        HashMap<String,Object> dataMap=new HashMap<>();
-        dataMap.put("type","1");
-        dataMap.put("list",materialInfoList);
-
-        paramsMap.put("data",dataMap);
+        paramsMap.put("data", dataMap);
 
         final SweetAlertDialog pDialog = new SweetAlertDialog(AreaCheckActitity.this, SweetAlertDialog.PROGRESS_TYPE);
         pDialog.getProgressHelper().setBarColor(Color.parseColor("#A5DC86"));
@@ -375,9 +406,12 @@ public class AreaCheckActitity extends AppCompatActivity {
         pDialog.show();
 
         OkhttpUtil.okHttpPostJson(WmsContanst.STORGE_MATERIALINFL_INVENTORY_SUBMIT,
-                gson.toJson(paramsMap), headerMap, new CallBackUtil.CallBackString() {//回调
+                JSON.toJSONString(paramsMap), headerMap, new CallBackUtil.CallBackString() {//回调
                     @Override
                     public void onFailure(Call call, Exception e) {
+                        pDialog.hide();
+                        Log.d(TAG, e.getMessage());
+                        e.printStackTrace();
                         SweetAlertDialog sweetAlertDialog = new SweetAlertDialog(getBaseContext(), SweetAlertDialog.ERROR_TYPE);
                         sweetAlertDialog.setContentText("提交盘存结果失败！");
                         sweetAlertDialog.show();
@@ -386,19 +420,33 @@ public class AreaCheckActitity extends AppCompatActivity {
                     @Override
                     public void onResponse(String response) {
                         try {
-                            //if (response.isSuccessful()) {
+
+                            epcSize = 0;
+                            epcCodeList.clear();
+                            isSubmit = true;
                             pDialog.hide();
-                            SweetAlertDialog sweetAlertDialog = new SweetAlertDialog(AreaCheckActitity.this, SweetAlertDialog.SUCCESS_TYPE);
-                            sweetAlertDialog.setContentText("销售区域盘点结果提交成功！");
+
+                            ResultBean resultBean = JSON.parseObject(response, ResultBean.class);
+
+                            String respMsg = 0 == resultBean.getCode() ? "成功" : resultBean.getErrorMsg();
+
+                            SweetAlertDialog sweetAlertDialog = new SweetAlertDialog(AreaCheckActitity.this,
+                                    SweetAlertDialog.SUCCESS_TYPE);
+                            sweetAlertDialog.setContentText("仓储区域盘点结果提交" + respMsg + "！");
                             sweetAlertDialog.setConfirmButton("确定", new SweetAlertDialog.OnSweetClickListener() {
                                 @Override
                                 public void onClick(SweetAlertDialog sweetAlertDialog) {
+                                    //connector.disConnect();
+//                                    if(mReader!=null) {
+//                                        mReader.unRegisterObserver(rxObserver);
+//                                    }
+//                                    moduleManager.setUHFStatus(false);
+//                                    moduleManager.release();
                                     sweetAlertDialog.hide();
                                 }
                             });
                             sweetAlertDialog.setCancelable(true);
                             sweetAlertDialog.show();
-                            //}
                         } catch (Exception e) {
                             pDialog.hide();
                             Log.d(TAG, e.getMessage());
@@ -426,14 +474,13 @@ public class AreaCheckActitity extends AppCompatActivity {
                 break;
             case R.id.menu_revertInventory:
                 //盘存复查
-                pTipDialog.show();
                 inventoryAction("continue");
                 break;
-            case R.id.menu_endInventory:
+           /* case R.id.menu_endInventory:
                 //结束复查，纯粹是为了实现RFID模块掉电的功能
                 ModuleManager.newInstance().setUHFStatus(false);
                 ModuleManager.newInstance().release();
-                break;
+                break;*/
             case R.id.menu_submitInventory:
                 submitInventory();
                 break;
@@ -448,14 +495,14 @@ public class AreaCheckActitity extends AppCompatActivity {
         if (mReader != null) {
             mReader.unRegisterObserver(rxObserver);
         }
-        if (connector != null) {
-            connector.disConnect();
-        }
 
         //当前Activity销售则让RFID模块下线
-        ModuleManager.newInstance().setUHFStatus(false);
-        ModuleManager.newInstance().release();
+        moduleManager.setUHFStatus(false);
+        moduleManager.release();
         //epcCodeList.clear();
+//        if (connector != null) {
+//            connector.disConnect();
+//        }
         if (pTipDialog != null) {
             pTipDialog.dismiss();
             pTipDialog = null;
@@ -468,9 +515,11 @@ public class AreaCheckActitity extends AppCompatActivity {
         if (epcCodeList.size() != 0 && !isSubmit) {
             SweetAlertDialog sweetAlertDialog = new SweetAlertDialog(AreaCheckActitity.this, SweetAlertDialog.ERROR_TYPE);
             sweetAlertDialog.setContentText("您的盘点结果未提交，请提交盘点结果！");
+            sweetAlertDialog.setCancelable(false);
             sweetAlertDialog.setConfirmButton("提交", new SweetAlertDialog.OnSweetClickListener() {
                 @Override
                 public void onClick(SweetAlertDialog sweetAlertDialog) {
+                    sweetAlertDialog.hide();
                     submitInventory();
                 }
             });

@@ -70,13 +70,13 @@ public class SchduleOnAdapter extends BaseAdapter {
         viewHolder.title.setText(waitMaterial.getMaterialName());
         viewHolder.num.setText("1");
         viewHolder.txCodeTextView.setText(waitMaterial.getMaterialBarcode());
-        viewHolder.actualNum.setText(actualNum == 0 ? "未盘点" : actualNum.toString());
+        viewHolder.actualNum.setText( actualNum.toString());
 
         //是否盘点标志位
         boolean isInventory = waitMaterial.isInventory();
 
         if (actualNum == num) {
-            viewHolder.actualNum.setText("      " + actualNum);
+            viewHolder.actualNum.setText(""+actualNum);
             viewHolder.imageView.setImageResource(R.drawable.right);
             LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) viewHolder.iv_scheduleImage_layout.getLayoutParams();
             params.setMargins(55, 0, 0, 0);
@@ -84,7 +84,7 @@ public class SchduleOnAdapter extends BaseAdapter {
             viewHolder.imageView.setVisibility(View.GONE);
             viewHolder.actualNum.setText("+" + (actualNum - num));
         } else if (actualNum < num && isInventory) {
-            viewHolder.actualNum.setText("      " + (actualNum - num));
+            viewHolder.actualNum.setText(actualNum - num);
             viewHolder.imageView.setBackgroundResource(R.drawable.wrong1);
         }
 
