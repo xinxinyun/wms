@@ -487,7 +487,9 @@ public class SaleActivity extends AppCompatActivity {
         //epcCodeList.clear();
         if (pTipDialog != null) {
             pTipDialog.dismiss();
+            prgorssDialog.dismiss();
             pTipDialog = null;
+            prgorssDialog=null;
         }
     }
 
