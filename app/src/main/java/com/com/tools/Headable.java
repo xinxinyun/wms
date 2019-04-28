@@ -11,6 +11,8 @@ public interface Headable {
     public static final int STATE_PULL = 4;
     public static final int STATE_RELEASE = 5;
 
+    void stateChange(int state);
+
     void stateChange(int state, String msg);
 
     int getState();

@@ -19,15 +19,25 @@
             android:layout_height="wrap_content"
             android:text="Title"
             android:textColor="@color/black"
-            android:textSize="14dp" />
+            android:textSize="15dp" />
 
         <TextView
             android:id="@+id/tv_schedule_code"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
             android:layout_gravity="left"
             android:text="Title"
             android:textColor="#999999"
+            android:textSize="12sp" />
+        <TextView
+            android:id="@+id/tv_schedule_date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="left"
+            android:layout_marginTop="2dp"
+            android:text="2019-04-20 至 2019-04-30"
+            android:textColor="#FF0000"
             android:textSize="12sp" />
     </LinearLayout>
 
@@ -48,7 +58,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical|right"
         android:text="0"
-        android:layout_marginLeft="25dp"
+        android:layout_marginLeft="30dp"
         android:textColor="#f20813"
         android:textSize="18sp" />
 

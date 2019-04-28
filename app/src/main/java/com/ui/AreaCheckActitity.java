@@ -13,6 +13,7 @@ import android.view.View;
 
 import com.adpter.StorgerAdapter;
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.TypeReference;
 import com.bean.MaterialInfo;
 import com.bean.ResultBean;
 import com.com.tools.Beeper;
@@ -21,7 +22,6 @@ import com.com.tools.SimpleHeader;
 import com.com.tools.ZrcListView;
 import com.contants.WmsContanst;
 import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 import com.module.interaction.ModuleConnector;
 import com.nativec.tools.ModuleManager;
 import com.rfid.RFIDReaderHelper;
@@ -33,7 +33,6 @@ import com.util.CallBackUtil;
 import com.util.OkhttpUtil;
 import com.util.StatusBarUtil;
 
-import java.lang.reflect.Type;
 import java.net.SocketTimeoutException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -49,7 +48,7 @@ public class AreaCheckActitity extends AppCompatActivity {
     private static final String TAG = "仓储区域盘点";
     ModuleConnector connector = new ReaderConnector();
     RFIDReaderHelper mReader;
-    ModuleManager moduleManager=ModuleManager.newInstance();
+    ModuleManager moduleManager = ModuleManager.newInstance();
 
     private ZrcListView listView;
     private ArrayList<MaterialInfo> materialInfoList;
@@ -80,30 +79,37 @@ public class AreaCheckActitity extends AppCompatActivity {
             super.handleMessage(msg);
             switch (msg.what) {
                 case 1:
-                    //动态更新列表内容
-                    //动态更新列表内容
-                    Gson gson = new Gson();
-                    Type type = new TypeToken<ArrayList<MaterialInfo>>() {
-                    }.getType();
-                    materialInfoList = gson.fromJson(msg.obj.toString(), type);
+
+                    materialInfoList = JSON.parseObject(msg.obj.toString(),
+                            new TypeReference<ArrayList<MaterialInfo>>() {
+                            });
+
+                    if (materialInfoList == null || materialInfoList.size() == 0) {
+                        return;
+                    }
 
                     adapter = new StorgerAdapter(getBaseContext(), materialInfoList);
                     listView.setAdapter(adapter);
 
-                    SweetAlertDialog sweetAlertDialog = new SweetAlertDialog(AreaCheckActitity.this, SweetAlertDialog.SUCCESS_TYPE);
+                    SweetAlertDialog sweetAlertDialog =
+                            new SweetAlertDialog(AreaCheckActitity.this,
+                                    SweetAlertDialog.SUCCESS_TYPE);
                     sweetAlertDialog.setContentText("物资清单下载成功！");
-                    sweetAlertDialog.setConfirmButton("开始盘点", new SweetAlertDialog.OnSweetClickListener() {
-                        @Override
-                        public void onClick(SweetAlertDialog sweetAlertDialog) {
-                            inventoryAction("begin");
-                            sweetAlertDialog.hide();
-                        }
-                    });
                     sweetAlertDialog.setCancelable(true);
+                    sweetAlertDialog.setConfirmButton("开始盘点",
+                            new SweetAlertDialog.OnSweetClickListener() {
+                                @Override
+                                public void onClick(SweetAlertDialog sweetAlertDialog) {
+                                    inventoryAction("begin");
+                                    sweetAlertDialog.hide();
+                                }
+                            });
                     sweetAlertDialog.show();
                     break;
                 case 2:
                     pTipDialog.setContentText("您当前已盘点" + epcSize + "件物资");
+                    //调用蜂鸣声提示已扫描到商品
+                    Beeper.beep(Beeper.BEEPER_SHORT);
                     break;
             }
         }
@@ -118,9 +124,9 @@ public class AreaCheckActitity extends AppCompatActivity {
 
             String epcCode = tag.strEPC;
 
-            Log.d(TAG, epcCode);
-
             if (!epcCodeList.contains(epcCode)) {
+
+                Log.d(TAG, "已读取到RFID码【" + epcCode + "】");
 
                 epcCodeList.add(epcCode);
                 epcSize++;
@@ -136,9 +142,6 @@ public class AreaCheckActitity extends AppCompatActivity {
                 Message message = Message.obtain();
                 message.what = 2;
                 myHandler.sendMessage(message);
-
-                //调用蜂鸣声提示已扫描到商品
-                Beeper.beep(Beeper.BEEPER_SHORT);
             }
         }
 
@@ -147,7 +150,6 @@ public class AreaCheckActitity extends AppCompatActivity {
             mReader.realTimeInventory((byte) 0xff, (byte) 0x01);
         }
     };
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -163,16 +165,19 @@ public class AreaCheckActitity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if (epcCodeList.size() != 0 && !isSubmit) {
-                    SweetAlertDialog sweetAlertDialog = new SweetAlertDialog(AreaCheckActitity.this, SweetAlertDialog.ERROR_TYPE);
+                    SweetAlertDialog sweetAlertDialog =
+                            new SweetAlertDialog(AreaCheckActitity.this,
+                                    SweetAlertDialog.WARNING_TYPE);
                     sweetAlertDialog.setContentText("您的盘点结果未提交，请提交盘点结果！");
                     sweetAlertDialog.setCancelable(false);
-                    sweetAlertDialog.setConfirmButton("提交", new SweetAlertDialog.OnSweetClickListener() {
-                        @Override
-                        public void onClick(SweetAlertDialog sweetAlertDialog) {
-                            sweetAlertDialog.hide();
-                            submitInventory();
-                        }
-                    });
+                    sweetAlertDialog.setConfirmButton("提交",
+                            new SweetAlertDialog.OnSweetClickListener() {
+                                @Override
+                                public void onClick(SweetAlertDialog sweetAlertDialog) {
+                                    sweetAlertDialog.hide();
+                                    submitInventory();
+                                }
+                            });
                     sweetAlertDialog.show();
                     return;
                 } else {
@@ -206,23 +211,30 @@ public class AreaCheckActitity extends AppCompatActivity {
         listView.setItemAnimForTopIn(R.anim.topitem_in);
         listView.setItemAnimForBottomIn(R.anim.bottomitem_in);
 
-        prgorssDialog = new SweetAlertDialog(AreaCheckActitity.this, SweetAlertDialog.PROGRESS_TYPE);
-        prgorssDialog.getProgressHelper().setBarColor(Color.parseColor("#A5DC86"));
-        prgorssDialog.setTitleText("正在读取物资盘点清单，请稍候");
-        prgorssDialog.setCancelable(false);
-        prgorssDialog.show();
-
+//        prgorssDialog = new SweetAlertDialog(AreaCheckActitity.this, SweetAlertDialog
+//        .PROGRESS_TYPE);
+//        prgorssDialog.getProgressHelper().setBarColor(Color.parseColor("#A5DC86"));
+//        prgorssDialog.setTitleText("正在读取物资盘点清单，请稍候");
+//        prgorssDialog.setCancelable(false);
+//        prgorssDialog.show();
+/*
         new Thread(new Runnable() {
             @Override
             public void run() {
                 initData();
             }
-        }).start();
+        }).start();*/
 
-    }
+        listView.refresh(); // 主动下拉刷新
 
-    private void refresh() {
-        this.initData();
+        // 下拉刷新事件回调（可选）
+        listView.setOnRefreshStartListener(new ZrcListView.OnStartListener() {
+            @Override
+            public void onStart() {
+                initData();
+            }
+        });
+
     }
 
     /**
@@ -242,36 +254,43 @@ public class AreaCheckActitity extends AppCompatActivity {
                 gson.toJson(paramsMap), headerMap, new CallBackUtil.CallBackString() {//回调
                     @Override
                     public void onFailure(Call call, Exception e) {
-                        prgorssDialog.hide();
+                        //prgorssDialog.hide();
                         String errMsg = "物资清单下载失败！";
                         if (e instanceof SocketTimeoutException) {
                             errMsg = "网络连接超时";
                         }
-                        SweetAlertDialog sweetAlertDialog = new SweetAlertDialog(AreaCheckActitity.this, SweetAlertDialog.ERROR_TYPE);
+                        SweetAlertDialog sweetAlertDialog =
+                                new SweetAlertDialog(AreaCheckActitity.this,
+                                        SweetAlertDialog.ERROR_TYPE);
                         sweetAlertDialog.setContentText(errMsg);
-                        sweetAlertDialog.setConfirmButton("确定", new SweetAlertDialog.OnSweetClickListener() {
-                            @Override
-                            public void onClick(SweetAlertDialog sweetAlertDialog) {
-                                sweetAlertDialog.hide();
-                            }
-                        });
+                        sweetAlertDialog.setConfirmButton("确定",
+                                new SweetAlertDialog.OnSweetClickListener() {
+                                    @Override
+                                    public void onClick(SweetAlertDialog sweetAlertDialog) {
+                                        sweetAlertDialog.hide();
+                                    }
+                                });
                         sweetAlertDialog.show();
                     }
 
                     @Override
                     public void onResponse(String response) {
                         try {
-                            prgorssDialog.hide();
-
+                            //prgorssDialog.hide();
+                            // listView.getHeadable().stateChange(Headable.STATE_REST,null);
+                            listView.setRefreshSuccess();
+                            Log.d(TAG, "---------------->" + listView.getHeadable().getState());
                             Message message = Message.obtain();
                             message.what = 1;
                             message.obj = response;
 
                             myHandler.sendMessage(message);
                         } catch (Exception e) {
-                            prgorssDialog.hide();
+                            //prgorssDialog.hide();
                             Log.e(TAG, e.toString());
-                            SweetAlertDialog sweetAlertDialog = new SweetAlertDialog(AreaCheckActitity.this, SweetAlertDialog.ERROR_TYPE);
+                            SweetAlertDialog sweetAlertDialog =
+                                    new SweetAlertDialog(AreaCheckActitity.this,
+                                            SweetAlertDialog.ERROR_TYPE);
                             sweetAlertDialog.setContentText("物资清单下载失败！");
                             sweetAlertDialog.show();
                         }
@@ -298,14 +317,16 @@ public class AreaCheckActitity extends AppCompatActivity {
 //        }
         if ("continue".equals(flag)) {
             if (isSubmit) {
-                final SweetAlertDialog sweetAlertDialog2 = new SweetAlertDialog(AreaCheckActitity.this, SweetAlertDialog.WARNING_TYPE);
+                final SweetAlertDialog sweetAlertDialog2 =
+                        new SweetAlertDialog(AreaCheckActitity.this, SweetAlertDialog.WARNING_TYPE);
                 sweetAlertDialog2.setContentText("盘点结果已经提交，请重新开始盘点！");
-                sweetAlertDialog2.setConfirmButton("确定", new SweetAlertDialog.OnSweetClickListener() {
-                    @Override
-                    public void onClick(SweetAlertDialog sweetAlertDialog) {
-                        sweetAlertDialog2.hide();
-                    }
-                });
+                sweetAlertDialog2.setConfirmButton("确定",
+                        new SweetAlertDialog.OnSweetClickListener() {
+                            @Override
+                            public void onClick(SweetAlertDialog sweetAlertDialog) {
+                                sweetAlertDialog2.hide();
+                            }
+                        });
                 sweetAlertDialog2.show();
                 return;
             }
@@ -321,14 +342,16 @@ public class AreaCheckActitity extends AppCompatActivity {
             if (!connector.isConnected()) {
                 //实时扫描多少个物资
                 if (!connector.connectCom(WmsContanst.TTYS1, WmsContanst.baud)) {
-                    final SweetAlertDialog sweetAlertDialog3 = new SweetAlertDialog(getBaseContext(), SweetAlertDialog.ERROR_TYPE);
+                    final SweetAlertDialog sweetAlertDialog3 =
+                            new SweetAlertDialog(getBaseContext(), SweetAlertDialog.ERROR_TYPE);
                     sweetAlertDialog3.setContentText("RFID设备模块读取失败！");
-                    sweetAlertDialog3.setConfirmButton("确定", new SweetAlertDialog.OnSweetClickListener() {
-                        @Override
-                        public void onClick(SweetAlertDialog sweetAlertDialog) {
-                            sweetAlertDialog3.hide();
-                        }
-                    });
+                    sweetAlertDialog3.setConfirmButton("确定",
+                            new SweetAlertDialog.OnSweetClickListener() {
+                                @Override
+                                public void onClick(SweetAlertDialog sweetAlertDialog) {
+                                    sweetAlertDialog3.hide();
+                                }
+                            });
                     sweetAlertDialog3.show();
                     return;
                 }
@@ -343,7 +366,8 @@ public class AreaCheckActitity extends AppCompatActivity {
         } catch (Exception e) {
             Log.d(TAG, e.toString());
             e.printStackTrace();
-            SweetAlertDialog sweetAlertDialog = new SweetAlertDialog(getBaseContext(), SweetAlertDialog.ERROR_TYPE);
+            SweetAlertDialog sweetAlertDialog = new SweetAlertDialog(getBaseContext(),
+                    SweetAlertDialog.ERROR_TYPE);
             sweetAlertDialog.setContentText("RFID设备模块读取失败！");
             sweetAlertDialog.show();
             return;
@@ -361,7 +385,8 @@ public class AreaCheckActitity extends AppCompatActivity {
                 mReader.unRegisterObserver(rxObserver);
                 //RFID模块下线
                 pTipDialog.hide();
-//                SweetAlertDialog playDialog = new SweetAlertDialog(AreaCheckActitity.this, SweetAlertDialog.PROGRESS_TYPE);
+//                SweetAlertDialog playDialog = new SweetAlertDialog(AreaCheckActitity.this,
+//                SweetAlertDialog.PROGRESS_TYPE);
 //                playDialog.setContentText("正在汇总盘点数据，请稍候");
 //                playDialog.show();
 
@@ -399,7 +424,8 @@ public class AreaCheckActitity extends AppCompatActivity {
 
         paramsMap.put("data", dataMap);
 
-        final SweetAlertDialog pDialog = new SweetAlertDialog(AreaCheckActitity.this, SweetAlertDialog.PROGRESS_TYPE);
+        final SweetAlertDialog pDialog = new SweetAlertDialog(AreaCheckActitity.this,
+                SweetAlertDialog.PROGRESS_TYPE);
         pDialog.getProgressHelper().setBarColor(Color.parseColor("#A5DC86"));
         pDialog.setTitleText("正在提交物资盘点清单，请稍候");
         pDialog.setCancelable(false);
@@ -412,7 +438,8 @@ public class AreaCheckActitity extends AppCompatActivity {
                         pDialog.hide();
                         Log.d(TAG, e.getMessage());
                         e.printStackTrace();
-                        SweetAlertDialog sweetAlertDialog = new SweetAlertDialog(getBaseContext(), SweetAlertDialog.ERROR_TYPE);
+                        SweetAlertDialog sweetAlertDialog = new SweetAlertDialog(getBaseContext()
+                                , SweetAlertDialog.ERROR_TYPE);
                         sweetAlertDialog.setContentText("提交盘存结果失败！");
                         sweetAlertDialog.show();
                     }
@@ -428,30 +455,35 @@ public class AreaCheckActitity extends AppCompatActivity {
 
                             ResultBean resultBean = JSON.parseObject(response, ResultBean.class);
 
-                            String respMsg = 0 == resultBean.getCode() ? "成功" : resultBean.getErrorMsg();
+                            String respMsg = 0 == resultBean.getCode() ? "成功" :
+                                    resultBean.getErrorMsg();
 
-                            SweetAlertDialog sweetAlertDialog = new SweetAlertDialog(AreaCheckActitity.this,
-                                    SweetAlertDialog.SUCCESS_TYPE);
+                            SweetAlertDialog sweetAlertDialog =
+                                    new SweetAlertDialog(AreaCheckActitity.this,
+                                            SweetAlertDialog.SUCCESS_TYPE);
                             sweetAlertDialog.setContentText("仓储区域盘点结果提交" + respMsg + "！");
-                            sweetAlertDialog.setConfirmButton("确定", new SweetAlertDialog.OnSweetClickListener() {
-                                @Override
-                                public void onClick(SweetAlertDialog sweetAlertDialog) {
-                                    //connector.disConnect();
+                            sweetAlertDialog.setConfirmButton("确定",
+                                    new SweetAlertDialog.OnSweetClickListener() {
+                                        @Override
+                                        public void onClick(SweetAlertDialog sweetAlertDialog) {
+                                            //connector.disConnect();
 //                                    if(mReader!=null) {
 //                                        mReader.unRegisterObserver(rxObserver);
 //                                    }
 //                                    moduleManager.setUHFStatus(false);
 //                                    moduleManager.release();
-                                    sweetAlertDialog.hide();
-                                }
-                            });
+                                            sweetAlertDialog.hide();
+                                        }
+                                    });
                             sweetAlertDialog.setCancelable(true);
                             sweetAlertDialog.show();
                         } catch (Exception e) {
                             pDialog.hide();
                             Log.d(TAG, e.getMessage());
                             e.printStackTrace();
-                            SweetAlertDialog sweetAlertDialog = new SweetAlertDialog(getBaseContext(), SweetAlertDialog.ERROR_TYPE);
+                            SweetAlertDialog sweetAlertDialog =
+                                    new SweetAlertDialog(getBaseContext(),
+                                            SweetAlertDialog.ERROR_TYPE);
                             sweetAlertDialog.setContentText("提交盘存结果失败！");
                             sweetAlertDialog.show();
                         }
@@ -505,9 +537,9 @@ public class AreaCheckActitity extends AppCompatActivity {
 //        }
         if (pTipDialog != null) {
             pTipDialog.dismiss();
-            prgorssDialog.dismiss();
+            //prgorssDialog.dismiss();
             pTipDialog = null;
-            prgorssDialog=null;
+            //prgorssDialog=null;
         }
     }
 
@@ -515,7 +547,8 @@ public class AreaCheckActitity extends AppCompatActivity {
     public void onBackPressed() {
         //super.onBackPressed();
         if (epcCodeList.size() != 0 && !isSubmit) {
-            SweetAlertDialog sweetAlertDialog = new SweetAlertDialog(AreaCheckActitity.this, SweetAlertDialog.ERROR_TYPE);
+            SweetAlertDialog sweetAlertDialog = new SweetAlertDialog(AreaCheckActitity.this,
+                    SweetAlertDialog.WARNING_TYPE);
             sweetAlertDialog.setContentText("您的盘点结果未提交，请提交盘点结果！");
             sweetAlertDialog.setCancelable(false);
             sweetAlertDialog.setConfirmButton("提交", new SweetAlertDialog.OnSweetClickListener() {

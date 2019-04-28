@@ -33,6 +33,7 @@ import com.util.OkhttpUtil;
 import com.util.StatusBarUtil;
 
 import java.lang.reflect.Type;
+import java.net.SocketTimeoutException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -83,19 +84,25 @@ public class OutTimeActivity extends AppCompatActivity {
                         rfidList.add(materialInfo.getFridCode());
                     }
 
+                    if (materialInfoList == null || materialInfoList.size() == 0) {
+                        return;
+                    }
+
                     adapter = new SchduleOnAdapter(getBaseContext(), materialInfoList);
                     listView.setAdapter(adapter);
 
-                    SweetAlertDialog sweetAlertDialog = new SweetAlertDialog(OutTimeActivity.this, SweetAlertDialog.SUCCESS_TYPE);
+                    SweetAlertDialog sweetAlertDialog = new SweetAlertDialog(OutTimeActivity.this
+                            , SweetAlertDialog.SUCCESS_TYPE);
                     sweetAlertDialog.setContentText("物资清单下载成功！");
-                    sweetAlertDialog.setConfirmButton("开始盘点", new SweetAlertDialog.OnSweetClickListener() {
-                        @Override
-                        public void onClick(SweetAlertDialog sweetAlertDialog) {
-                            sweetAlertDialog.hide();
-                            inventoryAction("begin");
+                    sweetAlertDialog.setConfirmButton("开始盘点",
+                            new SweetAlertDialog.OnSweetClickListener() {
+                                @Override
+                                public void onClick(SweetAlertDialog sweetAlertDialog) {
+                                    sweetAlertDialog.hide();
+                                    inventoryAction("begin");
 
-                        }
-                    });
+                                }
+                            });
                     sweetAlertDialog.setCancelable(true);
                     sweetAlertDialog.show();
                     break;
@@ -118,19 +125,15 @@ public class OutTimeActivity extends AppCompatActivity {
             String epcCode = tag.strEPC;
 
             //如果不是重复扫描并且包含在物资盘点清单中，则直接蜂鸣声音并更新数量&& rfidList.contains(epcCode)
-            if (!epcCodeList.contains(epcCode)) {
-                //if (rfidList.contains(epcCode)) {
-
-                Log.d(TAG, epcCode);
+            if (!epcCodeList.contains(epcCode)
+                        && rfidList.contains(epcCode)) {
+                Log.d(TAG, "已读取到RFID码【" + epcCode + "】");
                 epcCodeList.add(epcCode);
                 epcSize++;
 
                 Message message = Message.obtain();
                 message.what = 2;
                 myHandler.sendMessage(message);
-
-
-                //}
             }
         }
 
@@ -182,11 +185,12 @@ public class OutTimeActivity extends AppCompatActivity {
         listView.setItemAnimForTopIn(R.anim.topitem_in);
         listView.setItemAnimForBottomIn(R.anim.bottomitem_in);
 
-        prgorssDialog = new SweetAlertDialog(OutTimeActivity.this, SweetAlertDialog.PROGRESS_TYPE);
-        prgorssDialog.getProgressHelper().setBarColor(Color.parseColor("#A5DC86"));
-        prgorssDialog.setTitleText("正在读取物资盘点清单，请稍候");
-        prgorssDialog.setCancelable(false);
-        prgorssDialog.show();
+        // prgorssDialog = new SweetAlertDialog(OutTimeActivity.this, SweetAlertDialog
+        // .PROGRESS_TYPE);
+//        prgorssDialog.getProgressHelper().setBarColor(Color.parseColor("#A5DC86"));
+//        prgorssDialog.setTitleText("正在读取物资盘点清单，请稍候");
+//        prgorssDialog.setCancelable(false);
+//        prgorssDialog.show();
 
         new Thread(new Runnable() {
             @Override
@@ -195,15 +199,15 @@ public class OutTimeActivity extends AppCompatActivity {
             }
         }).start();
 
-        //listView.refresh(); // 主动下拉刷新
+        listView.refresh(); // 主动下拉刷新
 
         // 下拉刷新事件回调（可选）
-       /* listView.setOnRefreshStartListener(new ZrcListView.OnStartListener() {
+        listView.setOnRefreshStartListener(new ZrcListView.OnStartListener() {
             @Override
             public void onStart() {
-                refresh();
+                initData();
             }
-        });*/
+        });
     }
 
     /**
@@ -221,32 +225,43 @@ public class OutTimeActivity extends AppCompatActivity {
                 new CallBackUtil.CallBackString() {//回调
                     @Override
                     public void onFailure(Call call, Exception e) {
-                        e.printStackTrace();
-                        Log.e(TAG, e.getMessage());
-                        prgorssDialog.hide();
-                        SweetAlertDialog sweetAlertDialog = new SweetAlertDialog(OutTimeActivity.this, SweetAlertDialog.ERROR_TYPE);
-                        sweetAlertDialog.setContentText("物资清单下载失败！");
+
+                        listView.setRefreshFail("加载失败");
+
+                        Log.e(TAG, e.toString());
+
+                        String errMsg = "物资清单下载失败！";
+                        if (e instanceof SocketTimeoutException) {
+                            errMsg = "网络连接超时,请下拉刷新重试！";
+                        }
+
+                        SweetAlertDialog sweetAlertDialog =
+                                new SweetAlertDialog(OutTimeActivity.this,
+                                        SweetAlertDialog.ERROR_TYPE);
+                        sweetAlertDialog.setContentText(errMsg);
+                        sweetAlertDialog.setConfirmButton("确定",
+                                new SweetAlertDialog.OnSweetClickListener() {
+                                    @Override
+                                    public void onClick(SweetAlertDialog sweetAlertDialog) {
+                                        sweetAlertDialog.hide();
+                                    }
+                                });
                         sweetAlertDialog.show();
                     }
 
                     @Override
                     public void onResponse(String response) {
                         try {
-                            // if (response.isSuccessful()) {
-                            //下载物资清单
-                            //String responseBody = response.body().string();
-                            prgorssDialog.hide();
+                            listView.setRefreshSuccess("加载成功");
                             Message message = Message.obtain();
                             message.what = 1;
                             message.obj = response;
-
                             myHandler.sendMessage(message);
-
-                            //}
                         } catch (Exception e) {
-                            prgorssDialog.hide();
                             Log.e(TAG, e.toString());
-                            SweetAlertDialog sweetAlertDialog = new SweetAlertDialog(OutTimeActivity.this, SweetAlertDialog.ERROR_TYPE);
+                            SweetAlertDialog sweetAlertDialog =
+                                    new SweetAlertDialog(OutTimeActivity.this,
+                                            SweetAlertDialog.ERROR_TYPE);
                             sweetAlertDialog.setContentText("物资清单下载失败！");
                             sweetAlertDialog.show();
                         }
@@ -276,14 +291,16 @@ public class OutTimeActivity extends AppCompatActivity {
             if (!connector.isConnected()) {
                 //实时扫描多少个物资
                 if (!connector.connectCom(WmsContanst.TTYS1, WmsContanst.baud)) {
-                    final SweetAlertDialog sweetAlertDialog3 = new SweetAlertDialog(getBaseContext(), SweetAlertDialog.ERROR_TYPE);
+                    final SweetAlertDialog sweetAlertDialog3 =
+                            new SweetAlertDialog(getBaseContext(), SweetAlertDialog.ERROR_TYPE);
                     sweetAlertDialog3.setContentText("RFID设备模块读取失败！");
-                    sweetAlertDialog3.setConfirmButton("确定", new SweetAlertDialog.OnSweetClickListener() {
-                        @Override
-                        public void onClick(SweetAlertDialog sweetAlertDialog) {
-                            sweetAlertDialog3.hide();
-                        }
-                    });
+                    sweetAlertDialog3.setConfirmButton("确定",
+                            new SweetAlertDialog.OnSweetClickListener() {
+                                @Override
+                                public void onClick(SweetAlertDialog sweetAlertDialog) {
+                                    sweetAlertDialog3.hide();
+                                }
+                            });
                     sweetAlertDialog3.show();
                     return;
                 }
@@ -298,7 +315,8 @@ public class OutTimeActivity extends AppCompatActivity {
         } catch (Exception e) {
             Log.d(TAG, e.toString());
             e.printStackTrace();
-            SweetAlertDialog sweetAlertDialog = new SweetAlertDialog(getBaseContext(), SweetAlertDialog.ERROR_TYPE);
+            SweetAlertDialog sweetAlertDialog = new SweetAlertDialog(getBaseContext(),
+                    SweetAlertDialog.ERROR_TYPE);
             sweetAlertDialog.setContentText("RFID设备模块读取失败！");
             sweetAlertDialog.show();
             return;
@@ -320,7 +338,8 @@ public class OutTimeActivity extends AppCompatActivity {
                 mReader.unRegisterObserver(rxObserver);
                 pTipDialog.hide();
 
-//                SweetAlertDialog playDialog = new SweetAlertDialog(OutTimeActivity.this, SweetAlertDialog.PROGRESS_TYPE);
+//                SweetAlertDialog playDialog = new SweetAlertDialog(OutTimeActivity.this,
+//                SweetAlertDialog.PROGRESS_TYPE);
 //                playDialog.setContentText("正在汇总盘点数据，请稍候");
 //                playDialog.show();
 
@@ -383,8 +402,8 @@ public class OutTimeActivity extends AppCompatActivity {
         if (pTipDialog != null) {
             pTipDialog.dismiss();
             pTipDialog = null;
-            prgorssDialog.dismiss();
-            prgorssDialog = null;
+            //     prgorssDialog.dismiss();
+            //   prgorssDialog = null;
         }
     }
 }

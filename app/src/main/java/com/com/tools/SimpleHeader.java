@@ -57,6 +57,11 @@ public class SimpleHeader implements Headable {
     }
 
     @Override
+    public void stateChange(int state) {
+       this.stateChange(state,null);
+    }
+
+    @Override
     public void stateChange(int state, String msg) {
         if (mState != state) {
             mTime = 0;

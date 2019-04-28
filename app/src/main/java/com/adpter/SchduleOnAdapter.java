@@ -54,6 +54,7 @@ public class SchduleOnAdapter extends BaseAdapter {
             convertView = mInflater.inflate(R.layout.simple_list_item_schedule, null);
             viewHolder.title = (TextView) convertView.findViewById(R.id.tv_schedule_title);
             viewHolder.txCodeTextView = (TextView) convertView.findViewById(R.id.tv_schedule_code);
+            viewHolder.seheduleDataTextView=convertView.findViewById(R.id.tv_schedule_date);
             viewHolder.num = (TextView) convertView.findViewById(R.id.tv_schedule_num);
             viewHolder.actualNum = convertView.findViewById(R.id.tv_actual_schedule_num);
             viewHolder.imageView = (ImageView) convertView.findViewById(R.id.iv_scheduleImage);
@@ -70,6 +71,7 @@ public class SchduleOnAdapter extends BaseAdapter {
         viewHolder.title.setText(waitMaterial.getMaterialName());
         viewHolder.num.setText("1");
         viewHolder.txCodeTextView.setText(waitMaterial.getMaterialBarcode());
+        viewHolder.actualNum.setText(waitMaterial.getProduceDateStr()+" 至 "+waitMaterial.getExpireDateStr());
         viewHolder.actualNum.setText( actualNum.toString());
 
         //是否盘点标志位
@@ -98,6 +100,7 @@ public class SchduleOnAdapter extends BaseAdapter {
         public TextView num;
         public TextView actualNum;
         public TextView txCodeTextView;
+        public TextView seheduleDataTextView;
         public ImageView imageView;
         public LinearLayout iv_scheduleImage_layout;
     }
