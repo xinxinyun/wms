@@ -37,11 +37,11 @@
             android:label="@string/title_activity_sale"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name="com.ui.DbTestActivity"
-            android:label="@string/title_activity_db_test"
+            android:name="com.ui.HomeActivity"
+            android:label="@string/title_activity_sale"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name="com.ui.HomeActivity"
+            android:name="com.ui.SplashScreenActivity"
             android:label="@string/app_name"
             android:launchMode="singleTop"
             android:theme="@android:style/Theme.NoTitleBar"
@@ -51,18 +51,12 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-            <!--
-                <intent-filter>
-                    <action android:name="android.hardware.usb.action.USB_DEVICE_ATTACHED" />
-                </intent-filter>
-            -->
-
             <meta-data
                 android:name="android.hardware.usb.action.USB_DEVICE_ATTACHED"
                 android:resource="@xml/device_filter" />
         </activity>
         <!--
- <activity
+            <activity
              android:name=".ConnectRs232"
              android:theme="@android:style/Theme.NoTitleBar"
              android:windowSoftInputMode="adjustPan"></activity>
