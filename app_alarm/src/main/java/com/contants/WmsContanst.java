@@ -8,32 +8,13 @@ public interface WmsContanst {
     /**
      * 主机IP
      */
-    public static final String HOST = "http://127.0.0.1";
+    public static final String HOST = "http://140.143.58.93:8888/api";
 
-    /**
-     * 仓储库存物资清单
-     */
-    public static final String STORGE_MATERIALINFL = HOST + "/api/getMaa";
 
     /**
      * 仓储库存物资清单盘点结果提交
      */
-    public static final String STORGE_MATERIALINFL_INVENTORY_SUBMIT = HOST + "/api/getMaa";
-
-    /**
-     * 销售库存物资清单
-     */
-    public static final String SALE_MATERIALINFL = HOST + "/api/getMaa";
-
-    /**
-     * 销售库存物资清单盘点结果提交
-     */
-    public static final String SALE_MATERIALINFL_INVENTORY_SUBMIT = HOST + "/api/getMaa";
-
-    /**
-     * 临期物资清单
-     */
-    public static final String OUTTIME_INVENTORY_SUBMIT = HOST + "/api/getMaa";
+    public static final String VERIFY_STOCK = HOST + "/materialOut/checkIfMaterialSell";
 
     /**
      * 波特率
@@ -49,15 +30,5 @@ public interface WmsContanst {
      * 过门程序串口号
      */
     public static final String TTYMXC2 = "/dev/ttymxc2";
-
-    /**
-     * 报警器串口号
-     */
-    public static final String TTYMXC3 = "/dev/ttymxc3";
-
-    /**
-     * 报警器波特率
-     */
-    public static final int BJQ_BAUD = 9600;
 
 }
