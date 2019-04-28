@@ -187,10 +187,9 @@ public class DataService extends Service {
                             //提交成功后从当前缓存中移除EPC码
                             epcCodeList.remove(epcCode);
                             String respMsg = resultBean.getCode() == 0 ? "成功" : "失败";
-                            Log.d(TAG, "[" + epcCode + "]销售库存库出入库"+respMsg);
+                            Log.d(TAG, "[" + epcCode + "]销售库存出库"+respMsg);
                         } catch (Exception e) {
-                            Log.d(TAG, "[" + epcCode + "]销售库存库出入库失败");
-                            Log.d(TAG, e.toString());
+                            Log.d(TAG, "[" + epcCode + "]销售库存库出库失败【错误信息】"+e.toString());
                         }
                     }
                 });
