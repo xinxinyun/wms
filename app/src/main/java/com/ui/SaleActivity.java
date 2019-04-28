@@ -32,6 +32,7 @@ import com.util.CallBackUtil;
 import com.util.OkhttpUtil;
 import com.util.StatusBarUtil;
 
+import java.net.ConnectException;
 import java.net.SocketTimeoutException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -226,23 +227,14 @@ public class SaleActivity extends AppCompatActivity {
                 JSON.toJSONString(paramsMap), headerMap, new CallBackUtil.CallBackString() {//回调
                     @Override
                     public void onFailure(Call call, Exception e) {
-                        listView.setRefreshFail("加载失败");
+                        Log.e(TAG, e.toString());
                         String errMsg = "物资清单下载失败！";
                         if (e instanceof SocketTimeoutException) {
                             errMsg = "网络连接超时,请下拉刷新重试！";
+                        }else if(e instanceof ConnectException){
+                            errMsg = "网络连接失败,请连接网络！";
                         }
-                        SweetAlertDialog sweetAlertDialog =
-                                new SweetAlertDialog(SaleActivity.this,
-                                        SweetAlertDialog.ERROR_TYPE);
-                        sweetAlertDialog.setContentText(errMsg);
-                        sweetAlertDialog.setConfirmButton("确定",
-                                new SweetAlertDialog.OnSweetClickListener() {
-                            @Override
-                            public void onClick(SweetAlertDialog sweetAlertDialog) {
-                                sweetAlertDialog.hide();
-                            }
-                        });
-                        sweetAlertDialog.show();
+                        listView.setRefreshSuccess(errMsg);
                     }
 
                     @Override

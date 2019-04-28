@@ -33,6 +33,7 @@ import com.util.OkhttpUtil;
 import com.util.StatusBarUtil;
 
 import java.lang.reflect.Type;
+import java.net.ConnectException;
 import java.net.SocketTimeoutException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -185,20 +186,6 @@ public class OutTimeActivity extends AppCompatActivity {
         listView.setItemAnimForTopIn(R.anim.topitem_in);
         listView.setItemAnimForBottomIn(R.anim.bottomitem_in);
 
-        // prgorssDialog = new SweetAlertDialog(OutTimeActivity.this, SweetAlertDialog
-        // .PROGRESS_TYPE);
-//        prgorssDialog.getProgressHelper().setBarColor(Color.parseColor("#A5DC86"));
-//        prgorssDialog.setTitleText("正在读取物资盘点清单，请稍候");
-//        prgorssDialog.setCancelable(false);
-//        prgorssDialog.show();
-
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                initData();
-            }
-        }).start();
-
         listView.refresh(); // 主动下拉刷新
 
         // 下拉刷新事件回调（可选）
@@ -225,28 +212,14 @@ public class OutTimeActivity extends AppCompatActivity {
                 new CallBackUtil.CallBackString() {//回调
                     @Override
                     public void onFailure(Call call, Exception e) {
-
-                        listView.setRefreshFail("加载失败");
-
                         Log.e(TAG, e.toString());
-
                         String errMsg = "物资清单下载失败！";
                         if (e instanceof SocketTimeoutException) {
                             errMsg = "网络连接超时,请下拉刷新重试！";
+                        }else if(e instanceof ConnectException){
+                            errMsg = "网络连接失败,请连接网络！";
                         }
-
-                        SweetAlertDialog sweetAlertDialog =
-                                new SweetAlertDialog(OutTimeActivity.this,
-                                        SweetAlertDialog.ERROR_TYPE);
-                        sweetAlertDialog.setContentText(errMsg);
-                        sweetAlertDialog.setConfirmButton("确定",
-                                new SweetAlertDialog.OnSweetClickListener() {
-                                    @Override
-                                    public void onClick(SweetAlertDialog sweetAlertDialog) {
-                                        sweetAlertDialog.hide();
-                                    }
-                                });
-                        sweetAlertDialog.show();
+                        listView.setRefreshSuccess(errMsg);
                     }
 
                     @Override
@@ -259,11 +232,11 @@ public class OutTimeActivity extends AppCompatActivity {
                             myHandler.sendMessage(message);
                         } catch (Exception e) {
                             Log.e(TAG, e.toString());
-                            SweetAlertDialog sweetAlertDialog =
-                                    new SweetAlertDialog(OutTimeActivity.this,
-                                            SweetAlertDialog.ERROR_TYPE);
-                            sweetAlertDialog.setContentText("物资清单下载失败！");
-                            sweetAlertDialog.show();
+                            String errMsg = "物资清单下载失败！";
+                            if (e instanceof SocketTimeoutException) {
+                                errMsg = "网络连接超时,请下拉刷新重试！";
+                            }
+                            listView.setRefreshSuccess(errMsg);
                         }
                     }
                 });
