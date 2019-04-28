@@ -6,6 +6,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -119,8 +120,12 @@ public class RequestUtil {
 
         mOkHttpClient = new OkHttpClient();
 
-        mRequestBuilder = new Request.Builder();
+        //连接超时时间
+        OkHttpClient.Builder builder=mOkHttpClient.newBuilder();
+        builder.connectTimeout(5, TimeUnit.SECONDS);
+        builder.readTimeout(5, TimeUnit.SECONDS);
 
+        mRequestBuilder = new Request.Builder();
         if (mFile != null || mfileList != null || mfileMap != null) {//先判断是否有文件，
 
             setFile();
@@ -394,7 +399,6 @@ public class RequestUtil {
     }
 
     void execute() {
-
         mOkHttpClient.newCall(mOkHttpRequest).enqueue(new Callback() {
 
             @Override

@@ -130,7 +130,7 @@ public class DataService extends Service {
         }
 
         //实时扫描多少个物资
-        if (!connector.connectCom(WmsContanst.TTYS1, WmsContanst.baud)) {
+        if (!connector.connectCom(WmsContanst.TTYMXC2, WmsContanst.baud)) {
             return;
         }
 
@@ -172,7 +172,7 @@ public class DataService extends Service {
         dataMap.put("list", fridList);
 
         paramsMap.put("data", dataMap);
-        Log.d(TAG, JSON.toJSONString(paramsMap));
+        //Log.d(TAG, JSON.toJSONString(paramsMap));
         OkhttpUtil.okHttpPostJson(WmsContanst.STORGE_MATERIALINFL_INVENTORY_SUBMIT,
                 JSON.toJSONString(paramsMap),headerMap, new CallBackUtil.CallBackString() {
                     @Override
@@ -184,8 +184,9 @@ public class DataService extends Service {
                     @Override
                     public void onResponse(String response) {
                         try {
-
                             ResultBean resultBean = JSON.parseObject(response, ResultBean.class);
+                            //提交成功后从当前缓存中移除EPC码
+                            epcCodeList.remove(epcCode);
                             String respMsg = resultBean.getCode() == 0 ? "成功" : "失败";
                             Log.d(TAG, "[" + epcCode + "]仓储库出入库"+respMsg);
                         } catch (Exception e) {
