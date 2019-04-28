@@ -124,10 +124,10 @@ public class OutTimeActivity extends AppCompatActivity {
         protected void onInventoryTag(RXInventoryTag tag) {
 
             String epcCode = tag.strEPC;
-
+            epcCode=epcCode.replaceAll(" ","");
             //如果不是重复扫描并且包含在物资盘点清单中，则直接蜂鸣声音并更新数量&& rfidList.contains(epcCode)
             if (!epcCodeList.contains(epcCode)
-                        && rfidList.contains(epcCode)) {
+                    && rfidList.contains(epcCode)) {
                 Log.d(TAG, "已读取到RFID码【" + epcCode + "】");
                 epcCodeList.add(epcCode);
                 epcSize++;
@@ -216,7 +216,7 @@ public class OutTimeActivity extends AppCompatActivity {
                         String errMsg = "物资清单下载失败！";
                         if (e instanceof SocketTimeoutException) {
                             errMsg = "网络连接超时,请下拉刷新重试！";
-                        }else if(e instanceof ConnectException){
+                        } else if (e instanceof ConnectException) {
                             errMsg = "网络连接失败,请连接网络！";
                         }
                         listView.setRefreshSuccess(errMsg);
@@ -247,6 +247,23 @@ public class OutTimeActivity extends AppCompatActivity {
      * 开始扫描
      */
     private void inventoryAction(String flag) {
+
+        //如果物资计划列表为空，则不进行盘点
+        if (materialInfoList == null || materialInfoList.size() == 0) {
+            final SweetAlertDialog sweetAlertDialog2 =
+                    new SweetAlertDialog(OutTimeActivity.this, SweetAlertDialog.WARNING_TYPE);
+            sweetAlertDialog2.setContentText("未下载到物资清单，请下拉刷新重试！");
+            sweetAlertDialog2.setConfirmButton("确定",
+                    new SweetAlertDialog.OnSweetClickListener() {
+                        @Override
+                        public void onClick(SweetAlertDialog sweetAlertDialog) {
+                            sweetAlertDialog2.hide();
+                            listView.refresh();
+                        }
+                    });
+            sweetAlertDialog2.show();
+            return;
+        }
 
         //开始盘存则清空之前数据，重新盘存,//继续盘存则维持原来数据，累加盘存
         if ("begin".equals(flag)) {

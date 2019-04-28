@@ -50,7 +50,7 @@ public class DataService extends Service {
             switch (msg.what){
                 case 1:
                     String epcCode=(String)msg.obj;
-                    submitInventory(epcCode);
+                    //submitInventory(epcCode);
 
             }
         }
@@ -129,7 +129,7 @@ public class DataService extends Service {
         }
 
         //实时扫描多少个物资
-        if (!connector.connectCom(WmsContanst.TTYMXC2, WmsContanst.baud)) {
+        if (!connector.connectCom(WmsContanst.TTYS1, WmsContanst.baud)) {
             return;
         }
 
@@ -167,11 +167,11 @@ public class DataService extends Service {
         HashMap<String, Object> dataMap = new HashMap<>();
         dataMap.put("type", "1");
         ArrayList<String> fridList=new ArrayList<>();
-        fridList.add(epcCode);
+        fridList.add(epcCode.replaceAll(" ",""));
         dataMap.put("list", fridList);
 
         paramsMap.put("data", dataMap);
-        //Log.d(TAG, JSON.toJSONString(paramsMap));
+        Log.d(TAG, JSON.toJSONString(paramsMap));
         OkhttpUtil.okHttpPostJson(WmsContanst.STORGE_MATERIALINFL_INVENTORY_SUBMIT,
                 JSON.toJSONString(paramsMap),headerMap, new CallBackUtil.CallBackString() {
                     @Override
@@ -183,11 +183,20 @@ public class DataService extends Service {
                     @Override
                     public void onResponse(String response) {
                         try {
+
                             ResultBean resultBean = JSON.parseObject(response, ResultBean.class);
-                            //提交成功后从当前缓存中移除EPC码
-                            epcCodeList.remove(epcCode);
                             String respMsg = resultBean.getCode() == 0 ? "成功" : "失败";
                             Log.d(TAG, "[" + epcCode + "]仓储库出入库"+respMsg);
+
+                            //防止频繁感应，30秒后才认定是正常的出入库
+                            handler.postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    //提交成功后从当前缓存中移除EPC码
+                                    epcCodeList.remove(epcCode);
+                                }
+                            },30000);
+
                         } catch (Exception e) {
                             Log.d(TAG, "[" + epcCode + "]仓储库出入库失败");
                             Log.d(TAG, e.toString());

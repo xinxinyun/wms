@@ -167,7 +167,7 @@ public class DataService extends Service {
         //2=销售区
         dataMap.put("type", "2");
         ArrayList<String> fridList=new ArrayList<>();
-        fridList.add(epcCode);
+        fridList.add(epcCode.replaceAll(" ",""));
         dataMap.put("list", fridList);
 
         paramsMap.put("data", dataMap);
@@ -185,7 +185,16 @@ public class DataService extends Service {
                         try {
                             ResultBean resultBean = JSON.parseObject(response, ResultBean.class);
                             //提交成功后从当前缓存中移除EPC码
-                            epcCodeList.remove(epcCode);
+                            //epcCodeList.remove(epcCode);
+                            //防止频繁感应，30秒后才认定是正常的出入库
+                            handler.postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    //提交成功后从当前缓存中移除EPC码
+                                    epcCodeList.remove(epcCode);
+                                }
+                            },30000);
+
                             String respMsg = resultBean.getCode() == 0 ? "成功" : "失败";
                             Log.d(TAG, "[" + epcCode + "]销售库存出库"+respMsg);
                         } catch (Exception e) {

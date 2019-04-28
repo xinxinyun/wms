@@ -164,7 +164,7 @@ public class DataService extends Service {
         paramsMap.put("token", "wms");
 
         HashMap<String, Object> rfidMap = new HashMap<>();
-        rfidMap.put("rfidCode", epcCode);
+        rfidMap.put("rfidCode", epcCode.replaceAll(" ",""));
 
         paramsMap.put("data", rfidMap);
 
@@ -183,7 +183,7 @@ public class DataService extends Service {
                         try {
                             ResultBean resultBean = JSON.parseObject(response, ResultBean.class);
                             //提交成功后从当前缓存中移除EPC码
-                            epcCodeList.remove(epcCode);
+                            //epcCodeList.remove(epcCode);
                             String respMsg = resultBean.getCode() == 0 ? "成功" : "失败";
 
                             Boolean isSellout=resultBean.getData().get("isSellout");
@@ -196,6 +196,14 @@ public class DataService extends Service {
                                 Thread.sleep(10000);
                                 player.stop();
                             }
+                            //防止频繁感应，30秒后才认定是正常的出入库
+                            handler.postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    //提交成功后从当前缓存中移除EPC码
+                                    epcCodeList.remove(epcCode);
+                                }
+                            },30000);
                             Log.d(TAG, "[" + epcCode + "]销售区过门校验失败"+respMsg);
                         } catch (Exception e) {
                             Log.d(TAG, "[" + epcCode + "]销售区过门校验失败【错误信息】"+e.toString());

@@ -297,6 +297,23 @@ public class AreaCheckActitity extends AppCompatActivity {
      */
     private void inventoryAction(String flag) {
 
+        //如果物资计划列表为空，则不进行盘点
+        if(materialInfoList==null||materialInfoList.size()==0){
+            final SweetAlertDialog sweetAlertDialog2 =
+                    new SweetAlertDialog(AreaCheckActitity.this, SweetAlertDialog.WARNING_TYPE);
+            sweetAlertDialog2.setContentText("未下载到物资清单，请下拉刷新重试！");
+            sweetAlertDialog2.setConfirmButton("确定",
+                    new SweetAlertDialog.OnSweetClickListener() {
+                        @Override
+                        public void onClick(SweetAlertDialog sweetAlertDialog) {
+                            sweetAlertDialog2.hide();
+                            listView.refresh();
+                        }
+                    });
+            sweetAlertDialog2.show();
+            return;
+        }
+
         //开始盘存则清空之前数据，重新盘存,//继续盘存则维持原来数据，累加盘存
         if ("begin".equals(flag)) {
             epcSize = 0;
@@ -403,6 +420,23 @@ public class AreaCheckActitity extends AppCompatActivity {
      * 提交盘点结果
      */
     private void submitInventory() {
+
+        //如果物资计划列表为空，则不进行盘点
+        if(materialInfoList==null||materialInfoList.size()==0){
+            final SweetAlertDialog sweetAlertDialog2 =
+                    new SweetAlertDialog(AreaCheckActitity.this, SweetAlertDialog.WARNING_TYPE);
+            sweetAlertDialog2.setContentText("未下载到物资清单，请下拉刷新重试！");
+            sweetAlertDialog2.setConfirmButton("确定",
+                    new SweetAlertDialog.OnSweetClickListener() {
+                        @Override
+                        public void onClick(SweetAlertDialog sweetAlertDialog) {
+                            sweetAlertDialog2.hide();
+                            listView.refresh();
+                        }
+                    });
+            sweetAlertDialog2.show();
+            return;
+        }
 
         HashMap<String, String> headerMap = new HashMap<>();
         HashMap<String, Object> paramsMap = new HashMap<>();
