@@ -11,7 +11,6 @@ import android.util.Log;
 import com.alibaba.fastjson.JSON;
 import com.bean.ResultBean;
 import com.birbit.android.jobqueue.JobManager;
-import com.com.tools.Beeper;
 import com.contants.WmsContanst;
 import com.module.interaction.ModuleConnector;
 import com.nativec.tools.ModuleManager;
@@ -73,7 +72,7 @@ public class DataService extends Service {
                 //jobManager.addJobInBackground(new StorgeJob(epcCode));
                 //submitInventory(epcCode);
                 //调用蜂鸣声提示已扫描到商品
-                Beeper.beep(Beeper.BEEPER_SHORT);
+               // Beeper.beep(Beeper.BEEPER_SHORT);
 
                 Message message= Message.obtain();
                 message.what=1;

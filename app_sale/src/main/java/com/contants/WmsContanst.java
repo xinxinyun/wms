@@ -13,7 +13,7 @@ public interface WmsContanst {
     /**
      * 物资销售出库
      */
-    public static final String STORGE_MATERIALINFL_INVENTORY_SUBMIT = HOST + "/materialOut/materialSellOut";
+    public static final String STORGE_MATERIALINFL_INVENTORY_SUBMIT = HOST + "/inventoryChange/inventoryChangeBatch";
 
     /**
      * 波特率

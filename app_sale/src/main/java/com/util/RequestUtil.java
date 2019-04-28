@@ -395,6 +395,7 @@ public class RequestUtil {
 
     void execute() {
 
+        //异步调用
         mOkHttpClient.newCall(mOkHttpRequest).enqueue(new Callback() {
 
             @Override

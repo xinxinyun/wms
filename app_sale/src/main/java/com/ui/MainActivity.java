@@ -20,7 +20,7 @@ public class MainActivity extends AppCompatActivity {
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        toolbar.setTitle("门店消磁程序");
+        toolbar.setTitle("销售实时库存监听");
 
         new Thread(new Runnable() {
             @Override
