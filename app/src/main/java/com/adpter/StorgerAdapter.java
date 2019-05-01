@@ -70,18 +70,20 @@ public class StorgerAdapter extends BaseAdapter {
         viewHolder.actualNum.setText(actualNum.toString());
 
         if (actualNum == num) {
-            viewHolder.actualNum.setText(actualNum);
+            viewHolder.actualNum.setText(""+actualNum);
             viewHolder.imageView.setImageResource(R.drawable.right);
             LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) viewHolder.scheduleImageLayout.getLayoutParams();
-            params.setMargins(70, 0, 0, 0);
+            params.setMargins(35, 0, 0, 0);
         } else if (actualNum > num) {
-            viewHolder.imageView.setVisibility(View.GONE);
-            viewHolder.actualNum.setText("+" + (actualNum - num));
+            viewHolder.imageView.setImageResource(R.drawable.nocheck);
+            LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) viewHolder.scheduleImageLayout.getLayoutParams();
+            params.setMargins(35, 0, 0, 0);
+            viewHolder.actualNum.setText("" + (actualNum - num));
         } else if (actualNum < num && actualNum != 0) {
-            viewHolder.actualNum.setText("  "+actualNum);
+            viewHolder.actualNum.setText(""+actualNum);
             viewHolder.imageView.setBackgroundResource(R.drawable.nocheck);
             LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) viewHolder.scheduleImageLayout.getLayoutParams();
-            params.setMargins(70, 0, 0, 0);
+            params.setMargins(35, 0, 0, 0);
         }
 
         return convertView;

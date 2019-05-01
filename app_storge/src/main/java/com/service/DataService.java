@@ -50,7 +50,7 @@ public class DataService extends Service {
             switch (msg.what){
                 case 1:
                     String epcCode=(String)msg.obj;
-                    //submitInventory(epcCode);
+                    submitInventory(epcCode);
 
             }
         }
@@ -129,7 +129,7 @@ public class DataService extends Service {
         }
 
         //实时扫描多少个物资
-        if (!connector.connectCom(WmsContanst.TTYS1, WmsContanst.baud)) {
+        if (!connector.connectCom(WmsContanst.TTYMXC2, WmsContanst.baud)) {
             return;
         }
 

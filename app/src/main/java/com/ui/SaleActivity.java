@@ -32,6 +32,7 @@ import com.util.CallBackUtil;
 import com.util.OkhttpUtil;
 import com.util.StatusBarUtil;
 
+import java.math.BigInteger;
 import java.net.ConnectException;
 import java.net.SocketTimeoutException;
 import java.util.ArrayList;
@@ -117,16 +118,22 @@ public class SaleActivity extends AppCompatActivity {
         protected void onInventoryTag(RXInventoryTag tag) {
             String epcCode = tag.strEPC;
             if (!epcCodeList.contains(epcCode)) {
+
                 Log.d(TAG, "已读取到RFID码【" + epcCode + "】");
+
                 epcCodeList.add(epcCode);
                 epcSize++;
+
+                epcCode=epcCode.replaceAll(" ","");
                 //获取条形码值
-                String barCode = epcCode.substring(0, 8);
+                String barCode=new BigInteger(epcCode, 16).
+                        toString(10).substring(0,13);
                 if (playMap.containsKey(barCode)) {
                     playMap.put(barCode, playMap.get(barCode).intValue() + 1);
                 } else {
-                    playMap.put(barCode, 0);
+                    playMap.put(barCode, 1);
                 }
+
                 Message message = Message.obtain();
                 message.what = 2;
                 myHandler.sendMessage(message);
@@ -370,7 +377,7 @@ public class SaleActivity extends AppCompatActivity {
                         materialInfo.setCheckQuantity(playMap.get(materialBarCode));
                     }
                 }
-
+                adapter.notifyDataSetChanged();
                 //playDialog.hide();
             }
         });

@@ -125,6 +125,7 @@ public class OutTimeActivity extends AppCompatActivity {
 
             String epcCode = tag.strEPC;
             epcCode=epcCode.replaceAll(" ","");
+
             //如果不是重复扫描并且包含在物资盘点清单中，则直接蜂鸣声音并更新数量&& rfidList.contains(epcCode)
             if (!epcCodeList.contains(epcCode)
                     && rfidList.contains(epcCode)) {
@@ -367,6 +368,8 @@ public class OutTimeActivity extends AppCompatActivity {
                 inventoryAction("continue");
                 break;
             case R.id.menu_schedule_endInventory:
+                epcCodeList.clear();
+                epcSize=0;
                 //结束复查，纯粹是为了实现RFID模块掉电的功能
                 ModuleManager.newInstance().setUHFStatus(false);
                 ModuleManager.newInstance().release();

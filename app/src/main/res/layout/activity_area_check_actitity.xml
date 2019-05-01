@@ -19,7 +19,7 @@
             android:layout_gravity="center"
             android:text="仓储区域盘点"
             android:textColor="@color/white"
-            android:textSize="30px" />
+            android:textSize="18sp" />
     </android.support.v7.widget.Toolbar>
 
     <com.com.tools.ZrcListView

@@ -204,7 +204,7 @@ public class DataService extends Service {
                                     epcCodeList.remove(epcCode);
                                 }
                             },30000);
-                            Log.d(TAG, "[" + epcCode + "]销售区过门校验失败"+respMsg);
+                            Log.d(TAG, "[" + epcCode + "]销售区过门校验"+respMsg);
                         } catch (Exception e) {
                             Log.d(TAG, "[" + epcCode + "]销售区过门校验失败【错误信息】"+e.toString());
                         }

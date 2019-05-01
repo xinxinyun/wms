@@ -164,28 +164,29 @@ public class DataService extends Service {
         paramsMap.put("token", "wms");
 
         HashMap<String, Object> dataMap = new HashMap<>();
-        //2=销售区
         dataMap.put("type", "2");
         ArrayList<String> fridList=new ArrayList<>();
         fridList.add(epcCode.replaceAll(" ",""));
         dataMap.put("list", fridList);
 
         paramsMap.put("data", dataMap);
-        //Log.d(TAG, JSON.toJSONString(paramsMap));
+        Log.d(TAG, JSON.toJSONString(paramsMap));
         OkhttpUtil.okHttpPostJson(WmsContanst.STORGE_MATERIALINFL_INVENTORY_SUBMIT,
                 JSON.toJSONString(paramsMap),headerMap, new CallBackUtil.CallBackString() {
                     @Override
                     public void onFailure(Call call, Exception e) {
                         Log.d(TAG, e.getMessage());
-                        Log.d(TAG, "[" + epcCode + "]销售库存库出入库失败");
+                        Log.d(TAG, "[" + epcCode + "]销售库出库失败");
                     }
 
                     @Override
                     public void onResponse(String response) {
                         try {
+
                             ResultBean resultBean = JSON.parseObject(response, ResultBean.class);
-                            //提交成功后从当前缓存中移除EPC码
-                            //epcCodeList.remove(epcCode);
+                            String respMsg = resultBean.getCode() == 0 ? "成功" : "失败";
+                            Log.d(TAG, "[" + epcCode + "]销售库出库"+respMsg);
+
                             //防止频繁感应，30秒后才认定是正常的出入库
                             handler.postDelayed(new Runnable() {
                                 @Override
@@ -195,10 +196,9 @@ public class DataService extends Service {
                                 }
                             },30000);
 
-                            String respMsg = resultBean.getCode() == 0 ? "成功" : "失败";
-                            Log.d(TAG, "[" + epcCode + "]销售库存出库"+respMsg);
                         } catch (Exception e) {
-                            Log.d(TAG, "[" + epcCode + "]销售库存库出库失败【错误信息】"+e.toString());
+                            Log.d(TAG, "[" + epcCode + "]销售出库失败");
+                            Log.d(TAG, e.toString());
                         }
                     }
                 });

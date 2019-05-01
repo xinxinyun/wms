@@ -33,7 +33,7 @@
 
     <TextView
         android:id="@+id/saleNum"
-        android:layout_width="wrap_content"
+        android:layout_width="25dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical|right"
         android:text="0"
@@ -43,11 +43,11 @@
 
     <TextView
         android:id="@+id/actualSaleNum"
-        android:layout_width="wrap_content"
+        android:layout_width="25dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical|right"
         android:text="0"
-        android:layout_marginLeft="24dp"
+        android:layout_marginLeft="20dp"
         android:textColor="#f20813"
         android:textSize="18sp" />
 
@@ -55,7 +55,7 @@
         android:id="@+id/saleLayout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="25dp"
+        android:layout_marginLeft="20dp"
         android:layout_gravity="center_vertical|right">
         <ImageView
             android:id="@+id/iv_saleImage"

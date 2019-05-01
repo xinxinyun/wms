@@ -21,7 +21,6 @@ import com.com.tools.SimpleFooter;
 import com.com.tools.SimpleHeader;
 import com.com.tools.ZrcListView;
 import com.contants.WmsContanst;
-import com.google.gson.Gson;
 import com.module.interaction.ModuleConnector;
 import com.nativec.tools.ModuleManager;
 import com.rfid.RFIDReaderHelper;
@@ -33,6 +32,7 @@ import com.util.CallBackUtil;
 import com.util.OkhttpUtil;
 import com.util.StatusBarUtil;
 
+import java.math.BigInteger;
 import java.net.ConnectException;
 import java.net.SocketTimeoutException;
 import java.util.ArrayList;
@@ -130,14 +130,18 @@ public class AreaCheckActitity extends AppCompatActivity {
                 Log.d(TAG, "已读取到RFID码【" + epcCode + "】");
 
                 epcCodeList.add(epcCode);
+
+                epcCode=epcCode.replaceAll(" ","");
+
                 epcSize++;
 
-                //获取条形码值
-                String barCode = epcCode.substring(0, 8);
+                //获取条形码值,截取13位条形码
+                String barCode=new BigInteger(epcCode, 16).
+                        toString(10).substring(0,13);
                 if (playMap.containsKey(barCode)) {
                     playMap.put(barCode, playMap.get(barCode).intValue() + 1);
                 } else {
-                    playMap.put(barCode, 0);
+                    playMap.put(barCode, 1);
                 }
 
                 Message message = Message.obtain();
@@ -249,10 +253,9 @@ public class AreaCheckActitity extends AppCompatActivity {
         headerMap.put("Content-Type", OkhttpUtil.CONTENT_TYPE);//头部信息
         paramsMap.put("token", "wms");//参数
         paramsMap.put("data", "1");//参数
-        Gson gson = new Gson();
 
         OkhttpUtil.okHttpPostJson(WmsContanst.STORGE_MATERIALINFL,
-                gson.toJson(paramsMap), headerMap, new CallBackUtil.CallBackString() {//回调
+                JSON.toJSONString(paramsMap), headerMap, new CallBackUtil.CallBackString() {//回调
                     @Override
                     public void onFailure(Call call, Exception e) {
                         Log.e(TAG, e.toString());
@@ -271,7 +274,6 @@ public class AreaCheckActitity extends AppCompatActivity {
                             //prgorssDialog.hide();
                             // listView.getHeadable().stateChange(Headable.STATE_REST,null);
                             listView.setRefreshSuccess();
-                            Log.d(TAG, "---------------->" + listView.getHeadable().getState());
                             Message message = Message.obtain();
                             message.what = 1;
                             message.obj = response;
