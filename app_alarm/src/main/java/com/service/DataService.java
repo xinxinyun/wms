@@ -71,7 +71,7 @@ public class DataService extends Service {
                 //添加识别码到消息队列。
                 //jobManager.addJobInBackground(new StorgeJob(epcCode));
                 //调用蜂鸣声提示已扫描到商品
-                //Beeper.beep(Beeper.BEEPER_SHORT);
+               // Beeper.beep(Beeper.BEEPER_SHORT);
                 Message message= Message.obtain();
                 message.what=1;
                 message.obj=epcCode;
@@ -81,6 +81,16 @@ public class DataService extends Service {
 
         @Override
         protected void onInventoryTagEnd(RXInventoryTag.RXInventoryTagEnd endTag) {
+            //当前工作天线
+            int antId = endTag.mCurrentAnt;
+            //Log.d(TAG, "当前工作天线------>[" + antId + "]");
+            //动态切换，如果在1号天线工作，当前盘存结束后切换到2号天线
+            mReader.setWorkAntenna((byte) 0xff, antId == 0 ? (byte) 0x01 : (byte) 0x00);
+            try {
+                Thread.currentThread().sleep(80);
+            } catch (Exception e) {
+                Log.d(TAG, "设置天线失败");
+            }
             mReader.realTimeInventory((byte) 0xff, (byte) 0x01);
         }
     };
@@ -121,23 +131,30 @@ public class DataService extends Service {
      */
     private void startup() {
 
-        //连接状态直接返回
-        if (connector.isConnected())
+        //如果设备在连接状态，则直接退出
+        if (connector.isConnected()) {
             return;
+        }
+
+        //实时扫描多少个物资
+        if (!connector.connectCom(WmsContanst.TTYMXC2, WmsContanst.baud)) {
+            return;
+        }
+
+        ModuleManager.newInstance().setUHFStatus(true);
 
         try {
-            //实时扫描多少个物资
-            if (!connector.connectCom(WmsContanst.TTYMXC2, WmsContanst.baud)) {
-                return;
-            }
-
-            ModuleManager.newInstance().setUHFStatus(true);
-
             mReader = RFIDReaderHelper.getDefaultHelper();
             mReader.registerObserver(rxObserver);
+            //Thread.currentThread().sleep(500);
+            //mReader.setWorkAntenna((byte) 0xff, (byte) 0x01);
             //设定读取间隔时间
             Thread.currentThread().sleep(500);
             mReader.realTimeInventory((byte) 0xff, (byte) 0x01);
+            //设置工作天线频率
+            //mReader.setOutputPower();
+            mReader.setOutputPower((byte) 0xff,(byte)22,(byte)22,(byte)0,(byte)0);
+            //Beeper.beep(Beeper.BEEPER);
         } catch (Exception e) {
             Log.v(TAG, "RFID设备调取失败" + e.getMessage());
             e.printStackTrace();
@@ -161,6 +178,7 @@ public class DataService extends Service {
         HashMap<String, Object> paramsMap = new HashMap<>();
 
         headerMap.put("Content-Type", OkhttpUtil.CONTENT_TYPE);//头部信息
+        headerMap.put("Connection", OkhttpUtil.CONTENT_TYPE);//头部信息
         paramsMap.put("token", "wms");
 
         HashMap<String, Object> rfidMap = new HashMap<>();

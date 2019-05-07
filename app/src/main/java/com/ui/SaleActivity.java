@@ -124,7 +124,7 @@ public class SaleActivity extends AppCompatActivity {
                 epcCodeList.add(epcCode);
                 epcSize++;
 
-                epcCode=epcCode.replaceAll(" ","");
+                epcCode=epcCode.replaceAll(" ","").substring(0,20);
                 //获取条形码值
                 String barCode=new BigInteger(epcCode, 16).
                         toString(10).substring(0,13);

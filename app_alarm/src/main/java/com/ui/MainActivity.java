@@ -1,9 +1,6 @@
 package com.ui;
 
-import android.content.Context;
 import android.content.Intent;
-import android.media.RingtoneManager;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -49,10 +46,5 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    public static Uri getDefaultRingtoneUri(Context ctx, int type) {
-
-        return RingtoneManager.getActualDefaultRingtoneUri(ctx, type);
-
-    }
 
 }

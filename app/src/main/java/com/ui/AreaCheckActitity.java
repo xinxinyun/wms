@@ -131,7 +131,7 @@ public class AreaCheckActitity extends AppCompatActivity {
 
                 epcCodeList.add(epcCode);
 
-                epcCode=epcCode.replaceAll(" ","");
+                epcCode=epcCode.replaceAll(" ","").substring(0,20);
 
                 epcSize++;
 

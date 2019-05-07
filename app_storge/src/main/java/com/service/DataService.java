@@ -43,13 +43,13 @@ public class DataService extends Service {
      */
     private ArrayList<String> epcCodeList = new ArrayList<>();
 
-    private Handler handler=new Handler(){
+    private Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
-            switch (msg.what){
+            switch (msg.what) {
                 case 1:
-                    String epcCode=(String)msg.obj;
+                    String epcCode = (String) msg.obj;
                     submitInventory(epcCode);
 
             }
@@ -63,26 +63,37 @@ public class DataService extends Service {
         @Override
         protected void onInventoryTag(RXInventoryTag tag) {
             String epcCode = tag.strEPC;
+            Log.i(TAG, "------------------>" + epcCode);
             //防止重复读取RFID信息
             if (!epcCodeList.contains(epcCode)) {
 
-                Log.i(TAG,"------------------>"+epcCode);
+                Log.i(TAG, "------------------>" + epcCode);
                 epcCodeList.add(epcCode);
 
                 //jobManager.addJobInBackground(new StorgeJob(epcCode));
                 //submitInventory(epcCode);
                 //调用蜂鸣声提示已扫描到商品
-               // Beeper.beep(Beeper.BEEPER_SHORT);
+                // Beeper.beep(Beeper.BEEPER_SHORT);
 
-                Message message= Message.obtain();
-                message.what=1;
-                message.obj=epcCode;
+                Message message = Message.obtain();
+                message.what = 1;
+                message.obj = epcCode;
                 handler.sendMessage(message);
             }
         }
 
         @Override
         protected void onInventoryTagEnd(RXInventoryTag.RXInventoryTagEnd endTag) {
+            //当前工作天线
+            int antId = endTag.mCurrentAnt;
+            //Log.d(TAG, "当前工作天线------>[" + antId + "]");
+            //动态切换，如果在1号天线工作，当前盘存结束后切换到2号天线
+            mReader.setWorkAntenna((byte) 0xff, antId == 0 ? (byte) 0x01 : (byte) 0x00);
+            try {
+                Thread.currentThread().sleep(80);
+            } catch (Exception e) {
+                Log.d(TAG, "设置天线失败");
+            }
             mReader.realTimeInventory((byte) 0xff, (byte) 0x01);
         }
     };
@@ -124,7 +135,7 @@ public class DataService extends Service {
     private void startup() {
 
         //如果设备在连接状态，则直接退出
-        if(connector.isConnected()){
+        if (connector.isConnected()) {
             return;
         }
 
@@ -138,13 +149,16 @@ public class DataService extends Service {
         try {
             mReader = RFIDReaderHelper.getDefaultHelper();
             mReader.registerObserver(rxObserver);
+            //Thread.currentThread().sleep(500);
+            //mReader.setWorkAntenna((byte) 0xff, (byte) 0x01);
             //设定读取间隔时间
             Thread.currentThread().sleep(500);
             mReader.realTimeInventory((byte) 0xff, (byte) 0x01);
             //设置工作天线频率
             //mReader.setOutputPower();
+            mReader.setOutputPower((byte) 0xff,(byte)21,(byte)21,(byte)0,(byte)0);
         } catch (Exception e) {
-            Log.v(TAG, "RFID设备调取失败"+e.getMessage());
+            Log.v(TAG, "RFID设备调取失败" + e.getMessage());
             e.printStackTrace();
             return;
         }
@@ -166,14 +180,14 @@ public class DataService extends Service {
 
         HashMap<String, Object> dataMap = new HashMap<>();
         dataMap.put("type", "1");
-        ArrayList<String> fridList=new ArrayList<>();
-        fridList.add(epcCode.replaceAll(" ",""));
+        ArrayList<String> fridList = new ArrayList<>();
+        fridList.add(epcCode.replaceAll(" ", ""));
         dataMap.put("list", fridList);
 
         paramsMap.put("data", dataMap);
         Log.d(TAG, JSON.toJSONString(paramsMap));
         OkhttpUtil.okHttpPostJson(WmsContanst.STORGE_MATERIALINFL_INVENTORY_SUBMIT,
-                JSON.toJSONString(paramsMap),headerMap, new CallBackUtil.CallBackString() {
+                JSON.toJSONString(paramsMap), headerMap, new CallBackUtil.CallBackString() {
                     @Override
                     public void onFailure(Call call, Exception e) {
                         Log.d(TAG, e.getMessage());
@@ -186,7 +200,7 @@ public class DataService extends Service {
 
                             ResultBean resultBean = JSON.parseObject(response, ResultBean.class);
                             String respMsg = resultBean.getCode() == 0 ? "成功" : "失败";
-                            Log.d(TAG, "[" + epcCode + "]仓储库出入库"+respMsg);
+                            Log.d(TAG, "[" + epcCode + "]仓储库出入库" + respMsg);
 
                             //防止频繁感应，30秒后才认定是正常的出入库
                             handler.postDelayed(new Runnable() {
@@ -195,7 +209,7 @@ public class DataService extends Service {
                                     //提交成功后从当前缓存中移除EPC码
                                     epcCodeList.remove(epcCode);
                                 }
-                            },30000);
+                            }, 30000);
 
                         } catch (Exception e) {
                             Log.d(TAG, "[" + epcCode + "]仓储库出入库失败");
