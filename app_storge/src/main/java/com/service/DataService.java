@@ -90,11 +90,12 @@ public class DataService extends Service {
             //动态切换，如果在1号天线工作，当前盘存结束后切换到2号天线
             mReader.setWorkAntenna((byte) 0xff, antId == 0 ? (byte) 0x01 : (byte) 0x00);
             try {
-                Thread.currentThread().sleep(80);
+                Thread.currentThread().sleep(60);
             } catch (Exception e) {
-                Log.d(TAG, "设置天线失败");
+               Log.d(TAG, "设置天线失败");
             }
-            mReader.realTimeInventory((byte) 0xff, (byte) 0x01);
+            //mReader.realTimeInventory((byte) 0xff, (byte) 0x01);
+            mReader.customizedSessionTargetInventory((byte) 0xff,(byte) 0x01,(byte) 0x00,(byte) 0x01);
         }
     };
 
@@ -153,7 +154,8 @@ public class DataService extends Service {
             //mReader.setWorkAntenna((byte) 0xff, (byte) 0x01);
             //设定读取间隔时间
             Thread.currentThread().sleep(500);
-            mReader.realTimeInventory((byte) 0xff, (byte) 0x01);
+            //mReader.realTimeInventory((byte) 0xff, (byte) 0x01);
+            mReader.customizedSessionTargetInventory((byte) 0xff,(byte) 0x01,(byte) 0x00,(byte) 0x01);
             //设置工作天线频率
             //mReader.setOutputPower();
             mReader.setOutputPower((byte) 0xff,(byte)21,(byte)21,(byte)0,(byte)0);

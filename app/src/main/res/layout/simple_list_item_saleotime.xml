@@ -61,7 +61,7 @@
             android:id="@+id/iv_saleImage"
             android:layout_width="20dp"
             android:layout_height="20dp"
-            android:src="@drawable/wrong1" />
+            android:background="@drawable/wrong1" />
     </LinearLayout>
 
 </LinearLayout>

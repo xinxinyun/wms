@@ -236,6 +236,9 @@ public class AreaCheckActitity extends AppCompatActivity {
         listView.setOnRefreshStartListener(new ZrcListView.OnStartListener() {
             @Override
             public void onStart() {
+                playMap.clear();
+                epcSize = 0;
+                epcCodeList.clear();
                 initData();
             }
         });

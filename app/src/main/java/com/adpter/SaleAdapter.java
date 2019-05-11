@@ -77,12 +77,14 @@ public class SaleAdapter extends BaseAdapter {
             params.setMargins(35, 0, 0, 0);
         } else if (actualNum > num) {
             viewHolder.imageView.setImageResource(R.drawable.nocheck);
+            viewHolder.imageView.setTag("");
             LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) viewHolder.saleLayout.getLayoutParams();
             params.setMargins(35, 0, 0, 0);
             viewHolder.actualNum.setText("" + (actualNum - num));
         } else if (actualNum < num && actualNum != 0) {
             viewHolder.actualNum.setText("" +actualNum);
             viewHolder.imageView.setImageResource(R.drawable.nocheck);
+            viewHolder.imageView.setTag("");
             LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) viewHolder.saleLayout.getLayoutParams();
             params.setMargins(35, 0, 0, 0);
         }
