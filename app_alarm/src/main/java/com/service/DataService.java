@@ -45,13 +45,13 @@ public class DataService extends Service {
      */
     private ArrayList<String> epcCodeList = new ArrayList<>();
 
-    private Handler handler=new Handler(){
+    private Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
-            switch (msg.what){
+            switch (msg.what) {
                 case 1:
-                    String epcCode=(String)msg.obj;
+                    String epcCode = (String) msg.obj;
                     verifyStock(epcCode);
 
             }
@@ -71,10 +71,10 @@ public class DataService extends Service {
                 //添加识别码到消息队列。
                 //jobManager.addJobInBackground(new StorgeJob(epcCode));
                 //调用蜂鸣声提示已扫描到商品
-               // Beeper.beep(Beeper.BEEPER_SHORT);
-                Message message= Message.obtain();
-                message.what=1;
-                message.obj=epcCode;
+                // Beeper.beep(Beeper.BEEPER_SHORT);
+                Message message = Message.obtain();
+                message.what = 1;
+                message.obj = epcCode;
                 handler.sendMessage(message);
             }
         }
@@ -107,14 +107,14 @@ public class DataService extends Service {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        //shutdown();
+        shutdown();
         Log.v(TAG, "onDestroy 服务关闭时");
     }
 
     @Override
     public boolean onUnbind(Intent intent) {
         Log.v(TAG, "onDestroy 服务关闭时");
-        //shutdown();
+        shutdown();
         return super.onUnbind(intent);
 
     }
@@ -131,29 +131,27 @@ public class DataService extends Service {
      */
     private void startup() {
 
-        //如果设备在连接状态，则直接退出
-        if (connector.isConnected()) {
+        //如果设备在连接状态，则直接退出,实时扫描多少个物资
+        if (connector.isConnected() ||
+                !connector.connectCom(WmsContanst.TTYMXC2,
+                WmsContanst.baud)) {
             return;
         }
-
-        //实时扫描多少个物资
-        if (!connector.connectCom(WmsContanst.TTYMXC2, WmsContanst.baud)) {
-            return;
-        }
-
-        ModuleManager.newInstance().setUHFStatus(true);
 
         try {
+            ModuleManager.newInstance().setUHFStatus(true);
+
             mReader = RFIDReaderHelper.getDefaultHelper();
             mReader.registerObserver(rxObserver);
             //Thread.currentThread().sleep(500);
             //mReader.setWorkAntenna((byte) 0xff, (byte) 0x01);
             //设定读取间隔时间
             Thread.currentThread().sleep(500);
+
             mReader.realTimeInventory((byte) 0xff, (byte) 0x01);
             //设置工作天线频率
             //mReader.setOutputPower();
-            mReader.setOutputPower((byte) 0xff,(byte)22,(byte)22,(byte)0,(byte)0);
+            mReader.setOutputPower((byte) 0xff, (byte) 22, (byte) 22, (byte) 0, (byte) 0);
             //Beeper.beep(Beeper.BEEPER);
         } catch (Exception e) {
             Log.v(TAG, "RFID设备调取失败" + e.getMessage());
@@ -163,6 +161,7 @@ public class DataService extends Service {
     }
 
     private void shutdown() {
+        mReader.unRegisterObserver(rxObserver);
         //RFID模块下线
         ModuleManager.newInstance().setUHFStatus(false);
         ModuleManager.newInstance().release();
@@ -170,6 +169,7 @@ public class DataService extends Service {
 
     /**
      * 是否销售库存校验
+     *
      * @param epcCode
      */
     private void verifyStock(final String epcCode) {
@@ -182,14 +182,14 @@ public class DataService extends Service {
         paramsMap.put("token", "wms");
 
         HashMap<String, Object> rfidMap = new HashMap<>();
-        rfidMap.put("rfidCode", epcCode.replaceAll(" ",""));
+        rfidMap.put("rfidCode", epcCode.replaceAll(" ", ""));
 
         paramsMap.put("data", rfidMap);
 
         Log.d(TAG, JSON.toJSONString(paramsMap));
 
         OkhttpUtil.okHttpPostJson(WmsContanst.VERIFY_STOCK,
-                JSON.toJSONString(paramsMap),headerMap, new CallBackUtil.CallBackString() {
+                JSON.toJSONString(paramsMap), headerMap, new CallBackUtil.CallBackString() {
                     @Override
                     public void onFailure(Call call, Exception e) {
                         Log.d(TAG, e.getMessage());
@@ -202,13 +202,13 @@ public class DataService extends Service {
                             ResultBean resultBean = JSON.parseObject(response, ResultBean.class);
                             //提交成功后从当前缓存中移除EPC码
                             //epcCodeList.remove(epcCode);
-                            String respMsg = resultBean.getCode() == 0 ? "成功" : "失败";
-
-                            Boolean isSellout=resultBean.getData().get("isSellout");
+                            Boolean isSellout = resultBean.getData().get("isSellout");
+                            String respMsg =isSellout ? "已销售" : "未销售";
                             //未销售则报警
-                            if(!isSellout){
-                                MediaPlayer player= MediaPlayer.create(getApplicationContext(), R.raw.jb);
-                                if(!player.isPlaying()) {
+                            if (!isSellout) {
+                                MediaPlayer player = MediaPlayer.create(getApplicationContext(),
+                                        R.raw.jb);
+                                if (!player.isPlaying()) {
                                     player.start();
                                 }
                                 Thread.sleep(10000);
@@ -221,10 +221,10 @@ public class DataService extends Service {
                                     //提交成功后从当前缓存中移除EPC码
                                     epcCodeList.remove(epcCode);
                                 }
-                            },30000);
-                            Log.d(TAG, "[" + epcCode + "]销售区过门校验"+respMsg);
+                            }, 30000);
+                            Log.d(TAG, "RFID码为[" + epcCode + "]的商品" + respMsg);
                         } catch (Exception e) {
-                            Log.d(TAG, "[" + epcCode + "]销售区过门校验失败【错误信息】"+e.toString());
+                            Log.d(TAG, "[" + epcCode + "]销售区过门校验失败【错误信息】" + e.toString());
                         }
                     }
                 });
