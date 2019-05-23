@@ -12,16 +12,14 @@ import android.widget.TextView;
 import com.bean.MaterialInfo;
 import com.uhf.uhf.R;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class StorgerAdapter extends BaseAdapter {
 
     private Context context;
     private List<MaterialInfo> materialInfoList;
     private LayoutInflater mInflater;//布局装载器对象
-    private Map<Integer, View> map = new HashMap<Integer, View>();
+
     public StorgerAdapter(Context context,
                           List<MaterialInfo> materialInfoList) {
         this.context = context;
@@ -46,21 +44,20 @@ public class StorgerAdapter extends BaseAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        View view;
+
         ViewHolder viewHolder = null;
         if (viewHolder == null) {
             viewHolder = new ViewHolder();
-            view = mInflater.inflate(R.layout.simple_list_item_1, null);
-            viewHolder.title = (TextView) view.findViewById(R.id.tv_title);
-            viewHolder.txCodeTextView = (TextView) view.findViewById(R.id.tv_txcode);
-            viewHolder.num = (TextView) view.findViewById(R.id.num);
-            viewHolder.actualNum = view.findViewById(R.id.actualNum);
-            viewHolder.imageView = (ImageView) view.findViewById(R.id.iv_storgeImage);
-            viewHolder.scheduleImageLayout = (LinearLayout) view.findViewById(R.id.storgeLayout);
-            view.setTag(viewHolder);
+            convertView = mInflater.inflate(R.layout.simple_list_item_1, null);
+            viewHolder.title = (TextView) convertView.findViewById(R.id.tv_title);
+            viewHolder.txCodeTextView = (TextView) convertView.findViewById(R.id.tv_txcode);
+            viewHolder.num = (TextView) convertView.findViewById(R.id.num);
+            viewHolder.actualNum = convertView.findViewById(R.id.actualNum);
+            viewHolder.imageView = (ImageView) convertView.findViewById(R.id.iv_storgeImage);
+            viewHolder.scheduleImageLayout = (LinearLayout) convertView.findViewById(R.id.storgeLayout);
+            convertView.setTag(viewHolder);
         } else {
-            view = map.get(position);
-            viewHolder = (ViewHolder) view.getTag();
+            viewHolder = (ViewHolder) convertView.getTag();
         }
 
         MaterialInfo waitMaterial = materialInfoList.get(position);
@@ -71,28 +68,26 @@ public class StorgerAdapter extends BaseAdapter {
         viewHolder.num.setText(num.toString());
         viewHolder.txCodeTextView.setText(waitMaterial.getMaterialBarcode());
         viewHolder.actualNum.setText(actualNum.toString());
+        //viewHolder.imageView.setImageResource(R.drawable.right);
 
         if (actualNum == num) {
-            viewHolder.actualNum.setText(""+actualNum);
-            viewHolder.imageView.setTag("");
-            viewHolder.imageView.setImageResource(R.drawable.right);
             LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) viewHolder.scheduleImageLayout.getLayoutParams();
             params.setMargins(35, 0, 0, 0);
+            viewHolder.imageView.setImageResource(R.drawable.right);
+            //viewHolder.actualNum.setText(""+actualNum);
         } else if (actualNum > num) {
-            viewHolder.imageView.setTag("");
             viewHolder.imageView.setImageResource(R.drawable.nocheck);
             LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) viewHolder.scheduleImageLayout.getLayoutParams();
             params.setMargins(35, 0, 0, 0);
-            viewHolder.actualNum.setText("" + (actualNum - num));
+            //viewHolder.actualNum.setText("" + (actualNum - num));
         } else if (actualNum < num && actualNum != 0) {
-            viewHolder.imageView.setTag("");
+            //viewHolder.actualNum.setText(""+actualNum);
             viewHolder.imageView.setBackgroundResource(R.drawable.nocheck);
-            viewHolder.actualNum.setText(""+actualNum);
             LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) viewHolder.scheduleImageLayout.getLayoutParams();
             params.setMargins(35, 0, 0, 0);
         }
 
-        return view;
+        return convertView;
 
     }
 

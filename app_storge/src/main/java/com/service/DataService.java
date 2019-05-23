@@ -63,7 +63,7 @@ public class DataService extends Service {
         @Override
         protected void onInventoryTag(RXInventoryTag tag) {
             String epcCode = tag.strEPC;
-            Log.i(TAG, "------------------>" + epcCode);
+            //Log.i(TAG, "------------------>" + epcCode);
             //防止重复读取RFID信息
             if (!epcCodeList.contains(epcCode)) {
 

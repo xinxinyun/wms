@@ -9,13 +9,18 @@ import android.view.View;
 import com.uhf.uhf.R;
 import com.ui.base.BaseActivity;
 import com.util.StatusBarUtil;
+import com.xuexiang.xupdate.XUpdate;
 
 //
 public class HomeActivity extends BaseActivity implements View.OnClickListener {
 
+    private String mUpdateUrl = "https://raw.githubusercontent.com/xuexiangjys/XUpdate/master/jsonapi/update_test.json";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_home);
 
         StatusBarUtil.setRootViewFitsSystemWindows(this, true);
@@ -32,7 +37,6 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener {
         //}
         StatusBarUtil.getStatusBarLightMode(getWindow());
 
-
         CardView cardView = findViewById(R.id.cardView);
         CardView saleCardView = findViewById(R.id.saleCardView);
 
@@ -43,6 +47,11 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener {
         saleCardView.setOnClickListener(this);
         outTimeCardView.setOnClickListener(this);
         aboutCardView.setOnClickListener(this);
+
+        XUpdate.newBuild(this)
+                .updateUrl(mUpdateUrl)
+                .supportBackgroundUpdate(true)
+                .update();
     }
 
     @Override

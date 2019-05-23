@@ -87,7 +87,7 @@ public class DataService extends Service {
             //动态切换，如果在1号天线工作，当前盘存结束后切换到2号天线
             mReader.setWorkAntenna((byte) 0xff, antId == 0 ? (byte) 0x01 : (byte) 0x00);
             try {
-                Thread.currentThread().sleep(80);
+                Thread.currentThread().sleep(60);
             } catch (Exception e) {
                 Log.d(TAG, "设置天线失败");
             }
@@ -107,14 +107,14 @@ public class DataService extends Service {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        shutdown();
+        //shutdown();
         Log.v(TAG, "onDestroy 服务关闭时");
     }
 
     @Override
     public boolean onUnbind(Intent intent) {
         Log.v(TAG, "onDestroy 服务关闭时");
-        shutdown();
+        //shutdown();
         return super.onUnbind(intent);
 
     }
