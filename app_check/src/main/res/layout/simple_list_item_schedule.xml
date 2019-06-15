@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/white"
+    android:orientation="horizontal">
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="65dp"
+        android:layout_marginLeft="17dp"
+        android:layout_marginRight="6dp"
+        android:gravity="center_vertical|left"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/tv_schedule_title"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:text="Title"
+            android:textColor="@color/black"
+            android:textSize="15dp" />
+
+        <TextView
+            android:id="@+id/tv_schedule_code"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:layout_gravity="left"
+            android:text="Title"
+            android:textColor="#999999"
+            android:textSize="12sp" />
+        <TextView
+            android:id="@+id/tv_schedule_date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="left"
+            android:layout_marginTop="2dp"
+            android:text="2019-04-20 至 2019-04-30"
+            android:textColor="#FF0000"
+            android:textSize="12sp" />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/tv_schedule_num"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical|right"
+        android:text="0"
+        android:layout_marginLeft="30dp"
+        android:textColor="#f20813"
+        android:textSize="18sp" />
+
+    <TextView
+        android:id="@+id/tv_actual_schedule_num"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical|right"
+        android:text="0"
+        android:layout_marginLeft="30dp"
+        android:textColor="#f20813"
+        android:textSize="18sp" />
+
+    <LinearLayout
+        android:id="@+id/iv_scheduleImage_layout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="25dp"
+        android:layout_gravity="center_vertical|right">
+        <ImageView
+            android:id="@+id/iv_scheduleImage"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:background="@drawable/wrong1" />
+    </LinearLayout>
+
+</LinearLayout>

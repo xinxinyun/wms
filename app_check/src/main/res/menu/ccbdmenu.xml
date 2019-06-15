@@ -1,0 +1,24 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/menu_beginInventonry"
+        android:orderInCategory="1"
+        android:contentDescription="1111111111111111"
+        android:title="开始物资盘存"
+        app:showAsAction= "collapseActionView"/>
+    <item
+        android:id="@+id/menu_revertInventory"
+        android:orderInCategory="2"
+        android:title="物资盘存复查"
+        app:showAsAction="never" />
+   <!-- <item
+        android:id="@+id/menu_endInventory"
+        android:orderInCategory="3"
+        android:title="结束物资盘存"
+        app:showAsAction="never" />-->
+    <item
+        android:id="@+id/menu_submitInventory"
+        android:orderInCategory="3"
+        android:title="提交盘存结果"
+        app:showAsAction="never" />
+</menu>

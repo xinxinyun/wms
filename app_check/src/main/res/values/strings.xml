@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">睿平台</string>
+    <string name="title_activity_sale">SaleActivity</string>
+    <string name="title_activity_out_time">OutTimeActivity</string>
+</resources>
