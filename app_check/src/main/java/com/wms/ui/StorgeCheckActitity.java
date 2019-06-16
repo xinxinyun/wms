@@ -316,11 +316,10 @@ public class StorgeCheckActitity extends AppCompatActivity implements BackResult
 
         MyLib myLib = MyApp.getMyApp().getIdataLib();
         //RFID模块上电
-        MLog.e("RFID上电 = " + MyApp.getMyApp().getIdataLib().powerOn());
-        MLog.e("RFID开始盘存 = " + MyApp.getMyApp().getIdataLib().startInventoryTag());
-
+        MLog.e("RFID上电 = " + myLib.powerOn());
         rfidThread.setBackResult(this);
         rfidThread.start();
+        MLog.e("RFID开始盘存 = " + myLib.startInventoryTag());
 
         pTipDialog.setContentText("您当前已盘点" + epcSize + "件物资");
         pTipDialog.setCancelable(false);

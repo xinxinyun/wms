@@ -83,7 +83,7 @@ public class ScheduleCheckActivity extends AppCompatActivity implements BackResu
 
                     SweetAlertDialog sweetAlertDialog =
                             new SweetAlertDialog(ScheduleCheckActivity.this
-                            , SweetAlertDialog.SUCCESS_TYPE);
+                                    , SweetAlertDialog.SUCCESS_TYPE);
                     sweetAlertDialog.setContentText("物资清单下载成功！");
                     sweetAlertDialog.setConfirmButton("开始盘点",
                             new SweetAlertDialog.OnSweetClickListener() {
@@ -252,7 +252,6 @@ public class ScheduleCheckActivity extends AppCompatActivity implements BackResu
         rfidThread.setBackResult(this);
         rfidThread.start();
 
-
         pTipDialog.setContentText("您当前已盘点" + epcSize + "件物资");
         pTipDialog.setCancelable(false);
 
@@ -260,9 +259,7 @@ public class ScheduleCheckActivity extends AppCompatActivity implements BackResu
         pTipDialog.setConfirmButton("查看盘点结果", new SweetAlertDialog.OnSweetClickListener() {
             @Override
             public void onClick(SweetAlertDialog sweetAlertDialog) {
-
                 pTipDialog.hide();
-
                 //汇总计划列表
                 for (MaterialInfo materialInfo : materialInfoList) {
                     String fridCode = materialInfo.getFridCode();
@@ -270,7 +267,6 @@ public class ScheduleCheckActivity extends AppCompatActivity implements BackResu
                         materialInfo.setCheckQuantity(1);
                     }
                 }
-
                 adapter.notifyDataSetChanged();
             }
         });
