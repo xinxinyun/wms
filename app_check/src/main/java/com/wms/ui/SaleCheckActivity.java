@@ -6,6 +6,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -17,13 +18,19 @@ import com.wms.adapter.SaleAdapter;
 import com.wms.bean.MaterialInfo;
 import com.wms.bean.ResultBean;
 import com.wms.contants.WmsContanst;
+import com.wms.event.BackResult;
+import com.wms.event.GetRFIDThread;
+import com.wms.event.MyApp;
+import com.wms.util.Beeper;
 import com.wms.util.CallBackUtil;
+import com.wms.util.MLog;
 import com.wms.util.OkhttpUtil;
 import com.wms.util.SimpleFooter;
 import com.wms.util.SimpleHeader;
 import com.wms.util.StatusBarUtil;
 import com.wms.util.ZrcListView;
 
+import java.math.BigInteger;
 import java.net.ConnectException;
 import java.net.SocketTimeoutException;
 import java.util.ArrayList;
@@ -31,14 +38,17 @@ import java.util.HashMap;
 
 import cn.pedant.SweetAlert.SweetAlertDialog;
 import okhttp3.Call;
+import realid.rfidlib.MyLib;
 
-public class SaleCheckActivity extends AppCompatActivity {
+public class SaleCheckActivity extends AppCompatActivity implements BackResult {
 
     private static final String TAG = "销售区域盘点";
 
     private ZrcListView listView;
     private ArrayList<MaterialInfo> materialInfoList;
     private SaleAdapter adapter;
+
+    private GetRFIDThread rfidThread = GetRFIDThread.getInstance();//RFID标签信息获取线程
 
     /**
      * 缓存EPC码
@@ -66,7 +76,7 @@ public class SaleCheckActivity extends AppCompatActivity {
                 case 1:
                     materialInfoList = JSON.parseObject(msg.obj.toString(),
                             new TypeReference<ArrayList<MaterialInfo>>() {
-                    });
+                            });
                     if (materialInfoList == null || materialInfoList.size() == 0) {
                         return;
                     }
@@ -79,23 +89,56 @@ public class SaleCheckActivity extends AppCompatActivity {
                     sweetAlertDialog.setContentText("物资清单下载成功！");
                     sweetAlertDialog.setConfirmButton("开始盘点",
                             new SweetAlertDialog.OnSweetClickListener() {
-                        @Override
-                        public void onClick(SweetAlertDialog sweetAlertDialog) {
-                            inventoryAction("begin");
-                            sweetAlertDialog.hide();
-                        }
-                    });
+                                @Override
+                                public void onClick(SweetAlertDialog sweetAlertDialog) {
+                                    inventoryAction("begin");
+                                    sweetAlertDialog.hide();
+                                }
+                            });
                     sweetAlertDialog.setCancelable(true);
                     sweetAlertDialog.show();
                     break;
                 case 2:
                     pTipDialog.setContentText("您当前已盘点" + epcSize + "件物资");
                     //调用蜂鸣声提示已扫描到商品
-                    //Beeper.beep(Beeper.BEEPER_SHORT);
+                    Beeper.beep(Beeper.BEEPER_SHORT);
                     break;
             }
         }
     };
+
+    /**
+     * RFID监听
+     *
+     * @param epcCode
+     */
+    @Override
+    public void postResult(String epcCode) {
+
+        if (TextUtils.isEmpty(epcCode) || epcCodeList.contains(epcCode)) {
+            return;
+        }
+
+        Log.d(TAG, "已读取到RFID码【" + epcCode + "】");
+
+        epcSize++;
+        epcCodeList.add(epcCode);
+
+        epcCode = epcCode.replaceAll(" ", "").substring(0, 20);
+
+        //获取条形码值,截取13位条形码
+        String barCode = new BigInteger(epcCode, 16).
+                toString(10).substring(0, 13);
+        if (playMap.containsKey(barCode)) {
+            playMap.put(barCode, playMap.get(barCode).intValue() + 1);
+        } else {
+            playMap.put(barCode, 1);
+        }
+
+        Message message = Message.obtain();
+        message.what = 2;
+        myHandler.sendMessage(message);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -117,12 +160,12 @@ public class SaleCheckActivity extends AppCompatActivity {
                     sweetAlertDialog.setCancelable(false);
                     sweetAlertDialog.setConfirmButton("提交",
                             new SweetAlertDialog.OnSweetClickListener() {
-                        @Override
-                        public void onClick(SweetAlertDialog sweetAlertDialog) {
-                            sweetAlertDialog.hide();
-                            submitInventory();
-                        }
-                    });
+                                @Override
+                                public void onClick(SweetAlertDialog sweetAlertDialog) {
+                                    sweetAlertDialog.hide();
+                                    submitInventory();
+                                }
+                            });
                     sweetAlertDialog.show();
                     return;
                 } else {
@@ -191,7 +234,7 @@ public class SaleCheckActivity extends AppCompatActivity {
                         String errMsg = "物资清单下载失败！";
                         if (e instanceof SocketTimeoutException) {
                             errMsg = "网络连接超时,请下拉刷新重试！";
-                        }else if(e instanceof ConnectException){
+                        } else if (e instanceof ConnectException) {
                             errMsg = "网络连接失败,请连接网络！";
                         }
                         listView.setRefreshSuccess(errMsg);
@@ -222,8 +265,86 @@ public class SaleCheckActivity extends AppCompatActivity {
      * 开始扫描
      */
     private void inventoryAction(String flag) {
+        //如果物资计划列表为空，则不进行盘点
+        if (materialInfoList == null || materialInfoList.size() == 0) {
+            final SweetAlertDialog sweetAlertDialog2 =
+                    new SweetAlertDialog(SaleCheckActivity.this, SweetAlertDialog.WARNING_TYPE);
+            sweetAlertDialog2.setContentText("未下载到物资清单，请下拉刷新重试！");
+            sweetAlertDialog2.setConfirmButton("确定",
+                    new SweetAlertDialog.OnSweetClickListener() {
+                        @Override
+                        public void onClick(SweetAlertDialog sweetAlertDialog) {
+                            sweetAlertDialog2.hide();
+                            listView.refresh();
+                        }
+                    });
+            sweetAlertDialog2.show();
+            return;
+        }
 
-       
+        //开始盘存则清空之前数据，重新盘存,//继续盘存则维持原来数据，累加盘存
+        if ("begin".equals(flag)) {
+            epcSize = 0;
+            epcCodeList.clear();
+        }
+
+        if ("continue".equals(flag)) {
+            if (isSubmit) {
+                final SweetAlertDialog sweetAlertDialog2 =
+                        new SweetAlertDialog(SaleCheckActivity.this
+                                , SweetAlertDialog.WARNING_TYPE);
+                sweetAlertDialog2.setContentText("盘点结果已经提交，请重新开始盘点！");
+                sweetAlertDialog2.setConfirmButton("确定",
+                        new SweetAlertDialog.OnSweetClickListener() {
+                            @Override
+                            public void onClick(SweetAlertDialog sweetAlertDialog) {
+                                sweetAlertDialog2.hide();
+                            }
+                        });
+                sweetAlertDialog2.show();
+                return;
+            }
+            pTipDialog.show();
+        }
+
+
+        MyLib myLib = MyApp.getMyApp().getIdataLib();
+        //RFID模块上电
+        MLog.e("RFID上电 = " + MyApp.getMyApp().getIdataLib().powerOn());
+        MLog.e("RFID开始盘存 = " + MyApp.getMyApp().getIdataLib().startInventoryTag());
+
+        rfidThread.setBackResult(this);
+        rfidThread.start();
+
+        pTipDialog.setContentText("您当前已盘点" + epcSize + "件物资");
+        pTipDialog.setCancelable(false);
+
+        //结束操作
+        pTipDialog.setConfirmButton("查看盘点结果", new SweetAlertDialog.OnSweetClickListener() {
+            @Override
+            public void onClick(SweetAlertDialog sweetAlertDialog) {
+
+                //RFID模块下线
+                MyApp.getMyApp().getIdataLib().powerOff();
+                rfidThread.destoryThread();
+
+                //RFID模块下线
+                pTipDialog.hide();
+
+                //汇总计划列表
+                //转换数据结构，汇总结果
+                for (MaterialInfo materialInfo : materialInfoList) {
+                    String materialBarCode = materialInfo.getMaterialBarcode();
+                    if (playMap.containsKey(materialBarCode)) {
+                        materialInfo.setCheckQuantity(playMap.get(materialBarCode));
+                    }
+                }
+                adapter.notifyDataSetChanged();
+            }
+        });
+
+        pTipDialog.show();
+
     }
 
     /**
@@ -232,7 +353,7 @@ public class SaleCheckActivity extends AppCompatActivity {
     private void submitInventory() {
 
         //如果物资计划列表为空，则不进行盘点
-        if(materialInfoList==null||materialInfoList.size()==0){
+        if (materialInfoList == null || materialInfoList.size() == 0) {
             final SweetAlertDialog sweetAlertDialog2 =
                     new SweetAlertDialog(SaleCheckActivity.this, SweetAlertDialog.WARNING_TYPE);
             sweetAlertDialog2.setContentText("未下载到物资清单，请下拉刷新重试！");
@@ -296,15 +417,15 @@ public class SaleCheckActivity extends AppCompatActivity {
 
                             SweetAlertDialog sweetAlertDialog =
                                     new SweetAlertDialog(SaleCheckActivity.this,
-                                    SweetAlertDialog.SUCCESS_TYPE);
+                                            SweetAlertDialog.SUCCESS_TYPE);
                             sweetAlertDialog.setContentText("销售区域盘点结果提交" + respMsg + "！");
                             sweetAlertDialog.setConfirmButton("确定",
                                     new SweetAlertDialog.OnSweetClickListener() {
-                                @Override
-                                public void onClick(SweetAlertDialog sweetAlertDialog) {
-                                    sweetAlertDialog.hide();
-                                }
-                            });
+                                        @Override
+                                        public void onClick(SweetAlertDialog sweetAlertDialog) {
+                                            sweetAlertDialog.hide();
+                                        }
+                                    });
                             sweetAlertDialog.setCancelable(true);
                             sweetAlertDialog.show();
                         } catch (Exception e) {
@@ -330,19 +451,14 @@ public class SaleCheckActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            //开始盘存
             case R.id.menu_beginInventonry:
+                //开始盘存
                 inventoryAction("begin");
                 break;
             case R.id.menu_revertInventory:
                 //盘存复查
                 inventoryAction("continue");
                 break;
-//            case R.id.menu_endInventory:
-//                //结束复查，纯粹是为了实现RFID模块掉电的功能
-//                ModuleManager.newInstance().setUHFStatus(false);
-//                ModuleManager.newInstance().release();
-//                break;
             case R.id.menu_submitInventory:
                 submitInventory();
                 break;
@@ -353,6 +469,12 @@ public class SaleCheckActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        rfidThread.destoryThread();
+        MLog.e("powoff = " + MyApp.getMyApp().getIdataLib().powerOff());
+        if (pTipDialog != null) {
+            pTipDialog.dismiss();
+            pTipDialog = null;
+        }
     }
 
     @Override

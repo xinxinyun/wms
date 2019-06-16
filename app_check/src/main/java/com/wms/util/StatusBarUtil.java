@@ -12,7 +12,6 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 
-import com.com.tools.SystemBarTintManager;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;

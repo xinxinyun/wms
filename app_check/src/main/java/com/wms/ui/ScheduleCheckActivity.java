@@ -14,9 +14,15 @@ import android.view.View;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.TypeReference;
 import com.wms.adapter.SchduleOnAdapter;
+import com.wms.bean.MaterialInfo;
 import com.wms.bean.MaterialOnSchedule;
 import com.wms.contants.WmsContanst;
+import com.wms.event.BackResult;
+import com.wms.event.GetRFIDThread;
+import com.wms.event.MyApp;
+import com.wms.util.Beeper;
 import com.wms.util.CallBackUtil;
+import com.wms.util.MLog;
 import com.wms.util.OkhttpUtil;
 import com.wms.util.SimpleFooter;
 import com.wms.util.SimpleHeader;
@@ -30,22 +36,20 @@ import java.util.HashMap;
 
 import cn.pedant.SweetAlert.SweetAlertDialog;
 import okhttp3.Call;
+import realid.rfidlib.MyLib;
 
-public class ScheduleCheckActivity extends AppCompatActivity {
+public class ScheduleCheckActivity extends AppCompatActivity implements BackResult {
 
     private static final String TAG = "临期商品盘点";
 
     private ZrcListView listView;
     private ArrayList<MaterialOnSchedule> materialInfoList;
     private SchduleOnAdapter adapter;
-
+    private GetRFIDThread rfidThread = GetRFIDThread.getInstance();//RFID标签信息获取线程
     private ArrayList<String> rfidList = new ArrayList<>();
-
     private SweetAlertDialog pTipDialog;
 
     private int epcSize = 0;
-
-    private SweetAlertDialog prgorssDialog;
 
     /**
      * 缓存EPC码
@@ -61,29 +65,24 @@ public class ScheduleCheckActivity extends AppCompatActivity {
             switch (msg.what) {
                 case 1:
                     //动态更新列表内容
-//                    Gson gson = new Gson();
-//                    Type type = new TypeToken<ArrayList<MaterialOnSchedule>>() {
-//                    }.getType();
-
                     materialInfoList = JSON.parseObject(msg.obj.toString(),
                             new TypeReference<ArrayList<MaterialOnSchedule>>() {
                             });
 
-//                    materialInfoList = gson.fromJson(msg.obj.toString(), type);
+                    if (materialInfoList == null || materialInfoList.size() == 0) {
+                        return;
+                    }
 
                     //转换数据结构，方便实时查找
                     for (MaterialOnSchedule materialInfo : materialInfoList) {
                         rfidList.add(materialInfo.getFridCode());
                     }
 
-                    if (materialInfoList == null || materialInfoList.size() == 0) {
-                        return;
-                    }
-
                     adapter = new SchduleOnAdapter(getBaseContext(), materialInfoList);
                     listView.setAdapter(adapter);
 
-                    SweetAlertDialog sweetAlertDialog = new SweetAlertDialog(ScheduleCheckActivity.this
+                    SweetAlertDialog sweetAlertDialog =
+                            new SweetAlertDialog(ScheduleCheckActivity.this
                             , SweetAlertDialog.SUCCESS_TYPE);
                     sweetAlertDialog.setContentText("物资清单下载成功！");
                     sweetAlertDialog.setConfirmButton("开始盘点",
@@ -100,12 +99,28 @@ public class ScheduleCheckActivity extends AppCompatActivity {
                     break;
                 case 2:
                     //报警提示物资已找到
-                    //Beeper.beep(Beeper.BEEPER_SHORT);
+                    Beeper.beep(Beeper.BEEPER_SHORT);
                     pTipDialog.setContentText("您当前已找到" + epcSize + "件物资");
                     break;
             }
         }
     };
+
+    @Override
+    public void postResult(String epcCode) {
+        epcCode = epcCode.replaceAll(" ", "");
+        //如果不是重复扫描并且包含在物资盘点清单中，则直接蜂鸣声音并更新数量&& rfidList.contains(epcCode)
+        if (!epcCodeList.contains(epcCode)
+                && rfidList.contains(epcCode)) {
+            Log.d(TAG, "已读取到RFID码【" + epcCode + "】");
+            epcCodeList.add(epcCode);
+            epcSize++;
+
+            Message message = Message.obtain();
+            message.what = 2;
+            myHandler.sendMessage(message);
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -206,7 +221,61 @@ public class ScheduleCheckActivity extends AppCompatActivity {
      * 开始扫描
      */
     private void inventoryAction(String flag) {
+        //如果物资计划列表为空，则不进行盘点
+        if (materialInfoList == null || materialInfoList.size() == 0) {
+            final SweetAlertDialog sweetAlertDialog2 =
+                    new SweetAlertDialog(ScheduleCheckActivity.this, SweetAlertDialog.WARNING_TYPE);
+            sweetAlertDialog2.setContentText("未下载到物资清单，请下拉刷新重试！");
+            sweetAlertDialog2.setConfirmButton("确定",
+                    new SweetAlertDialog.OnSweetClickListener() {
+                        @Override
+                        public void onClick(SweetAlertDialog sweetAlertDialog) {
+                            sweetAlertDialog2.hide();
+                            listView.refresh();
+                        }
+                    });
+            sweetAlertDialog2.show();
+            return;
+        }
 
+        //开始盘存则清空之前数据，重新盘存,//继续盘存则维持原来数据，累加盘存
+        if ("begin".equals(flag)) {
+            epcSize = 0;
+            epcCodeList.clear();
+        }
+
+        MyLib myLib = MyApp.getMyApp().getIdataLib();
+        //RFID模块上电
+        MLog.e("RFID上电 = " + MyApp.getMyApp().getIdataLib().powerOn());
+        MLog.e("RFID开始盘存 = " + MyApp.getMyApp().getIdataLib().startInventoryTag());
+
+        rfidThread.setBackResult(this);
+        rfidThread.start();
+
+
+        pTipDialog.setContentText("您当前已盘点" + epcSize + "件物资");
+        pTipDialog.setCancelable(false);
+
+        //结束操作
+        pTipDialog.setConfirmButton("查看盘点结果", new SweetAlertDialog.OnSweetClickListener() {
+            @Override
+            public void onClick(SweetAlertDialog sweetAlertDialog) {
+
+                pTipDialog.hide();
+
+                //汇总计划列表
+                for (MaterialInfo materialInfo : materialInfoList) {
+                    String fridCode = materialInfo.getFridCode();
+                    if (rfidList.contains(fridCode)) {
+                        materialInfo.setCheckQuantity(1);
+                    }
+                }
+
+                adapter.notifyDataSetChanged();
+            }
+        });
+
+        pTipDialog.show();
 
     }
 
@@ -230,7 +299,7 @@ public class ScheduleCheckActivity extends AppCompatActivity {
                 break;
             case R.id.menu_schedule_endInventory:
                 epcCodeList.clear();
-                epcSize=0;
+                epcSize = 0;
                 //结束复查，纯粹是为了实现RFID模块掉电的功能
                 break;
         }
@@ -240,5 +309,11 @@ public class ScheduleCheckActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        rfidThread.destoryThread();
+        MLog.e("powoff = " + MyApp.getMyApp().getIdataLib().powerOff());
+        if (pTipDialog != null) {
+            pTipDialog.dismiss();
+            pTipDialog = null;
+        }
     }
 }

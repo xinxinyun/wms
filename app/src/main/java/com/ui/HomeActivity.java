@@ -9,7 +9,6 @@ import android.view.View;
 import com.uhf.uhf.R;
 import com.ui.base.BaseActivity;
 import com.util.StatusBarUtil;
-import com.xuexiang.xupdate.XUpdate;
 
 //
 public class HomeActivity extends BaseActivity implements View.OnClickListener {
@@ -48,10 +47,10 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener {
         outTimeCardView.setOnClickListener(this);
         aboutCardView.setOnClickListener(this);
 
-        XUpdate.newBuild(this)
-                .updateUrl(mUpdateUrl)
-                .supportBackgroundUpdate(true)
-                .update();
+//        XUpdate.newBuild(this)
+//                .updateUrl(mUpdateUrl)
+//                .supportBackgroundUpdate(true)
+//                .update();
     }
 
     @Override

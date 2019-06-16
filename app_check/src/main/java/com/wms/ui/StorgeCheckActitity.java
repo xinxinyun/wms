@@ -6,6 +6,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -17,13 +18,19 @@ import com.wms.adapter.StorgerAdapter;
 import com.wms.bean.MaterialInfo;
 import com.wms.bean.ResultBean;
 import com.wms.contants.WmsContanst;
+import com.wms.event.BackResult;
+import com.wms.event.GetRFIDThread;
+import com.wms.event.MyApp;
+import com.wms.util.Beeper;
 import com.wms.util.CallBackUtil;
+import com.wms.util.MLog;
 import com.wms.util.OkhttpUtil;
 import com.wms.util.SimpleFooter;
 import com.wms.util.SimpleHeader;
 import com.wms.util.StatusBarUtil;
 import com.wms.util.ZrcListView;
 
+import java.math.BigInteger;
 import java.net.ConnectException;
 import java.net.SocketTimeoutException;
 import java.util.ArrayList;
@@ -31,17 +38,20 @@ import java.util.HashMap;
 
 import cn.pedant.SweetAlert.SweetAlertDialog;
 import okhttp3.Call;
+import realid.rfidlib.MyLib;
 
 /**
  * 仓储区域物资盘点
  */
-public class StorgeCheckActitity extends AppCompatActivity {
+public class StorgeCheckActitity extends AppCompatActivity implements BackResult {
 
     private static final String TAG = "仓储区域盘点";
 
     private ZrcListView listView;
     private ArrayList<MaterialInfo> materialInfoList;
     private StorgerAdapter adapter;
+    private GetRFIDThread rfidThread = GetRFIDThread.getInstance();//RFID标签信息获取线程
+
 
     /**
      * 缓存EPC码
@@ -68,7 +78,6 @@ public class StorgeCheckActitity extends AppCompatActivity {
             super.handleMessage(msg);
             switch (msg.what) {
                 case 1:
-
                     materialInfoList = JSON.parseObject(msg.obj.toString(),
                             new TypeReference<ArrayList<MaterialInfo>>() {
                             });
@@ -98,11 +107,44 @@ public class StorgeCheckActitity extends AppCompatActivity {
                 case 2:
                     pTipDialog.setContentText("您当前已盘点" + epcSize + "件物资");
                     //调用蜂鸣声提示已扫描到商品
-                    //Beeper.beep(Beeper.BEEPER_SHORT);
+                    Beeper.beep(Beeper.BEEPER_SHORT);
                     break;
             }
         }
     };
+
+    /**
+     * RFID监听
+     *
+     * @param epcCode
+     */
+    @Override
+    public void postResult(String epcCode) {
+
+        if (TextUtils.isEmpty(epcCode) || epcCodeList.contains(epcCode)) {
+            return;
+        }
+
+        Log.d(TAG, "已读取到RFID码【" + epcCode + "】");
+
+        epcSize++;
+        epcCodeList.add(epcCode);
+
+        epcCode = epcCode.replaceAll(" ", "").substring(0, 20);
+
+        //获取条形码值,截取13位条形码
+        String barCode = new BigInteger(epcCode, 16).
+                toString(10).substring(0, 13);
+        if (playMap.containsKey(barCode)) {
+            playMap.put(barCode, playMap.get(barCode).intValue() + 1);
+        } else {
+            playMap.put(barCode, 1);
+        }
+
+        Message message = Message.obtain();
+        message.what = 2;
+        myHandler.sendMessage(message);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -154,7 +196,6 @@ public class StorgeCheckActitity extends AppCompatActivity {
         header.setTextColor(0xff0066aa);
         header.setCircleColor(0xff33bbee);
         listView.setHeadable(header);
-
         // 设置加载更多的样式（可选）
         SimpleFooter footer = new SimpleFooter(this);
         footer.setCircleColor(0xff33bbee);
@@ -198,7 +239,7 @@ public class StorgeCheckActitity extends AppCompatActivity {
                         String errMsg = "物资清单下载失败！";
                         if (e instanceof SocketTimeoutException) {
                             errMsg = "网络连接超时,请下拉刷新重试！";
-                        }else if(e instanceof ConnectException){
+                        } else if (e instanceof ConnectException) {
                             errMsg = "网络连接失败,请连接网络！";
                         }
                         listView.setRefreshSuccess(errMsg);
@@ -232,7 +273,7 @@ public class StorgeCheckActitity extends AppCompatActivity {
     private void inventoryAction(String flag) {
 
         //如果物资计划列表为空，则不进行盘点
-        if(materialInfoList==null||materialInfoList.size()==0){
+        if (materialInfoList == null || materialInfoList.size() == 0) {
             final SweetAlertDialog sweetAlertDialog2 =
                     new SweetAlertDialog(StorgeCheckActitity.this, SweetAlertDialog.WARNING_TYPE);
             sweetAlertDialog2.setContentText("未下载到物资清单，请下拉刷新重试！");
@@ -254,14 +295,11 @@ public class StorgeCheckActitity extends AppCompatActivity {
             epcCodeList.clear();
         }
 
-        //int j=mReader.getFirmwareVersion((byte)0xff);
-//        if (connector.isConnected()) {
-//            return;
-//        }
         if ("continue".equals(flag)) {
             if (isSubmit) {
                 final SweetAlertDialog sweetAlertDialog2 =
-                        new SweetAlertDialog(StorgeCheckActitity.this, SweetAlertDialog.WARNING_TYPE);
+                        new SweetAlertDialog(StorgeCheckActitity.this,
+                                SweetAlertDialog.WARNING_TYPE);
                 sweetAlertDialog2.setContentText("盘点结果已经提交，请重新开始盘点！");
                 sweetAlertDialog2.setConfirmButton("确定",
                         new SweetAlertDialog.OnSweetClickListener() {
@@ -276,45 +314,13 @@ public class StorgeCheckActitity extends AppCompatActivity {
             pTipDialog.show();
         }
 
-        try {
+        MyLib myLib = MyApp.getMyApp().getIdataLib();
+        //RFID模块上电
+        MLog.e("RFID上电 = " + MyApp.getMyApp().getIdataLib().powerOn());
+        MLog.e("RFID开始盘存 = " + MyApp.getMyApp().getIdataLib().startInventoryTag());
 
-           /* if (!moduleManager.getUHFStatus()) {
-                moduleManager.setUHFStatus(true);
-            }
-
-            if (!connector.isConnected()) {
-                //实时扫描多少个物资
-                if (!connector.connectCom(WmsContanst.TTYS1, WmsContanst.baud)) {
-                    final SweetAlertDialog sweetAlertDialog3 =
-                            new SweetAlertDialog(getBaseContext(), SweetAlertDialog.ERROR_TYPE);
-                    sweetAlertDialog3.setContentText("RFID设备模块读取失败！");
-                    sweetAlertDialog3.setConfirmButton("确定",
-                            new SweetAlertDialog.OnSweetClickListener() {
-                                @Override
-                                public void onClick(SweetAlertDialog sweetAlertDialog) {
-                                    sweetAlertDialog3.hide();
-                                }
-                            });
-                    sweetAlertDialog3.show();
-                    return;
-                }
-            }
-            if (mReader == null) {
-                mReader = RFIDReaderHelper.getDefaultHelper();
-            }
-            mReader.registerObserver(rxObserver);
-            //设定读取间隔时间
-            Thread.currentThread().sleep(500);
-            mReader.realTimeInventory((byte) 0xff, (byte) 0x01);*/
-        } catch (Exception e) {
-            Log.d(TAG, e.toString());
-            e.printStackTrace();
-            SweetAlertDialog sweetAlertDialog = new SweetAlertDialog(getBaseContext(),
-                    SweetAlertDialog.ERROR_TYPE);
-            sweetAlertDialog.setContentText("RFID设备模块读取失败！");
-            sweetAlertDialog.show();
-            return;
-        }
+        rfidThread.setBackResult(this);
+        rfidThread.start();
 
         pTipDialog.setContentText("您当前已盘点" + epcSize + "件物资");
         pTipDialog.setCancelable(false);
@@ -324,15 +330,11 @@ public class StorgeCheckActitity extends AppCompatActivity {
             @Override
             public void onClick(SweetAlertDialog sweetAlertDialog) {
 
-               // moduleManager.release();
-                //mReader.unRegisterObserver(rxObserver);
                 //RFID模块下线
-                pTipDialog.hide();
-//                SweetAlertDialog playDialog = new SweetAlertDialog(StorgeCheckActitity.this,
-//                SweetAlertDialog.PROGRESS_TYPE);
-//                playDialog.setContentText("正在汇总盘点数据，请稍候");
-//                playDialog.show();
+                MyApp.getMyApp().getIdataLib().powerOff();
+                rfidThread.destoryThread();
 
+                pTipDialog.hide();
                 //汇总计划列表
                 //转换数据结构，汇总结果
                 for (MaterialInfo materialInfo : materialInfoList) {
@@ -341,8 +343,8 @@ public class StorgeCheckActitity extends AppCompatActivity {
                         materialInfo.setCheckQuantity(playMap.get(materialBarCode));
                     }
                 }
+
                 adapter.notifyDataSetChanged();
-                //playDialog.hide();
 
             }
         });
@@ -356,7 +358,7 @@ public class StorgeCheckActitity extends AppCompatActivity {
     private void submitInventory() {
 
         //如果物资计划列表为空，则不进行盘点
-        if(materialInfoList==null||materialInfoList.size()==0){
+        if (materialInfoList == null || materialInfoList.size() == 0) {
             final SweetAlertDialog sweetAlertDialog2 =
                     new SweetAlertDialog(StorgeCheckActitity.this, SweetAlertDialog.WARNING_TYPE);
             sweetAlertDialog2.setContentText("未下载到物资清单，请下拉刷新重试！");
@@ -411,6 +413,7 @@ public class StorgeCheckActitity extends AppCompatActivity {
                             epcSize = 0;
                             epcCodeList.clear();
                             isSubmit = true;
+
                             pDialog.hide();
 
                             ResultBean resultBean = JSON.parseObject(response, ResultBean.class);
@@ -426,12 +429,6 @@ public class StorgeCheckActitity extends AppCompatActivity {
                                     new SweetAlertDialog.OnSweetClickListener() {
                                         @Override
                                         public void onClick(SweetAlertDialog sweetAlertDialog) {
-                                            //connector.disConnect();
-//                                    if(mReader!=null) {
-//                                        mReader.unRegisterObserver(rxObserver);
-//                                    }
-//                                    moduleManager.setUHFStatus(false);
-//                                    moduleManager.release();
                                             sweetAlertDialog.hide();
                                         }
                                     });
@@ -468,11 +465,6 @@ public class StorgeCheckActitity extends AppCompatActivity {
                 //盘存复查
                 inventoryAction("continue");
                 break;
-           /* case R.id.menu_endInventory:
-                //结束复查，纯粹是为了实现RFID模块掉电的功能
-                ModuleManager.newInstance().setUHFStatus(false);
-                ModuleManager.newInstance().release();
-                break;*/
             case R.id.menu_submitInventory:
                 submitInventory();
                 break;
@@ -482,30 +474,17 @@ public class StorgeCheckActitity extends AppCompatActivity {
 
     @Override
     protected void onDestroy() {
-
         super.onDestroy();
-       /* if (mReader != null) {
-            mReader.unRegisterObserver(rxObserver);
-        }
-
-        //当前Activity销售则让RFID模块下线
-        moduleManager.setUHFStatus(false);
-        moduleManager.release();*/
-        //epcCodeList.clear();
-//        if (connector != null) {
-//            connector.disConnect();
-//        }
+        rfidThread.destoryThread();
+        MLog.e("powoff = " + MyApp.getMyApp().getIdataLib().powerOff());
         if (pTipDialog != null) {
             pTipDialog.dismiss();
-            //prgorssDialog.dismiss();
             pTipDialog = null;
-            //prgorssDialog=null;
         }
     }
 
     @Override
     public void onBackPressed() {
-        //super.onBackPressed();
         if (epcCodeList.size() != 0 && !isSubmit) {
             SweetAlertDialog sweetAlertDialog = new SweetAlertDialog(StorgeCheckActitity.this,
                     SweetAlertDialog.WARNING_TYPE);
