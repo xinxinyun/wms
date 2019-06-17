@@ -1,7 +1,6 @@
 package com.wms.event;
 
 
-import com.wms.util.Beeper;
 import com.wms.util.MLog;
 
 /**
@@ -47,7 +46,7 @@ public class GetRFIDThread extends Thread {
             //if (ifPostMsg) {
                 String[] tagData = MyApp.getMyApp().getIdataLib().readTagFromBuffer();
                 if (tagData != null) {
-                    Beeper.beep(Beeper.BEEPER_SHORT);
+                    //Beeper.beep(Beeper.BEEPER_SHORT);
                     ba.postResult(tagData[1]);
                     StringBuilder rssiStr = new StringBuilder((short) Integer.parseInt(tagData[2]
                             , 16) + "");

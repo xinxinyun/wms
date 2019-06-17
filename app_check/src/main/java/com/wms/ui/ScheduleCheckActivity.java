@@ -45,7 +45,7 @@ public class ScheduleCheckActivity extends AppCompatActivity implements BackResu
     private ZrcListView listView;
     private ArrayList<MaterialOnSchedule> materialInfoList;
     private SchduleOnAdapter adapter;
-    private GetRFIDThread rfidThread = GetRFIDThread.getInstance();//RFID标签信息获取线程
+    private GetRFIDThread rfidThread = null;//RFID标签信息获取线程
     private ArrayList<String> rfidList = new ArrayList<>();
     private SweetAlertDialog pTipDialog;
 
@@ -55,6 +55,8 @@ public class ScheduleCheckActivity extends AppCompatActivity implements BackResu
      * 缓存EPC码
      */
     private ArrayList<String> epcCodeList = new ArrayList<>();
+
+    private MyLib myLib = null;
 
     /**
      * 异步回调刷新数据
@@ -70,6 +72,8 @@ public class ScheduleCheckActivity extends AppCompatActivity implements BackResu
                             });
 
                     if (materialInfoList == null || materialInfoList.size() == 0) {
+                        View view = findViewById(R.id.noResult);
+                        listView.setEmptyView(view);
                         return;
                     }
 
@@ -113,6 +117,8 @@ public class ScheduleCheckActivity extends AppCompatActivity implements BackResu
         if (!epcCodeList.contains(epcCode)
                 && rfidList.contains(epcCode)) {
             Log.d(TAG, "已读取到RFID码【" + epcCode + "】");
+            Beeper.beep(Beeper.BEEPER_SHORT);
+
             epcCodeList.add(epcCode);
             epcSize++;
 
@@ -244,13 +250,21 @@ public class ScheduleCheckActivity extends AppCompatActivity implements BackResu
             epcCodeList.clear();
         }
 
-        MyLib myLib = MyApp.getMyApp().getIdataLib();
-        //RFID模块上电
-        MLog.e("RFID上电 = " + MyApp.getMyApp().getIdataLib().powerOn());
-        MLog.e("RFID开始盘存 = " + MyApp.getMyApp().getIdataLib().startInventoryTag());
-
-        rfidThread.setBackResult(this);
-        rfidThread.start();
+        //如果RFID模块未上电，则开启RFID读写器
+        if (rfidThread == null) {
+            myLib = MyApp.getMyApp().getIdataLib();
+            MLog.e("RFID上电 = " + myLib.powerOn());
+            rfidThread = new GetRFIDThread();
+            rfidThread.setBackResult(this);
+            //rfidThread.setIfPostMsg(true);
+            try {
+                Thread.currentThread().sleep(500);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            rfidThread.start();
+            MLog.e("RFID开始盘存 = " + myLib.startInventoryTag());
+        }
 
         pTipDialog.setContentText("您当前已盘点" + epcSize + "件物资");
         pTipDialog.setCancelable(false);
@@ -305,11 +319,20 @@ public class ScheduleCheckActivity extends AppCompatActivity implements BackResu
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        rfidThread.destoryThread();
-        MLog.e("powoff = " + MyApp.getMyApp().getIdataLib().powerOff());
+        destoryRfid();
         if (pTipDialog != null) {
             pTipDialog.dismiss();
             pTipDialog = null;
         }
+    }
+
+    /**
+     * rfid模块下线
+     */
+    private void destoryRfid() {
+        if (myLib != null) {
+            myLib.powerOff();
+        }
+        rfidThread = null;
     }
 }
