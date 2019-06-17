@@ -23,7 +23,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="100dp"
         android:layout_gravity="center"
-        android:src="@drawable/logo"
+        android:src="@drawable/ic_launcher"
         tools:layout_editor_absoluteX="147dp"
         tools:layout_editor_absoluteY="267dp" />
 
