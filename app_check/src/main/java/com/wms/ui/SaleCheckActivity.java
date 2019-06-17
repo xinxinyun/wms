@@ -48,7 +48,7 @@ public class SaleCheckActivity extends AppCompatActivity implements BackResult {
     private ArrayList<MaterialInfo> materialInfoList;
     private SaleAdapter adapter;
 
-    private GetRFIDThread rfidThread = GetRFIDThread.getInstance();//RFID标签信息获取线程
+    private GetRFIDThread rfidThread = null;//RFID标签信息获取线程
 
     /**
      * 缓存EPC码
@@ -65,6 +65,8 @@ public class SaleCheckActivity extends AppCompatActivity implements BackResult {
     private HashMap<String, Integer> playMap = new HashMap<String, Integer>(800);
 
     private boolean isSubmit = false;
+
+    private  MyLib myLib =null;
 
     /**
      * 异步回调刷新数据
@@ -307,14 +309,21 @@ public class SaleCheckActivity extends AppCompatActivity implements BackResult {
             pTipDialog.show();
         }
 
-
-        MyLib myLib = MyApp.getMyApp().getIdataLib();
-        //RFID模块上电
-        MLog.e("RFID上电 = " + MyApp.getMyApp().getIdataLib().powerOn());
-        MLog.e("RFID开始盘存 = " + MyApp.getMyApp().getIdataLib().startInventoryTag());
-
-        rfidThread.setBackResult(this);
-        rfidThread.start();
+        //如果RFID模块未上电，则开启RFID读写器
+        if(rfidThread==null) {
+            myLib = MyApp.getMyApp().getIdataLib();
+            MLog.e("RFID上电 = " + myLib.powerOn());
+            rfidThread=new GetRFIDThread();
+            rfidThread.setBackResult(this);
+            //rfidThread.setIfPostMsg(true);
+            try {
+                Thread.currentThread().sleep(500);
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+            rfidThread.start();
+            MLog.e("RFID开始盘存 = " + myLib.startInventoryTag());
+        }
 
         pTipDialog.setContentText("您当前已盘点" + epcSize + "件物资");
         pTipDialog.setCancelable(false);
@@ -325,8 +334,7 @@ public class SaleCheckActivity extends AppCompatActivity implements BackResult {
             public void onClick(SweetAlertDialog sweetAlertDialog) {
 
                 //RFID模块下线
-                MyApp.getMyApp().getIdataLib().powerOff();
-                rfidThread.destoryThread();
+                destoryRfid();
 
                 //RFID模块下线
                 pTipDialog.hide();
@@ -469,7 +477,7 @@ public class SaleCheckActivity extends AppCompatActivity implements BackResult {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        rfidThread.destoryThread();
+        destoryRfid();
         MLog.e("powoff = " + MyApp.getMyApp().getIdataLib().powerOff());
         if (pTipDialog != null) {
             pTipDialog.dismiss();
@@ -495,5 +503,15 @@ public class SaleCheckActivity extends AppCompatActivity implements BackResult {
         } else {
             finish();
         }
+    }
+
+    /**
+     * rfid模块下线
+     */
+    private void destoryRfid() {
+        if(myLib!=null) {
+            myLib.powerOff();
+        }
+        rfidThread = null;
     }
 }

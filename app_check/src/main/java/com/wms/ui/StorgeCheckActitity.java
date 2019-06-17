@@ -21,7 +21,6 @@ import com.wms.contants.WmsContanst;
 import com.wms.event.BackResult;
 import com.wms.event.GetRFIDThread;
 import com.wms.event.MyApp;
-import com.wms.util.Beeper;
 import com.wms.util.CallBackUtil;
 import com.wms.util.MLog;
 import com.wms.util.OkhttpUtil;
@@ -50,7 +49,7 @@ public class StorgeCheckActitity extends AppCompatActivity implements BackResult
     private ZrcListView listView;
     private ArrayList<MaterialInfo> materialInfoList;
     private StorgerAdapter adapter;
-    private GetRFIDThread rfidThread = GetRFIDThread.getInstance();//RFID标签信息获取线程
+    private GetRFIDThread rfidThread = null;//RFID标签信息获取线程
 
 
     /**
@@ -70,6 +69,9 @@ public class StorgeCheckActitity extends AppCompatActivity implements BackResult
     private HashMap<String, Integer> playMap = new HashMap<String, Integer>(10000);
 
     private boolean isSubmit = false;
+
+    private  MyLib myLib =null;
+
     /**
      * 异步回调刷新数据
      */
@@ -107,7 +109,7 @@ public class StorgeCheckActitity extends AppCompatActivity implements BackResult
                 case 2:
                     pTipDialog.setContentText("您当前已盘点" + epcSize + "件物资");
                     //调用蜂鸣声提示已扫描到商品
-                    Beeper.beep(Beeper.BEEPER_SHORT);
+                    //Beeper.beep(Beeper.BEEPER_SHORT);
                     break;
             }
         }
@@ -121,7 +123,8 @@ public class StorgeCheckActitity extends AppCompatActivity implements BackResult
     @Override
     public void postResult(String epcCode) {
 
-        if (TextUtils.isEmpty(epcCode) || epcCodeList.contains(epcCode)) {
+        if (TextUtils.isEmpty(epcCode)
+                || epcCodeList.contains(epcCode)) {
             return;
         }
 
@@ -211,6 +214,7 @@ public class StorgeCheckActitity extends AppCompatActivity implements BackResult
         listView.setOnRefreshStartListener(new ZrcListView.OnStartListener() {
             @Override
             public void onStart() {
+                //RFID模块下线
                 playMap.clear();
                 epcSize = 0;
                 epcCodeList.clear();
@@ -314,12 +318,21 @@ public class StorgeCheckActitity extends AppCompatActivity implements BackResult
             pTipDialog.show();
         }
 
-        MyLib myLib = MyApp.getMyApp().getIdataLib();
-        //RFID模块上电
-        MLog.e("RFID上电 = " + myLib.powerOn());
-        rfidThread.setBackResult(this);
-        rfidThread.start();
-        MLog.e("RFID开始盘存 = " + myLib.startInventoryTag());
+        //如果RFID模块未上电，则开启RFID读写器
+        if(rfidThread==null) {
+            myLib = MyApp.getMyApp().getIdataLib();
+            MLog.e("RFID上电 = " + myLib.powerOn());
+            rfidThread=new GetRFIDThread();
+            rfidThread.setBackResult(this);
+            //rfidThread.setIfPostMsg(true);
+            rfidThread.start();
+            try {
+                Thread.currentThread().sleep(500);
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+            MLog.e("RFID开始盘存 = " + myLib.startInventoryTag());
+        }
 
         pTipDialog.setContentText("您当前已盘点" + epcSize + "件物资");
         pTipDialog.setCancelable(false);
@@ -330,8 +343,7 @@ public class StorgeCheckActitity extends AppCompatActivity implements BackResult
             public void onClick(SweetAlertDialog sweetAlertDialog) {
 
                 //RFID模块下线
-                MyApp.getMyApp().getIdataLib().powerOff();
-                rfidThread.destoryThread();
+                destoryRfid();
 
                 pTipDialog.hide();
                 //汇总计划列表
@@ -456,8 +468,8 @@ public class StorgeCheckActitity extends AppCompatActivity implements BackResult
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            //开始盘存
             case R.id.menu_beginInventonry:
+                //开始盘存
                 inventoryAction("begin");
                 break;
             case R.id.menu_revertInventory:
@@ -474,8 +486,7 @@ public class StorgeCheckActitity extends AppCompatActivity implements BackResult
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        rfidThread.destoryThread();
-        MLog.e("powoff = " + MyApp.getMyApp().getIdataLib().powerOff());
+        destoryRfid();
         if (pTipDialog != null) {
             pTipDialog.dismiss();
             pTipDialog = null;
@@ -500,5 +511,15 @@ public class StorgeCheckActitity extends AppCompatActivity implements BackResult
         } else {
             finish();
         }
+    }
+
+    /**
+     * rfid模块下线
+     */
+    private void destoryRfid() {
+        if(myLib!=null) {
+            myLib.powerOff();
+        }
+        rfidThread = null;
     }
 }

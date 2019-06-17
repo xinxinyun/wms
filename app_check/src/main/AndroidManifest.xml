@@ -12,12 +12,17 @@
     <uses-permission android:name="android.permission.INTERNET" />
 
     <application
-
+        android:name="com.wms.event.MyApp"
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
         tools:replace="android:icon">
-        <activity android:name=".HomeActivity">
+        <activity
+            android:name=".SplashScreenActivity"
+            android:label="@string/app_name"
+            android:launchMode="singleTop"
+            android:theme="@android:style/Theme.NoTitleBar"
+            android:windowSoftInputMode="adjustPan">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -25,8 +30,11 @@
             </intent-filter>
         </activity>
         <activity
+            android:name=".HomeActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
             android:name="com.wms.ui.AboutActivity"
-            android:theme="@style/AppTheme.NoActionBar"/>
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name="com.wms.ui.ScheduleCheckActivity"
             android:label="@string/title_activity_out_time"

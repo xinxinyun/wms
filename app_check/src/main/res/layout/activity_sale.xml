@@ -23,7 +23,7 @@
             android:textSize="16sp" />
     </android.support.v7.widget.Toolbar>
 
-    <com.com.tools.ZrcListView
+    <com.wms.util.ZrcListView
         android:id="@+id/zsaleListView"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
