@@ -21,6 +21,7 @@ import com.wms.contants.WmsContanst;
 import com.wms.event.BackResult;
 import com.wms.event.GetRFIDThread;
 import com.wms.event.MyApp;
+import com.wms.util.Beeper;
 import com.wms.util.CallBackUtil;
 import com.wms.util.MLog;
 import com.wms.util.OkhttpUtil;
@@ -59,8 +60,6 @@ public class StorgeCheckActitity extends AppCompatActivity implements BackResult
 
     private SweetAlertDialog pTipDialog;
 
-    private SweetAlertDialog prgorssDialog;
-
     private int epcSize = 0;
 
     /**
@@ -70,7 +69,7 @@ public class StorgeCheckActitity extends AppCompatActivity implements BackResult
 
     private boolean isSubmit = false;
 
-    private  MyLib myLib =null;
+    private MyLib myLib = null;
 
     /**
      * 异步回调刷新数据
@@ -88,7 +87,7 @@ public class StorgeCheckActitity extends AppCompatActivity implements BackResult
                         return;
                     }
 
-                    adapter = new StorgerAdapter(getBaseContext(), materialInfoList);
+                    adapter = new StorgerAdapter(StorgeCheckActitity.this, materialInfoList);
                     listView.setAdapter(adapter);
 
                     SweetAlertDialog sweetAlertDialog =
@@ -100,16 +99,18 @@ public class StorgeCheckActitity extends AppCompatActivity implements BackResult
                             new SweetAlertDialog.OnSweetClickListener() {
                                 @Override
                                 public void onClick(SweetAlertDialog sweetAlertDialog) {
-                                    inventoryAction("begin");
                                     sweetAlertDialog.hide();
+                                    inventoryAction("begin");
                                 }
                             });
                     sweetAlertDialog.show();
                     break;
                 case 2:
-                    pTipDialog.setContentText("您当前已盘点" + epcSize + "件物资");
+                    if (pTipDialog != null) {
+                        pTipDialog.setContentText("您当前已盘点" + epcSize + "件物资");
+                    }
                     //调用蜂鸣声提示已扫描到商品
-                    //Beeper.beep(Beeper.BEEPER_SHORT);
+                    Beeper.beep(Beeper.BEEPER_SHORT);
                     break;
             }
         }
@@ -179,6 +180,7 @@ public class StorgeCheckActitity extends AppCompatActivity implements BackResult
                     sweetAlertDialog.show();
                     return;
                 } else {
+                    destoryRfid();
                     finish();
                 }
             }
@@ -190,7 +192,7 @@ public class StorgeCheckActitity extends AppCompatActivity implements BackResult
         //一般的手机的状态栏文字和图标都是白色的, 可如果你的应用也是纯白色的, 或导致状态栏文字看不清
         StatusBarUtil.setStatusBarColor(this, Color.parseColor("#3fb1f0"));
 
-        pTipDialog = new SweetAlertDialog(this, SweetAlertDialog.WARNING_TYPE);
+        pTipDialog = new SweetAlertDialog(StorgeCheckActitity.this, SweetAlertDialog.WARNING_TYPE);
         pTipDialog.setCustomImage(R.drawable.blue_button_background);
         listView = (ZrcListView) findViewById(R.id.zListView);
 
@@ -319,16 +321,16 @@ public class StorgeCheckActitity extends AppCompatActivity implements BackResult
         }
 
         //如果RFID模块未上电，则开启RFID读写器
-        if(rfidThread==null) {
+        if (rfidThread == null) {
             myLib = MyApp.getMyApp().getIdataLib();
             MLog.e("RFID上电 = " + myLib.powerOn());
-            rfidThread=new GetRFIDThread();
+            rfidThread = new GetRFIDThread();
             rfidThread.setBackResult(this);
             //rfidThread.setIfPostMsg(true);
             rfidThread.start();
             try {
-                Thread.currentThread().sleep(500);
-            }catch (Exception e){
+                Thread.currentThread().sleep(1000);
+            } catch (Exception e) {
                 e.printStackTrace();
             }
             MLog.e("RFID开始盘存 = " + myLib.startInventoryTag());
@@ -411,7 +413,8 @@ public class StorgeCheckActitity extends AppCompatActivity implements BackResult
                         pDialog.hide();
                         Log.d(TAG, e.getMessage());
                         e.printStackTrace();
-                        SweetAlertDialog sweetAlertDialog = new SweetAlertDialog(getBaseContext()
+                        SweetAlertDialog sweetAlertDialog =
+                                new SweetAlertDialog(StorgeCheckActitity.this
                                 , SweetAlertDialog.ERROR_TYPE);
                         sweetAlertDialog.setContentText("提交盘存结果失败！");
                         sweetAlertDialog.show();
@@ -517,9 +520,13 @@ public class StorgeCheckActitity extends AppCompatActivity implements BackResult
      * rfid模块下线
      */
     private void destoryRfid() {
-        if(myLib!=null) {
+        if (myLib != null) {
             myLib.powerOff();
         }
+        if (rfidThread != null) {
+            rfidThread.destoryThread();
+        }
         rfidThread = null;
+        //System.exit(0);
     }
 }

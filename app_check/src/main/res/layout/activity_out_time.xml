@@ -33,7 +33,7 @@
         android:id="@+id/noResult"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/no_result"
+        android:src="@drawable/noresult1"
         android:visibility="gone" />
 </LinearLayout>
 

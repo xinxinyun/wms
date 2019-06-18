@@ -101,7 +101,9 @@ public class SaleCheckActivity extends AppCompatActivity implements BackResult {
                     sweetAlertDialog.show();
                     break;
                 case 2:
-                    pTipDialog.setContentText("您当前已盘点" + epcSize + "件物资");
+                    if(pTipDialog!=null){
+                        pTipDialog.setContentText("您当前已盘点" + epcSize + "件物资");
+                    }
                     //调用蜂鸣声提示已扫描到商品
                     Beeper.beep(Beeper.BEEPER_SHORT);
                     break;
@@ -171,6 +173,7 @@ public class SaleCheckActivity extends AppCompatActivity implements BackResult {
                     sweetAlertDialog.show();
                     return;
                 } else {
+                    destoryRfid();
                     finish();
                 }
             }
@@ -291,7 +294,7 @@ public class SaleCheckActivity extends AppCompatActivity implements BackResult {
         }
 
         if ("continue".equals(flag)) {
-            if (isSubmit) {
+            if (epcCodeList==null||epcCodeList.size()<1) {
                 final SweetAlertDialog sweetAlertDialog2 =
                         new SweetAlertDialog(SaleCheckActivity.this
                                 , SweetAlertDialog.WARNING_TYPE);
@@ -317,7 +320,7 @@ public class SaleCheckActivity extends AppCompatActivity implements BackResult {
             rfidThread.setBackResult(this);
             //rfidThread.setIfPostMsg(true);
             try {
-                Thread.currentThread().sleep(500);
+                Thread.currentThread().sleep(1000);
             }catch (Exception e){
                 e.printStackTrace();
             }
@@ -402,7 +405,7 @@ public class SaleCheckActivity extends AppCompatActivity implements BackResult {
                     @Override
                     public void onFailure(Call call, Exception e) {
                         pDialog.hide();
-                        SweetAlertDialog sweetAlertDialog = new SweetAlertDialog(getBaseContext()
+                        SweetAlertDialog sweetAlertDialog = new SweetAlertDialog(SaleCheckActivity.this
                                 , SweetAlertDialog.ERROR_TYPE);
                         sweetAlertDialog.setContentText("提交盘存结果失败！");
                         sweetAlertDialog.show();
@@ -478,7 +481,6 @@ public class SaleCheckActivity extends AppCompatActivity implements BackResult {
     protected void onDestroy() {
         super.onDestroy();
         destoryRfid();
-        MLog.e("powoff = " + MyApp.getMyApp().getIdataLib().powerOff());
         if (pTipDialog != null) {
             pTipDialog.dismiss();
             pTipDialog = null;
@@ -511,6 +513,9 @@ public class SaleCheckActivity extends AppCompatActivity implements BackResult {
     private void destoryRfid() {
         if(myLib!=null) {
             myLib.powerOff();
+        }
+        if(rfidThread!=null){
+            rfidThread.destoryThread();
         }
         rfidThread = null;
     }

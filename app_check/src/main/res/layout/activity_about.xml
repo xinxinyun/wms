@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:layout_gravity="center_vertical"
     android:orientation="vertical"
-    tools:context="com.ui.AboutActivity">
+    tools:context="com.wms.ui.AboutActivity">
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/about_toor_bar"
@@ -23,7 +23,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="100dp"
         android:layout_gravity="center"
-        android:src="@drawable/ic_launcher"
+        android:src="@drawable/logo"
         tools:layout_editor_absoluteX="147dp"
         tools:layout_editor_absoluteY="267dp" />
 
