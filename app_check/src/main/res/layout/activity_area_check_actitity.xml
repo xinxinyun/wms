@@ -12,7 +12,7 @@
         android:layout_height="50dp"
         android:background="#3fb1f0"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-        app:theme="@style/Base.AppTheme">
+        app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -27,6 +27,13 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/white"/>
+
+    <ImageView
+        android:id="@+id/noResult"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/noresult2"
+        android:visibility="gone" />
 </LinearLayout>
 
 

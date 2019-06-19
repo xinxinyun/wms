@@ -43,7 +43,7 @@ public class GetRFIDThread extends Thread {
     @Override
     public void run() {
         while (flag) {
-            //if (ifPostMsg) {
+            if (ifPostMsg) {
                 String[] tagData = MyApp.getMyApp().getIdataLib().readTagFromBuffer();
                 if (tagData != null) {
                     //Beeper.beep(Beeper.BEEPER_SHORT);
@@ -53,7 +53,7 @@ public class GetRFIDThread extends Thread {
                     String rssi = rssiStr.insert(rssiStr.length() - 1, ".").toString();
                     MLog.e("tid_user = " + tagData[0] + " epc = " + tagData[1] + " rssi = " + rssi);
                 }
-            //}
+            }
         }
     }
 }

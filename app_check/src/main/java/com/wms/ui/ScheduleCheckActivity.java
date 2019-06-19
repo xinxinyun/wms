@@ -36,7 +36,6 @@ import java.util.HashMap;
 
 import cn.pedant.SweetAlert.SweetAlertDialog;
 import okhttp3.Call;
-import realid.rfidlib.MyLib;
 
 public class ScheduleCheckActivity extends AppCompatActivity implements BackResult {
 
@@ -45,7 +44,7 @@ public class ScheduleCheckActivity extends AppCompatActivity implements BackResu
     private ZrcListView listView;
     private ArrayList<MaterialOnSchedule> materialInfoList;
     private SchduleOnAdapter adapter;
-    private GetRFIDThread rfidThread = null;//RFID标签信息获取线程
+    private GetRFIDThread rfidThread ;//RFID标签信息获取线程
     private ArrayList<String> rfidList = new ArrayList<>();
     private SweetAlertDialog pTipDialog;
 
@@ -55,8 +54,6 @@ public class ScheduleCheckActivity extends AppCompatActivity implements BackResu
      * 缓存EPC码
      */
     private ArrayList<String> epcCodeList = new ArrayList<>();
-
-    private MyLib myLib = null;
 
     /**
      * 异步回调刷新数据
@@ -94,7 +91,7 @@ public class ScheduleCheckActivity extends AppCompatActivity implements BackResu
                                 @Override
                                 public void onClick(SweetAlertDialog sweetAlertDialog) {
                                     sweetAlertDialog.hide();
-                                    inventoryAction("begin");
+                                    startInventory();
 
                                 }
                             });
@@ -118,10 +115,8 @@ public class ScheduleCheckActivity extends AppCompatActivity implements BackResu
                 && rfidList.contains(epcCode)) {
             Log.d(TAG, "已读取到RFID码【" + epcCode + "】");
             Beeper.beep(Beeper.BEEPER_SHORT);
-
             epcCodeList.add(epcCode);
             epcSize++;
-
             Message message = Message.obtain();
             message.what = 2;
             myHandler.sendMessage(message);
@@ -178,6 +173,11 @@ public class ScheduleCheckActivity extends AppCompatActivity implements BackResu
                 initData();
             }
         });
+
+        MLog.e("poweron = " + MyApp.getMyApp().getIdataLib().powerOn());
+        rfidThread=new GetRFIDThread();
+        rfidThread.setBackResult(this);
+        rfidThread.start();
     }
 
     /**
@@ -226,7 +226,7 @@ public class ScheduleCheckActivity extends AppCompatActivity implements BackResu
     /**
      * 开始扫描
      */
-    private void inventoryAction(String flag) {
+    private void startInventory() {
         //如果物资计划列表为空，则不进行盘点
         if (materialInfoList == null || materialInfoList.size() == 0) {
             final SweetAlertDialog sweetAlertDialog2 =
@@ -243,36 +243,20 @@ public class ScheduleCheckActivity extends AppCompatActivity implements BackResu
             sweetAlertDialog2.show();
             return;
         }
-
-        //开始盘存则清空之前数据，重新盘存,//继续盘存则维持原来数据，累加盘存
-        if ("begin".equals(flag)) {
-            epcSize = 0;
-            epcCodeList.clear();
+        //开启RFID盘存
+        if (!rfidThread.isIfPostMsg()) {
+            rfidThread.setIfPostMsg(true);
+            MLog.e("RFID开始盘存 = " + MyApp.getMyApp().getIdataLib().startInventoryTag());
         }
-
-        //如果RFID模块未上电，则开启RFID读写器
-        if (rfidThread == null) {
-            myLib = MyApp.getMyApp().getIdataLib();
-            MLog.e("RFID上电 = " + myLib.powerOn());
-            rfidThread = new GetRFIDThread();
-            rfidThread.setBackResult(this);
-            //rfidThread.setIfPostMsg(true);
-            try {
-                Thread.currentThread().sleep(500);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            rfidThread.start();
-            MLog.e("RFID开始盘存 = " + myLib.startInventoryTag());
-        }
-
         pTipDialog.setContentText("您当前已盘点" + epcSize + "件物资");
         pTipDialog.setCancelable(false);
-
         //结束操作
         pTipDialog.setConfirmButton("查看盘点结果", new SweetAlertDialog.OnSweetClickListener() {
             @Override
             public void onClick(SweetAlertDialog sweetAlertDialog) {
+                //停止盘存
+                rfidThread.setIfPostMsg(false);
+                MyApp.getMyApp().getIdataLib().stopInventory();
                 pTipDialog.hide();
                 //汇总计划列表
                 for (MaterialInfo materialInfo : materialInfoList) {
@@ -284,9 +268,26 @@ public class ScheduleCheckActivity extends AppCompatActivity implements BackResu
                 adapter.notifyDataSetChanged();
             }
         });
-
         pTipDialog.show();
+    }
 
+    /**
+     * rfid模块下线
+     */
+    private void offlineRFIDModule() {
+        if(rfidThread!=null) {
+            rfidThread.destoryThread();
+        }
+        MLog.e("powerOff = " + MyApp.getMyApp().getIdataLib().powerOff());
+        rfidThread=null;
+    }
+
+    /**
+     * 清除已扫描到的RFID码的缓存数据
+     */
+    private void clearScanRFID() {
+        epcSize = 0;
+        epcCodeList.clear();
     }
 
     @Override
@@ -300,17 +301,17 @@ public class ScheduleCheckActivity extends AppCompatActivity implements BackResu
         switch (item.getItemId()) {
             //开始盘存
             case R.id.menu_schedule_beginInventonry:
-                inventoryAction("begin");
+                //开始盘存
+                this.clearScanRFID();
+                this.startInventory();
                 break;
             case R.id.menu_schedule_revertInventory:
                 //盘存复查
                 pTipDialog.show();
-                inventoryAction("continue");
+                startInventory();
                 break;
             case R.id.menu_schedule_endInventory:
-                epcCodeList.clear();
-                epcSize = 0;
-                //结束复查，纯粹是为了实现RFID模块掉电的功能
+                clearScanRFID();
                 break;
         }
         return super.onOptionsItemSelected(item);
@@ -319,20 +320,16 @@ public class ScheduleCheckActivity extends AppCompatActivity implements BackResu
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        destoryRfid();
+        offlineRFIDModule();
         if (pTipDialog != null) {
             pTipDialog.dismiss();
             pTipDialog = null;
         }
     }
 
-    /**
-     * rfid模块下线
-     */
-    private void destoryRfid() {
-        if (myLib != null) {
-            myLib.powerOff();
-        }
-        rfidThread = null;
+    @Override
+    public void onBackPressed() {
+            offlineRFIDModule();
+            finish();
     }
 }
