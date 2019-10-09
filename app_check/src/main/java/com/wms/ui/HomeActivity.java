@@ -40,12 +40,13 @@ public class HomeActivity extends Activity implements View.OnClickListener {
 
         CardView outTimeCardView = findViewById(R.id.outTimeCardView);
         CardView aboutCardView = findViewById(R.id.aboutCardView);
+        //CardView rpakCardView = findViewById(R.id.retrivePackageCV);
 
         cardView.setOnClickListener(this);
         saleCardView.setOnClickListener(this);
         outTimeCardView.setOnClickListener(this);
         aboutCardView.setOnClickListener(this);
-
+        //rpakCardView.setOnClickListener(this);
 //        XUpdate.newBuild(this)
 //                .updateUrl(mUpdateUrl)
 //                .supportBackgroundUpdate(true)
@@ -70,6 +71,11 @@ public class HomeActivity extends Activity implements View.OnClickListener {
             case R.id.aboutCardView:
                 Intent aboutIntent = new Intent().setClass(HomeActivity.this, AboutActivity.class);
                 startActivity(aboutIntent);
+                break;
+//            case R.id.retrivePackageCV:
+//                Intent rpckIntent = new Intent().setClass(HomeActivity.this, RtivePackActivity.class);
+//                startActivity(rpckIntent);
+//                break;
             default:
                 return;
         }

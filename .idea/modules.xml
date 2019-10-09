@@ -8,6 +8,7 @@
       <module fileurl="file://$PROJECT_DIR$/app_data50/app_data50.iml" filepath="$PROJECT_DIR$/app_data50/app_data50.iml" />
       <module fileurl="file://$PROJECT_DIR$/app_sale/app_sale.iml" filepath="$PROJECT_DIR$/app_sale/app_sale.iml" />
       <module fileurl="file://$PROJECT_DIR$/app_storge/app_storge.iml" filepath="$PROJECT_DIR$/app_storge/app_storge.iml" />
+      <module fileurl="file://$PROJECT_DIR$/app_vehicle/app_vehicle.iml" filepath="$PROJECT_DIR$/app_vehicle/app_vehicle.iml" />
       <module fileurl="file://$PROJECT_DIR$/usbSerialForAndroid/usbSerialForAndroid.iml" filepath="$PROJECT_DIR$/usbSerialForAndroid/usbSerialForAndroid.iml" />
       <module fileurl="file://$PROJECT_DIR$/wms.iml" filepath="$PROJECT_DIR$/wms.iml" />
     </modules>

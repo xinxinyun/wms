@@ -1,13 +1,13 @@
 package com.ui;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 
 import com.service.DataService;
 import com.uhf.uhf.R;
 
-public class MainActivity extends Activity {
+public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "门店报警监听";
 
@@ -16,6 +16,7 @@ public class MainActivity extends Activity {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main2);
+
         new Thread(new Runnable() {
             @Override
             public void run() {

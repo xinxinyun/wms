@@ -121,7 +121,9 @@ public class SaleCheckActivity extends AppCompatActivity implements BackResult {
      */
     @Override
     public void postResult(String epcCode) {
-        if (TextUtils.isEmpty(epcCode) || epcCodeList.contains(epcCode)) {
+        if (TextUtils.isEmpty(epcCode)
+                || epcCodeList.contains(epcCode)
+                || epcCode.length() < 20) {
             return;
         }
         Log.d(TAG, "已读取到RFID码【" + epcCode + "】");
@@ -367,7 +369,7 @@ public class SaleCheckActivity extends AppCompatActivity implements BackResult {
                         pDialog.hide();
                         SweetAlertDialog sweetAlertDialog =
                                 new SweetAlertDialog(SaleCheckActivity.this
-                                , SweetAlertDialog.ERROR_TYPE);
+                                        , SweetAlertDialog.ERROR_TYPE);
                         sweetAlertDialog.setContentText("提交盘存结果失败！");
                         sweetAlertDialog.show();
                     }

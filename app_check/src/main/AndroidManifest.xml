@@ -46,6 +46,9 @@
         <activity
             android:name="com.wms.ui.StorgeCheckActitity"
             android:theme="@style/Base.AppTheme" />
+        <activity
+            android:name="com.wms.ui.RtivePackActivity"
+            android:theme="@style/Base.AppTheme" />
     </application>
 
 </manifest>

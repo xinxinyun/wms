@@ -6,12 +6,10 @@ import android.media.MediaPlayer;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
-import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.alibaba.fastjson.JSON;
 import com.bean.ResultBean;
-import com.birbit.android.jobqueue.JobManager;
 import com.contants.WmsContanst;
 import com.module.interaction.ModuleConnector;
 import com.nativec.tools.ModuleManager;
@@ -20,7 +18,6 @@ import com.rfid.ReaderConnector;
 import com.rfid.rxobserver.RXObserver;
 import com.rfid.rxobserver.bean.RXInventoryTag;
 import com.uhf.uhf.R;
-import com.uhf.uhf.UHFApplication;
 import com.util.CallBackUtil;
 import com.util.OkhttpUtil;
 
@@ -37,8 +34,6 @@ public class DataService extends Service {
     private static final String TAG = "销售报警监听";
     ModuleConnector connector = new ReaderConnector();
     RFIDReaderHelper mReader;
-
-    private JobManager jobManager;
 
     /**
      * 缓存EPC码
@@ -87,7 +82,7 @@ public class DataService extends Service {
             //动态切换，如果在1号天线工作，当前盘存结束后切换到2号天线
             mReader.setWorkAntenna((byte) 0xff, antId == 0 ? (byte) 0x01 : (byte) 0x00);
             try {
-                Thread.currentThread().sleep(60);
+                Thread.sleep(60);
             } catch (Exception e) {
                 Log.d(TAG, "设置天线失败");
             }
@@ -99,7 +94,6 @@ public class DataService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
-        jobManager = UHFApplication.getJobManager();
         startup();
         Log.v(TAG, "OnCreate 服务启动时调用");
     }
@@ -107,23 +101,29 @@ public class DataService extends Service {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        shutdown();
         Log.v(TAG, "onDestroy 服务关闭时");
+        Intent intent = new Intent("com.wms.alarm.service.destory");
+        sendBroadcast(intent);
+
     }
 
     @Override
     public boolean onUnbind(Intent intent) {
         Log.v(TAG, "onDestroy 服务关闭时");
-        shutdown();
+        //shutdown();
         return super.onUnbind(intent);
 
     }
 
-    @Nullable
     @Override
     public IBinder onBind(Intent intent) {
         Log.v(TAG, "onDestroy 服务关闭时");
         return null;
+    }
+
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        return START_STICKY;
     }
 
     /**
@@ -134,7 +134,7 @@ public class DataService extends Service {
         //如果设备在连接状态，则直接退出,实时扫描多少个物资
         if (connector.isConnected() ||
                 !connector.connectCom(WmsContanst.TTYMXC2,
-                WmsContanst.baud)) {
+                        WmsContanst.baud)) {
             return;
         }
 
@@ -146,7 +146,7 @@ public class DataService extends Service {
             //Thread.currentThread().sleep(500);
             //mReader.setWorkAntenna((byte) 0xff, (byte) 0x01);
             //设定读取间隔时间
-            Thread.currentThread().sleep(500);
+            Thread.sleep(500);
 
             mReader.realTimeInventory((byte) 0xff, (byte) 0x01);
             //设置工作天线频率
@@ -203,7 +203,7 @@ public class DataService extends Service {
                             //提交成功后从当前缓存中移除EPC码
                             //epcCodeList.remove(epcCode);
                             Boolean isSellout = resultBean.getData().get("isSellout");
-                            String respMsg =isSellout ? "已销售" : "未销售";
+                            String respMsg = isSellout ? "已销售" : "未销售";
                             //未销售则报警
                             if (!isSellout) {
                                 MediaPlayer player = MediaPlayer.create(getApplicationContext(),
@@ -211,7 +211,7 @@ public class DataService extends Service {
                                 if (!player.isPlaying()) {
                                     player.start();
                                 }
-                                Thread.sleep(10000);
+                                Thread.sleep(5000);
                                 player.stop();
                             }
                             //防止频繁感应，30秒后才认定是正常的出入库

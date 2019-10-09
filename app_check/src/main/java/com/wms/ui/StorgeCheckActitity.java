@@ -84,6 +84,7 @@ public class StorgeCheckActitity extends AppCompatActivity implements BackResult
                         listView.setEmptyView(view);
                         return;
                     }
+
                     adapter = new StorgerAdapter(StorgeCheckActitity.this, materialInfoList);
                     listView.setAdapter(adapter);
 
@@ -96,9 +97,9 @@ public class StorgeCheckActitity extends AppCompatActivity implements BackResult
                             new SweetAlertDialog.OnSweetClickListener() {
                                 @Override
                                 public void onClick(SweetAlertDialog sweetAlertDialog) {
-                                    sweetAlertDialog.hide();
                                     clearScanRFID();
                                     startInventory();
+                                    sweetAlertDialog.hide();
                                 }
                             });
                     sweetAlertDialog.show();
@@ -121,13 +122,17 @@ public class StorgeCheckActitity extends AppCompatActivity implements BackResult
      */
     @Override
     public void postResult(String epcCode) {
+        //系统定义码的长度为24位,对于小于20位的码不作运算,视为非法的码。
         if (TextUtils.isEmpty(epcCode)
-                || epcCodeList.contains(epcCode)) {
+                || epcCodeList.contains(epcCode)
+                || epcCode.length() < 20) {
             return;
         }
         Log.d(TAG, "已读取到RFID码【" + epcCode + "】");
+
         epcSize++;
         epcCodeList.add(epcCode);
+
         epcCode = epcCode.replaceAll(" ", "").substring(0, 20);
         //获取条形码值,截取13位条形码
         String barCode = new BigInteger(epcCode, 16).
@@ -185,7 +190,7 @@ public class StorgeCheckActitity extends AppCompatActivity implements BackResult
         //一般的手机的状态栏文字和图标都是白色的, 可如果你的应用也是纯白色的, 或导致状态栏文字看不清
         StatusBarUtil.setStatusBarColor(this, Color.parseColor("#3fb1f0"));
 
-        pTipDialog = new SweetAlertDialog(StorgeCheckActitity.this, SweetAlertDialog.WARNING_TYPE);
+        pTipDialog = new SweetAlertDialog(this, SweetAlertDialog.WARNING_TYPE);
         pTipDialog.setCustomImage(R.drawable.blue_button_background);
         listView = (ZrcListView) findViewById(R.id.zListView);
 
@@ -215,7 +220,7 @@ public class StorgeCheckActitity extends AppCompatActivity implements BackResult
         });
 
         MLog.e("poweron = " + MyApp.getMyApp().getIdataLib().powerOn());
-        rfidThread=new GetRFIDThread();
+        rfidThread = new GetRFIDThread();
         rfidThread.setBackResult(this);
         rfidThread.start();
     }
@@ -228,12 +233,16 @@ public class StorgeCheckActitity extends AppCompatActivity implements BackResult
         HashMap<String, String> headerMap = new HashMap<>();
         HashMap<String, String> paramsMap = new HashMap<>();
 
-        headerMap.put("Content-Type", OkhttpUtil.CONTENT_TYPE);//头部信息
-        paramsMap.put("token", "wms");//参数
-        paramsMap.put("data", "1");//参数
+        //头部信息
+        headerMap.put("Content-Type", OkhttpUtil.CONTENT_TYPE);
+        //参数
+        paramsMap.put("token", "wms");
+        //参数
+        paramsMap.put("data", "1");
 
         OkhttpUtil.okHttpPostJson(WmsContanst.STORGE_MATERIALINFL,
-                JSON.toJSONString(paramsMap), headerMap, new CallBackUtil.CallBackString() {//回调
+                //回调
+                JSON.toJSONString(paramsMap), headerMap, new CallBackUtil.CallBackString() {
                     @Override
                     public void onFailure(Call call, Exception e) {
                         Log.e(TAG, e.toString());
@@ -272,6 +281,7 @@ public class StorgeCheckActitity extends AppCompatActivity implements BackResult
      * 开始扫描
      */
     private void startInventory() {
+
         //如果物资计划列表为空，则不进行盘点
         if (materialInfoList == null || materialInfoList.size() == 0) {
             final SweetAlertDialog sweetAlertDialog2 =
@@ -288,11 +298,18 @@ public class StorgeCheckActitity extends AppCompatActivity implements BackResult
             sweetAlertDialog2.show();
             return;
         }
+
         //开启RFID盘存
         if (!rfidThread.isIfPostMsg()) {
             rfidThread.setIfPostMsg(true);
             MLog.e("RFID开始盘存 = " + MyApp.getMyApp().getIdataLib().startInventoryTag());
+            try {
+                Thread.sleep(200);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
+
         pTipDialog.setContentText("您当前已盘点" + epcSize + "件物资");
         pTipDialog.setCancelable(false);
         pTipDialog.setConfirmButton("查看盘点结果",
@@ -302,7 +319,6 @@ public class StorgeCheckActitity extends AppCompatActivity implements BackResult
                         //停止盘存
                         rfidThread.setIfPostMsg(false);
                         MyApp.getMyApp().getIdataLib().stopInventory();
-                        pTipDialog.hide();
                         //汇总计划列表
                         //转换数据结构，汇总结果
                         for (MaterialInfo materialInfo : materialInfoList) {
@@ -312,6 +328,7 @@ public class StorgeCheckActitity extends AppCompatActivity implements BackResult
                             }
                         }
                         adapter.notifyDataSetChanged();
+                        pTipDialog.hide();
                     }
                 });
         pTipDialog.show();
@@ -341,8 +358,8 @@ public class StorgeCheckActitity extends AppCompatActivity implements BackResult
 
         HashMap<String, String> headerMap = new HashMap<>();
         HashMap<String, Object> paramsMap = new HashMap<>();
-
-        headerMap.put("Content-Type", OkhttpUtil.CONTENT_TYPE);//头部信息
+        //头部信息
+        headerMap.put("Content-Type", OkhttpUtil.CONTENT_TYPE);
         paramsMap.put("token", "wms");
 
         HashMap<String, Object> dataMap = new HashMap<>();
@@ -359,7 +376,8 @@ public class StorgeCheckActitity extends AppCompatActivity implements BackResult
         pDialog.show();
 
         OkhttpUtil.okHttpPostJson(WmsContanst.STORGE_MATERIALINFL_INVENTORY_SUBMIT,
-                JSON.toJSONString(paramsMap), headerMap, new CallBackUtil.CallBackString() {//回调
+                //回调
+                JSON.toJSONString(paramsMap), headerMap, new CallBackUtil.CallBackString() {
                     @Override
                     public void onFailure(Call call, Exception e) {
                         pDialog.hide();
@@ -385,6 +403,7 @@ public class StorgeCheckActitity extends AppCompatActivity implements BackResult
                                     new SweetAlertDialog(StorgeCheckActitity.this,
                                             SweetAlertDialog.SUCCESS_TYPE);
                             sweetAlertDialog.setContentText("仓储区域盘点结果提交" + respMsg + "！");
+                            sweetAlertDialog.setConfirmText("确定");
                             sweetAlertDialog.setCancelable(true);
                             sweetAlertDialog.show();
                         } catch (Exception e) {
@@ -405,11 +424,11 @@ public class StorgeCheckActitity extends AppCompatActivity implements BackResult
      * rfid模块下线
      */
     private void offlineRFIDModule() {
-        if(rfidThread!=null) {
+        if (rfidThread != null) {
             rfidThread.destoryThread();
         }
         MLog.e("powerOff = " + MyApp.getMyApp().getIdataLib().powerOff());
-        rfidThread=null;
+        rfidThread = null;
     }
 
     /**
@@ -418,6 +437,7 @@ public class StorgeCheckActitity extends AppCompatActivity implements BackResult
     private void clearScanRFID() {
         epcSize = 0;
         epcCodeList.clear();
+        playMap.clear();
     }
 
     @Override

@@ -44,6 +44,7 @@ public class GetRFIDThread extends Thread {
     public void run() {
         while (flag) {
             if (ifPostMsg) {
+                //ba.postResult("922604690B8D370");
                 String[] tagData = MyApp.getMyApp().getIdataLib().readTagFromBuffer();
                 if (tagData != null) {
                     //Beeper.beep(Beeper.BEEPER_SHORT);
