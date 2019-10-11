@@ -24,7 +24,7 @@ import com.reader.helper.ReaderSetting;
 import com.uhf.uhf.LogList;
 import com.uhf.uhf.R.id;
 import com.uhf.uhf.R.layout;
-import com.uhf.uhf.UHFApplication;
+import com.uhf.uhf.VehicleApplication;
 import com.ui.base.BaseActivity;
 import com.ui.base.PreferenceUtil;
 
@@ -58,7 +58,7 @@ public class PageReaderBeeper extends BaseActivity {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(layout.page_reader_beeper);
-		((UHFApplication) getApplication()).addActivity(this);
+		((VehicleApplication) getApplication()).addActivity(this);
 		
 		try {
 			mReaderHelper = ReaderHelper.getDefaultHelper();

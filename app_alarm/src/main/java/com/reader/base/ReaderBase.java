@@ -18,12 +18,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Arrays;
-import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-
-import com.reader.base.CMD;
-import com.reader.base.HEAD;
 
 public abstract class ReaderBase {
 	private WaitThread mWaitThread = null;

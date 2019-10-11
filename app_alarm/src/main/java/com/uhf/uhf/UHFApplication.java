@@ -27,7 +27,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-public class UHFApplication extends Application {
+public class VehicleApplication extends Application {
 
 	//add by lei.li 2016/11/12
 	private static Context mContext;

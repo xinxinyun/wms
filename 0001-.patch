@@ -69,7 +69,7 @@ index c3f5970..37ee787 100644
  import com.uhf.uhf.R;
  import com.uhf.uhf.TagAccessList;
 -import com.uhf.uhf.TagRealList;
--import com.uhf.uhf.UHFApplication;
+-import com.uhf.uhf.VehicleApplication;
 -import com.uhf.uhf.spiner.SpinerPopWindow;
  import com.uhf.uhf.spiner.AbstractSpinerAdapter.IOnItemSelectListener;
 +import com.uhf.uhf.spiner.SpinerPopWindow;

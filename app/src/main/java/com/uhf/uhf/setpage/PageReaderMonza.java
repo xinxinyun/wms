@@ -11,10 +11,9 @@ import com.reader.helper.ReaderHelper;
 import com.reader.helper.ReaderSetting;
 import com.uhf.uhf.LogList;
 import com.uhf.uhf.R;
-import com.uhf.uhf.UHFApplication;
+import com.uhf.uhf.VehicleApplication;
 import com.ui.base.BaseActivity;
 
-import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -57,7 +56,7 @@ public class PageReaderMonza extends BaseActivity {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.page_reader_monza);
-		((UHFApplication) getApplication()).addActivity(this);
+		((VehicleApplication) getApplication()).addActivity(this);
 		
 		try {
 			mReaderHelper = ReaderHelper.getDefaultHelper();

@@ -3,7 +3,6 @@ package com.uhf.uhf.spiner;
 import java.util.List;
 
 import com.uhf.uhf.R;
-import com.uhf.uhf.spiner.AbstractSpinerAdapter.IOnItemSelectListener;
 
 
 import android.content.Context;
@@ -21,7 +20,7 @@ public class SpinerPopWindow extends PopupWindow implements OnItemClickListener{
 	private Context mContext;
 	private ListView mListView;
 	private NormalSpinerAdapter mAdapter;
-	private IOnItemSelectListener mItemSelectListener;
+	private AbstractSpinerAdapter.IOnItemSelectListener mItemSelectListener;
 	
 	
 	public SpinerPopWindow(Context context)
@@ -33,7 +32,7 @@ public class SpinerPopWindow extends PopupWindow implements OnItemClickListener{
 	}
 	
 	
-	public void setItemListener(IOnItemSelectListener listener){
+	public void setItemListener(AbstractSpinerAdapter.IOnItemSelectListener listener){
 		mItemSelectListener = listener;
 	}
 

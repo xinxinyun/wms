@@ -9,14 +9,11 @@ import com.reader.helper.OperateTagBuffer;
 import com.reader.helper.ReaderHelper;
 import com.reader.helper.ReaderSetting;
 import com.uhf.uhf.LogList;
-import com.uhf.uhf.R;
-import com.uhf.uhf.UHFApplication;
+import com.uhf.uhf.VehicleApplication;
 import com.uhf.uhf.R.id;
 import com.uhf.uhf.R.layout;
 import com.ui.base.BaseActivity;
 
-import android.R.integer;
-import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -59,7 +56,7 @@ public class PageReaderAddress extends BaseActivity {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(layout.page_reader_address);
-		((UHFApplication) getApplication()).addActivity(this);
+		((VehicleApplication) getApplication()).addActivity(this);
 		
 		try {
 			mReaderHelper = ReaderHelper.getDefaultHelper();

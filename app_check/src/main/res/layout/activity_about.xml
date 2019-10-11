@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:layout_gravity="center_vertical"
     android:orientation="vertical"
-    tools:context="com.wms.ui.AboutActivity">
+    tools:context="com.wms.ui.anji.wms.ui.AboutActivity">
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/about_toor_bar"

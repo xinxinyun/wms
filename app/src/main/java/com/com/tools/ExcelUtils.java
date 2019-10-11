@@ -7,7 +7,7 @@ import android.support.v4.app.ActivityCompat;
 
 import com.reader.helper.InventoryBuffer;
 import com.uhf.uhf.R;
-import com.uhf.uhf.UHFApplication;
+import com.uhf.uhf.VehicleApplication;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -40,8 +40,8 @@ public class ExcelUtils {
     public final static String GBK_ENCODING = "GBK";
 
     private final static String[] mContent = new String[]{"ID", "EPC", "PC",
-            UHFApplication.getContext().getResources().getString(R.string.real_list_times),
-            "RSSI",UHFApplication.getContext().getString(R.string.real_list_freq)};
+            VehicleApplication.getContext().getResources().getString(R.string.real_list_times),
+            "RSSI",VehicleApplication.getContext().getString(R.string.real_list_freq)};
 
     private final static String FILE_SUFFIX = ".xls";
 

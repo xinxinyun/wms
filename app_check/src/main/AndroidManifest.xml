@@ -33,21 +33,21 @@
             android:name=".HomeActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name="com.wms.ui.AboutActivity"
+            android:name="com.wms.ui.anji.wms.ui.AboutActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name="com.wms.ui.ScheduleCheckActivity"
+            android:name="com.wms.ui.anji.wms.ui.ScheduleCheckActivity"
             android:label="@string/title_activity_out_time"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name="com.wms.ui.SaleCheckActivity"
+            android:name="com.wms.ui.anji.wms.ui.SaleCheckActivity"
             android:label="@string/title_activity_sale"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name="com.wms.ui.StorgeCheckActitity"
+            android:name="com.wms.ui.anji.wms.ui.StorgeCheckActitity"
             android:theme="@style/Base.AppTheme" />
         <activity
-            android:name="com.wms.ui.RtivePackActivity"
+            android:name="com.wms.ui.anji.wms.ui.RtivePackActivity"
             android:theme="@style/Base.AppTheme" />
     </application>
 

@@ -1,7 +1,7 @@
 package com.reader.base;
 
 import com.uhf.uhf.R;
-import com.uhf.uhf.UHFApplication;
+import com.uhf.uhf.VehicleApplication;
 
 /**
  * Regarding UHF return code and description, please refer to Serial_Protocol_User's_Guide_V2.38_en  
@@ -61,139 +61,139 @@ public class CMD {
         switch (btCmd)
         {
             case RESET:
-            	strCmd = UHFApplication.getContext().getResources().getString(R.string.reset);
+            	strCmd = VehicleApplication.getContext().getResources().getString(R.string.reset);
                 break;
             case SET_UART_BAUDRATE:
-            	strCmd = UHFApplication.getContext().getResources().getString(R.string.set_uart_baudrate);
+            	strCmd = VehicleApplication.getContext().getResources().getString(R.string.set_uart_baudrate);
                 break;
             case GET_FIRMWARE_VERSION:
-                strCmd = UHFApplication.getContext().getResources().getString(R.string.get_firmware_version);
+                strCmd = VehicleApplication.getContext().getResources().getString(R.string.get_firmware_version);
                 break;
             case SET_READER_ADDRESS:
-                strCmd = UHFApplication.getContext().getResources().getString(R.string.set_reader_add);
+                strCmd = VehicleApplication.getContext().getResources().getString(R.string.set_reader_add);
                 break;
             case SET_WORK_ANTENNA:
-                strCmd = UHFApplication.getContext().getResources().getString(R.string.set_work_ant);
+                strCmd = VehicleApplication.getContext().getResources().getString(R.string.set_work_ant);
                 break;
             case GET_WORK_ANTENNA:
-                strCmd = UHFApplication.getContext().getResources().getString(R.string.get_work_ant);
+                strCmd = VehicleApplication.getContext().getResources().getString(R.string.get_work_ant);
                 break;
             case SET_OUTPUT_POWER:
-                strCmd = UHFApplication.getContext().getResources().getString(R.string.set_output_power);
+                strCmd = VehicleApplication.getContext().getResources().getString(R.string.set_output_power);
                 break;
             case GET_OUTPUT_POWER:
-                strCmd = UHFApplication.getContext().getResources().getString(R.string.get_output_power);
+                strCmd = VehicleApplication.getContext().getResources().getString(R.string.get_output_power);
                 break;
             case SET_FREQUENCY_REGION:
-                strCmd = UHFApplication.getContext().getResources().getString(R.string.set_freq_reg);
+                strCmd = VehicleApplication.getContext().getResources().getString(R.string.set_freq_reg);
                 break;
             case GET_FREQUENCY_REGION:
-                strCmd = UHFApplication.getContext().getResources().getString(R.string.get_freq_reg);
+                strCmd = VehicleApplication.getContext().getResources().getString(R.string.get_freq_reg);
                 break;
             case SET_BEEPER_MODE:
-                strCmd = UHFApplication.getContext().getResources().getString(R.string.set_beeper_mode);
+                strCmd = VehicleApplication.getContext().getResources().getString(R.string.set_beeper_mode);
                 break;
             case GET_READER_TEMPERATURE:
-                strCmd = UHFApplication.getContext().getResources().getString(R.string.get_rader_temp);
+                strCmd = VehicleApplication.getContext().getResources().getString(R.string.get_rader_temp);
                 break;
             case READ_GPIO_VALUE:
-                strCmd = UHFApplication.getContext().getResources().getString(R.string.read_gpio_value);
+                strCmd = VehicleApplication.getContext().getResources().getString(R.string.read_gpio_value);
                 break;
             case WRITE_GPIO_VALUE:
-                strCmd = UHFApplication.getContext().getResources().getString(R.string.write_gpio_value);
+                strCmd = VehicleApplication.getContext().getResources().getString(R.string.write_gpio_value);
                 break;
             case SET_ANT_CONNECTION_DETECTOR:
-                strCmd = UHFApplication.getContext().getResources().getString(R.string.set_ant_conn);
+                strCmd = VehicleApplication.getContext().getResources().getString(R.string.set_ant_conn);
                 break;
             case GET_ANT_CONNECTION_DETECTOR:
-                strCmd = UHFApplication.getContext().getResources().getString(R.string.get_ant_conn);
+                strCmd = VehicleApplication.getContext().getResources().getString(R.string.get_ant_conn);
                 break;
             case SET_TEMPORARY_OUTPUT_POWER:
-                strCmd = UHFApplication.getContext().getResources().getString(R.string.set_temp_output_power);
+                strCmd = VehicleApplication.getContext().getResources().getString(R.string.set_temp_output_power);
                 break;
             case SET_READER_IDENTIFIER:
-                strCmd = UHFApplication.getContext().getResources().getString(R.string.set_reader_identi);
+                strCmd = VehicleApplication.getContext().getResources().getString(R.string.set_reader_identi);
                 break;
             case GET_READER_IDENTIFIER:
-                strCmd = UHFApplication.getContext().getResources().getString(R.string.get_reader_identi);
+                strCmd = VehicleApplication.getContext().getResources().getString(R.string.get_reader_identi);
                 break;
             case SET_RF_LINK_PROFILE:
-                strCmd = UHFApplication.getContext().getResources().getString(R.string.set_rf_link_pro);
+                strCmd = VehicleApplication.getContext().getResources().getString(R.string.set_rf_link_pro);
                 break;
             case GET_RF_LINK_PROFILE:
-                strCmd = UHFApplication.getContext().getResources().getString(R.string.get_rf_link_pro);
+                strCmd = VehicleApplication.getContext().getResources().getString(R.string.get_rf_link_pro);
                 break;
             case GET_RF_PORT_RETURN_LOSS:
-                strCmd = UHFApplication.getContext().getResources().getString(R.string.get_rf_port);
+                strCmd = VehicleApplication.getContext().getResources().getString(R.string.get_rf_port);
                 break;
             case INVENTORY:
-                strCmd = UHFApplication.getContext().getResources().getString(R.string.inventory);
+                strCmd = VehicleApplication.getContext().getResources().getString(R.string.inventory);
                 break;
             case READ_TAG:
-                strCmd = UHFApplication.getContext().getResources().getString(R.string.read_tag_c);
+                strCmd = VehicleApplication.getContext().getResources().getString(R.string.read_tag_c);
                 break;
             case WRITE_TAG:
-                strCmd = UHFApplication.getContext().getResources().getString(R.string.write_tag_c);
+                strCmd = VehicleApplication.getContext().getResources().getString(R.string.write_tag_c);
                 break;
             case LOCK_TAG:
-                strCmd = UHFApplication.getContext().getResources().getString(R.string.lock_tag_c);
+                strCmd = VehicleApplication.getContext().getResources().getString(R.string.lock_tag_c);
                 break;
             case KILL_TAG:
-                strCmd = UHFApplication.getContext().getResources().getString(R.string.kill_tag_c);
+                strCmd = VehicleApplication.getContext().getResources().getString(R.string.kill_tag_c);
                 break;
             case SET_ACCESS_EPC_MATCH:
-                strCmd = UHFApplication.getContext().getResources().getString(R.string.set_access_epc_match);
+                strCmd = VehicleApplication.getContext().getResources().getString(R.string.set_access_epc_match);
                 break;
             case GET_ACCESS_EPC_MATCH:
-                strCmd = UHFApplication.getContext().getResources().getString(R.string.get_access_epc_match);
+                strCmd = VehicleApplication.getContext().getResources().getString(R.string.get_access_epc_match);
                 break;
             case REAL_TIME_INVENTORY:
-                strCmd = UHFApplication.getContext().getResources().getString(R.string.real_time_inventory);
+                strCmd = VehicleApplication.getContext().getResources().getString(R.string.real_time_inventory);
                 break;
             case FAST_SWITCH_ANT_INVENTORY:
-                strCmd = UHFApplication.getContext().getResources().getString(R.string.fast_switch_ant_inv);
+                strCmd = VehicleApplication.getContext().getResources().getString(R.string.fast_switch_ant_inv);
                 break;
             case CUSTOMIZED_SESSION_TARGET_INVENTORY:
-                strCmd = UHFApplication.getContext().getResources().getString(R.string.customized_session);
+                strCmd = VehicleApplication.getContext().getResources().getString(R.string.customized_session);
                 break;
             case SET_IMPINJ_FAST_TID:
-                strCmd = UHFApplication.getContext().getResources().getString(R.string.set_impinj);
+                strCmd = VehicleApplication.getContext().getResources().getString(R.string.set_impinj);
                 break;
             case SET_AND_SAVE_IMPINJ_FAST_TID:
-                strCmd = UHFApplication.getContext().getResources().getString(R.string.set_and_save_impinj);
+                strCmd = VehicleApplication.getContext().getResources().getString(R.string.set_and_save_impinj);
                 break;
             case GET_IMPINJ_FAST_TID:
-                strCmd = UHFApplication.getContext().getResources().getString(R.string.get_imping);
+                strCmd = VehicleApplication.getContext().getResources().getString(R.string.get_imping);
                 break;
             case ISO18000_6B_INVENTORY:
-                strCmd = UHFApplication.getContext().getResources().getString(R.string.iso_B_inv);
+                strCmd = VehicleApplication.getContext().getResources().getString(R.string.iso_B_inv);
                 break;
             case ISO18000_6B_READ_TAG:
-                strCmd = UHFApplication.getContext().getResources().getString(R.string.iso_B_read);
+                strCmd = VehicleApplication.getContext().getResources().getString(R.string.iso_B_read);
                 break;
             case ISO18000_6B_WRITE_TAG:
-                strCmd = UHFApplication.getContext().getResources().getString(R.string.iso_b_write_tag);
+                strCmd = VehicleApplication.getContext().getResources().getString(R.string.iso_b_write_tag);
                 break;
             case ISO18000_6B_LOCK_TAG:
-                strCmd = UHFApplication.getContext().getResources().getString(R.string.iso_b_lock_tag);
+                strCmd = VehicleApplication.getContext().getResources().getString(R.string.iso_b_lock_tag);
                 break;
             case ISO18000_6B_QUERY_LOCK_TAG:
-                strCmd = UHFApplication.getContext().getResources().getString(R.string.iso_b_query_lock_tag);
+                strCmd = VehicleApplication.getContext().getResources().getString(R.string.iso_b_query_lock_tag);
                 break;
             case GET_INVENTORY_BUFFER:
-                strCmd = UHFApplication.getContext().getResources().getString(R.string.get_inventory_buff);
+                strCmd = VehicleApplication.getContext().getResources().getString(R.string.get_inventory_buff);
                 break;
             case GET_AND_RESET_INVENTORY_BUFFER:
-                strCmd = UHFApplication.getContext().getResources().getString(R.string.get_ant_reset_inv);
+                strCmd = VehicleApplication.getContext().getResources().getString(R.string.get_ant_reset_inv);
                 break;
             case GET_INVENTORY_BUFFER_TAG_COUNT:
-                strCmd = UHFApplication.getContext().getResources().getString(R.string.get_inventory_buffer_tag_count);
+                strCmd = VehicleApplication.getContext().getResources().getString(R.string.get_inventory_buffer_tag_count);
                 break;
             case RESET_INVENTORY_BUFFER:
-                strCmd = UHFApplication.getContext().getResources().getString(R.string.reset_inventory_buff);
+                strCmd = VehicleApplication.getContext().getResources().getString(R.string.reset_inventory_buff);
                 break;
             default:
-            	strCmd = UHFApplication.getContext().getResources().getString(R.string.unknown_operate);
+            	strCmd = VehicleApplication.getContext().getResources().getString(R.string.unknown_operate);
                 break;
         }
         return strCmd;

@@ -31,13 +31,8 @@ import android.view.animation.Interpolator;
 import android.widget.ListAdapter;
 import android.widget.Scroller;
 
-import com.com.tools.ZrcListView.OnScrollListener;
-
 import com.util.APIUtil;
-import com.com.tools.ZrcListView.OnItemLongClickListener;
-import com.com.tools.ZrcListView.OnScrollListener;
-import com.com.tools.ZrcListView.OnScrollStateListener;
-import com.com.tools.ZrcListView.OnStartListener;
+
 import com.uhf.uhf.R;
 
 
@@ -96,7 +91,7 @@ public abstract class ZrcAbsListView extends ZrcAdapterView<ListAdapter>
 	private Runnable mClearScrollingCache;
 	private VelocityTracker mVelocityTracker;
 	private FlingRunnable mFlingRunnable;
-	private OnScrollListener mOnScrollListener;
+	private ZrcListView.OnScrollListener mOnScrollListener;
 	private boolean mSmoothScrollbarEnabled = true;
 	private Rect mTouchFrame;
 	private PerformClick mPerformClick;
@@ -105,7 +100,7 @@ public abstract class ZrcAbsListView extends ZrcAdapterView<ListAdapter>
 	private int mTranscriptMode;
 	private int mCacheColorHint;
 	private boolean mIsChildViewEnabled;
-	private int mLastScrollState = OnScrollListener.SCROLL_STATE_IDLE;
+	private int mLastScrollState = ZrcListView.OnScrollListener.SCROLL_STATE_IDLE;
 	private int mTouchSlop;
 	private int mMinimumVelocity;
 	private int mMaximumVelocity;
@@ -170,32 +165,32 @@ public abstract class ZrcAbsListView extends ZrcAdapterView<ListAdapter>
 		int sX, sY;
 		int dX, dY;
 		switch (direction) {
-		case View.FOCUS_RIGHT:
+		case FOCUS_RIGHT:
 			sX = source.right;
 			sY = source.top + source.height() / 2;
 			dX = dest.left;
 			dY = dest.top + dest.height() / 2;
 			break;
-		case View.FOCUS_DOWN:
+		case FOCUS_DOWN:
 			sX = source.left + source.width() / 2;
 			sY = source.bottom;
 			dX = dest.left + dest.width() / 2;
 			dY = dest.top;
 			break;
-		case View.FOCUS_LEFT:
+		case FOCUS_LEFT:
 			sX = source.left;
 			sY = source.top + source.height() / 2;
 			dX = dest.right;
 			dY = dest.top + dest.height() / 2;
 			break;
-		case View.FOCUS_UP:
+		case FOCUS_UP:
 			sX = source.left + source.width() / 2;
 			sY = source.top;
 			dX = dest.left + dest.width() / 2;
 			dY = dest.bottom;
 			break;
-		case View.FOCUS_FORWARD:
-		case View.FOCUS_BACKWARD:
+		case FOCUS_FORWARD:
+		case FOCUS_BACKWARD:
 			sX = source.right + source.width() / 2;
 			sY = source.top + source.height() / 2;
 			dX = dest.left + dest.width() / 2;
@@ -268,7 +263,7 @@ public abstract class ZrcAbsListView extends ZrcAdapterView<ListAdapter>
 		mSmoothScrollbarEnabled = enabled;
 	}
 
-	public void setOnScrollListener(OnScrollListener l) {
+	public void setOnScrollListener(ZrcListView.OnScrollListener l) {
 		mOnScrollListener = l;
 		invokeOnItemScrollListener();
 	}
@@ -456,7 +451,7 @@ public abstract class ZrcAbsListView extends ZrcAdapterView<ListAdapter>
 				}
 			}
 			mScrollUp
-					.setVisibility(canScrollUp ? View.VISIBLE : View.INVISIBLE);
+					.setVisibility(canScrollUp ? VISIBLE : INVISIBLE);
 		}
 		if (mScrollDown != null) {
 			boolean canScrollDown;
@@ -467,8 +462,8 @@ public abstract class ZrcAbsListView extends ZrcAdapterView<ListAdapter>
 				canScrollDown = child.getBottom() > getBottom()
 						- mListPadding.bottom;
 			}
-			mScrollDown.setVisibility(canScrollDown ? View.VISIBLE
-					: View.INVISIBLE);
+			mScrollDown.setVisibility(canScrollDown ? VISIBLE
+					: INVISIBLE);
 		}
 	}
 
@@ -819,7 +814,7 @@ public abstract class ZrcAbsListView extends ZrcAdapterView<ListAdapter>
 		final int count = getChildCount();
 		for (int i = count - 1; i >= 0; i--) {
 			final View child = getChildAt(i);
-			if (child.getVisibility() == View.VISIBLE) {
+			if (child.getVisibility() == VISIBLE) {
 				child.getHitRect(frame);
 				if (frame.contains(x, y)) {
 					return mFirstPosition + i;
@@ -856,7 +851,7 @@ public abstract class ZrcAbsListView extends ZrcAdapterView<ListAdapter>
 					}
 				}
 				mSelectorPosition = INVALID_POSITION;
-				reportScrollStateChange(OnScrollListener.SCROLL_STATE_TOUCH_SCROLL);
+				reportScrollStateChange(ZrcListView.OnScrollListener.SCROLL_STATE_TOUCH_SCROLL);
 				final ViewParent parent = getParent();
 				if (parent != null) {
 					parent.requestDisallowInterceptTouchEvent(true);
@@ -1117,11 +1112,11 @@ public abstract class ZrcAbsListView extends ZrcAdapterView<ListAdapter>
 					if (mFlingRunnable == null) {
 						mFlingRunnable = new FlingRunnable();
 					}
-					reportScrollStateChange(OnScrollListener.SCROLL_STATE_FLING);
+					reportScrollStateChange(ZrcListView.OnScrollListener.SCROLL_STATE_FLING);
 					mFlingRunnable.start(-initialVelocity);
 				} else {
 					mTouchMode = TOUCH_MODE_REST;
-					reportScrollStateChange(OnScrollListener.SCROLL_STATE_IDLE);
+					reportScrollStateChange(ZrcListView.OnScrollListener.SCROLL_STATE_IDLE);
 					if (mFlingRunnable != null) {
 						mFlingRunnable.endFling();
 					}
@@ -1284,7 +1279,7 @@ public abstract class ZrcAbsListView extends ZrcAdapterView<ListAdapter>
 			mTouchMode = TOUCH_MODE_REST;
 			mActivePointerId = INVALID_POINTER;
 			recycleVelocityTracker();
-			reportScrollStateChange(OnScrollListener.SCROLL_STATE_IDLE);
+			reportScrollStateChange(ZrcListView.OnScrollListener.SCROLL_STATE_IDLE);
 			break;
 		}
 		case MotionEvent.ACTION_POINTER_UP: {
@@ -1372,7 +1367,7 @@ public abstract class ZrcAbsListView extends ZrcAdapterView<ListAdapter>
 						&& getChildAt(childCount - 1).getBottom() == bottomLimit && distance > 0)) {
 			mFlingRunnable.endFling();
 		} else {
-			reportScrollStateChange(OnScrollListener.SCROLL_STATE_FLING);
+			reportScrollStateChange(ZrcListView.OnScrollListener.SCROLL_STATE_FLING);
 			mFlingRunnable.startScroll(distance, duration, linear);
 		}
 	}
@@ -1541,9 +1536,9 @@ public abstract class ZrcAbsListView extends ZrcAdapterView<ListAdapter>
 				}
 			}
 			if (onScrollStateListener != null) {
-				if (mScrollState != OnScrollStateListener.EDGE) {
-					mScrollState = OnScrollStateListener.EDGE;
-					onScrollStateListener.onChange(OnScrollStateListener.EDGE);
+				if (mScrollState != ZrcListView.OnScrollStateListener.EDGE) {
+					mScrollState = ZrcListView.OnScrollStateListener.EDGE;
+					onScrollStateListener.onChange(ZrcListView.OnScrollStateListener.EDGE);
 				}
 			}
 		} else {
@@ -1554,18 +1549,18 @@ public abstract class ZrcAbsListView extends ZrcAdapterView<ListAdapter>
 			}
 			if (incrementalDeltaY > 5) {
 				if (onScrollStateListener != null) {
-					if (mScrollState != OnScrollStateListener.UP) {
-						mScrollState = OnScrollStateListener.UP;
+					if (mScrollState != ZrcListView.OnScrollStateListener.UP) {
+						mScrollState = ZrcListView.OnScrollStateListener.UP;
 						onScrollStateListener
-								.onChange(OnScrollStateListener.UP);
+								.onChange(ZrcListView.OnScrollStateListener.UP);
 					}
 				}
 			} else if (incrementalDeltaY < -5) {
 				if (onScrollStateListener != null) {
-					if (mScrollState != OnScrollStateListener.DOWN) {
-						mScrollState = OnScrollStateListener.DOWN;
+					if (mScrollState != ZrcListView.OnScrollStateListener.DOWN) {
+						mScrollState = ZrcListView.OnScrollStateListener.DOWN;
 						onScrollStateListener
-								.onChange(OnScrollStateListener.DOWN);
+								.onChange(ZrcListView.OnScrollStateListener.DOWN);
 					}
 				}
 			}
@@ -1803,15 +1798,15 @@ public abstract class ZrcAbsListView extends ZrcAdapterView<ListAdapter>
 		mRecycler.mRecyclerListener = listener;
 	}
 
-	public void setOnRefreshStartListener(OnStartListener onStart) {
+	public void setOnRefreshStartListener(ZrcListView.OnStartListener onStart) {
 		this.onRefreshStart = onStart;
 	}
 
-	public void setOnLoadMoreStartListener(OnStartListener onStart) {
+	public void setOnLoadMoreStartListener(ZrcListView.OnStartListener onStart) {
 		this.onLoadMoreStart = onStart;
 	}
 
-	public void setOnScrollStateListener(OnScrollStateListener onScrollListener) {
+	public void setOnScrollStateListener(ZrcListView.OnScrollStateListener onScrollListener) {
 		this.onScrollStateListener = onScrollListener;
 	}
 
@@ -2131,7 +2126,7 @@ public abstract class ZrcAbsListView extends ZrcAdapterView<ListAdapter>
 			int oldTouchMode = mTouchMode;
 			mTouchMode = TOUCH_MODE_REST;
 			removeCallbacks(this);
-			reportScrollStateChange(OnScrollListener.SCROLL_STATE_IDLE);
+			reportScrollStateChange(ZrcListView.OnScrollListener.SCROLL_STATE_IDLE);
 			clearScrollingCache();
 			mScroller.abortAnimation();
 

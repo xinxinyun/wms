@@ -12,9 +12,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Adapter;
 
-import com.wms.util.ZrcListView.OnItemClickListener;
-import com.wms.util.ZrcListView.OnItemLongClickListener;
-
 abstract class ZrcAdapterView<T extends Adapter> extends ViewGroup {
     public static final int ITEM_VIEW_TYPE_IGNORE = -1;
     public static final int ITEM_VIEW_TYPE_HEADER_OR_FOOTER = -2;
@@ -24,7 +21,7 @@ abstract class ZrcAdapterView<T extends Adapter> extends ViewGroup {
     int mFirstTop = 0;
     boolean mInLayout = false;
     ZrcListView.OnItemClickListener mOnItemClickListener;
-    OnItemLongClickListener mOnItemLongClickListener;
+    ZrcListView.OnItemLongClickListener mOnItemLongClickListener;
     boolean mDataChanged;
     int mItemCount;
     int mOldItemCount;
@@ -49,7 +46,7 @@ abstract class ZrcAdapterView<T extends Adapter> extends ViewGroup {
         return mOnItemClickListener;
     }
 
-    public void setOnItemClickListener(OnItemClickListener listener) {
+    public void setOnItemClickListener(ZrcListView.OnItemClickListener listener) {
         mOnItemClickListener = listener;
     }
 
@@ -62,11 +59,11 @@ abstract class ZrcAdapterView<T extends Adapter> extends ViewGroup {
         return false;
     }
 
-    public final OnItemLongClickListener getOnItemLongClickListener() {
+    public final ZrcListView.OnItemLongClickListener getOnItemLongClickListener() {
         return mOnItemLongClickListener;
     }
 
-    public void setOnItemLongClickListener(OnItemLongClickListener listener) {
+    public void setOnItemLongClickListener(ZrcListView.OnItemLongClickListener listener) {
         if (!isLongClickable()) {
             setLongClickable(true);
         }

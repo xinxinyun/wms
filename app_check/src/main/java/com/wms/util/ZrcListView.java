@@ -11,7 +11,6 @@ import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.util.AttributeSet;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.animation.AnimationUtils;
 import android.widget.ListAdapter;
 
@@ -356,7 +355,7 @@ public class ZrcListView extends ZrcAbsListView {
         while (nextTop < end && pos < mItemCount) {
             View child = makeAndAddView(pos, nextTop, true, mListPadding.left, false);
             nextTop = child.getBottom() + mDividerHeight;
-            if (isAnim && mItemAnimForBottomIn != 0 && child.getVisibility() == View.VISIBLE) {
+            if (isAnim && mItemAnimForBottomIn != 0 && child.getVisibility() == VISIBLE) {
                 child.startAnimation(
                         AnimationUtils.loadAnimation(getContext(), mItemAnimForBottomIn));
             }
@@ -370,7 +369,7 @@ public class ZrcListView extends ZrcAbsListView {
         while (nextBottom > end && pos >= 0) {
             View child = makeAndAddView(pos, nextBottom, false, mListPadding.left, false);
             nextBottom = child.getTop() - mDividerHeight;
-            if (isAnim && mItemAnimForTopIn != 0 && child.getVisibility() == View.VISIBLE) {
+            if (isAnim && mItemAnimForTopIn != 0 && child.getVisibility() == VISIBLE) {
                 child.startAnimation(AnimationUtils.loadAnimation(getContext(), mItemAnimForTopIn));
             }
             pos--;
@@ -448,7 +447,7 @@ public class ZrcListView extends ZrcAbsListView {
         p.viewType = mAdapter.getItemViewType(position);
         p.forceAdd = true;
 
-        int childWidthSpec = ViewGroup.getChildMeasureSpec(widthMeasureSpec,
+        int childWidthSpec = getChildMeasureSpec(widthMeasureSpec,
                 mListPadding.left + mListPadding.right,
                 p.width);
         int lpHeight = p.height;
@@ -620,7 +619,7 @@ public class ZrcListView extends ZrcAbsListView {
                 } else if (firstPosition >= mItemCount) {
                     mFirstPosition = mItemCount - 1;
                     View child = makeAndAddView(mFirstPosition, 1, false, mListPadding.left, false);
-                    if (mItemAnimForTopIn != 0 && child.getVisibility() == View.VISIBLE) {
+                    if (mItemAnimForTopIn != 0 && child.getVisibility() == VISIBLE) {
                         child.startAnimation(
                                 AnimationUtils.loadAnimation(getContext(), mItemAnimForTopIn));
                     }
@@ -739,11 +738,11 @@ public class ZrcListView extends ZrcAbsListView {
 
         if ((recycled && !p.forceAdd)
                 || (p.recycledHeaderFooter &&
-                p.viewType == ZrcAdapterView.ITEM_VIEW_TYPE_HEADER_OR_FOOTER)) {
+                p.viewType == ITEM_VIEW_TYPE_HEADER_OR_FOOTER)) {
             attachViewToParent(child, flowDown ? -1 : 0, p);
         } else {
             p.forceAdd = false;
-            if (p.viewType == ZrcAdapterView.ITEM_VIEW_TYPE_HEADER_OR_FOOTER) {
+            if (p.viewType == ITEM_VIEW_TYPE_HEADER_OR_FOOTER) {
                 p.recycledHeaderFooter = true;
             }
             addViewInLayout(child, flowDown ? -1 : 0, p, true);
@@ -758,7 +757,7 @@ public class ZrcListView extends ZrcAbsListView {
         }
 
         if (needToMeasure) {
-            int childWidthSpec = ViewGroup.getChildMeasureSpec(mWidthMeasureSpec, mListPadding.left
+            int childWidthSpec = getChildMeasureSpec(mWidthMeasureSpec, mListPadding.left
                     + mListPadding.right, p.width);
             int lpHeight = p.height;
             int childHeightSpec;
@@ -916,7 +915,7 @@ public class ZrcListView extends ZrcAbsListView {
     public void setItemsCanFocus(boolean itemsCanFocus) {
         mItemsCanFocus = itemsCanFocus;
         if (!itemsCanFocus) {
-            setDescendantFocusability(ViewGroup.FOCUS_BLOCK_DESCENDANTS);
+            setDescendantFocusability(FOCUS_BLOCK_DESCENDANTS);
         }
     }
 

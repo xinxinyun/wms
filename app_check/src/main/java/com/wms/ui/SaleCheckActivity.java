@@ -21,6 +21,7 @@ import com.wms.contants.WmsContanst;
 import com.wms.event.BackResult;
 import com.wms.event.GetRFIDThread;
 import com.wms.event.MyApp;
+
 import com.wms.util.Beeper;
 import com.wms.util.CallBackUtil;
 import com.wms.util.MLog;

@@ -27,7 +27,7 @@ import com.reader.helper.ReaderHelper;
 import com.reader.helper.ReaderSetting;
 import com.uhf.uhf.LogList;
 import com.uhf.uhf.R;
-import com.uhf.uhf.UHFApplication;
+import com.uhf.uhf.VehicleApplication;
 import com.uhf.uhf.spiner.AbstractSpinerAdapter.IOnItemSelectListener;
 import com.uhf.uhf.spiner.SpinerPopWindow;
 import com.ui.base.BaseActivity;
@@ -80,7 +80,7 @@ public class PageReaderRegion extends BaseActivity {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.page_reader_region);
-		((UHFApplication) getApplication()).addActivity(this);
+		((VehicleApplication) getApplication()).addActivity(this);
 		try {
 			mReaderHelper = ReaderHelper.getDefaultHelper();
 			mReader = mReaderHelper.getReader();

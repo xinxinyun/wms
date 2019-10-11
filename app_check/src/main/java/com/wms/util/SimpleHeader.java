@@ -185,8 +185,8 @@ public class SimpleHeader implements Headable {
 
     @Override
     public void toastResultInOtherWay(Context context, int state) {
-        if (state == Headable.STATE_SUCCESS) {
-        } else if (state == Headable.STATE_FAIL) {
+        if (state == STATE_SUCCESS) {
+        } else if (state == STATE_FAIL) {
             Toast.makeText(context, mMsg != null ? mMsg : "加载失败", Toast.LENGTH_SHORT).show();
         }
     }
