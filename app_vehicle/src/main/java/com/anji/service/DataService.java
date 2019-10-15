@@ -9,10 +9,10 @@ import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.alibaba.fastjson.JSON;
-import com.anji.bean.ResultBean;
 import com.anji.contants.VehicleContanst;
 import com.anji.util.ASCUtil;
 import com.anji.util.CallBackUtil;
+import com.anji.util.MD5Utils;
 import com.anji.util.OkhttpUtil;
 import com.module.interaction.ModuleConnector;
 import com.nativec.tools.ModuleManager;
@@ -23,8 +23,6 @@ import com.rfid.rxobserver.bean.RXInventoryTag;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 import okhttp3.Call;
 
@@ -65,13 +63,11 @@ public class DataService extends Service {
             //Log.i(TAG, "------------------>" + epcCode);
             //防止重复读取RFID信息
             if (!epcCodeList.contains(epcCode)) {
-
                 Log.i(TAG, "------------------>" + epcCode);
+                epcCode = "LSGKE54H7HW09946";
                 epcCodeList.add(epcCode);
-
                 //调用蜂鸣声提示已扫描到商品
                 //Beeper.beep(Beeper.BEEPER_SHORT);
-
                 Message message = Message.obtain();
                 message.what = 1;
                 message.obj = epcCode;
@@ -103,7 +99,7 @@ public class DataService extends Service {
     public void onCreate() {
         super.onCreate();
         startup();
-        Log.v(TAG, "OnCreate 服务启动时调用");
+        Log.v(TAG, "DataService服务启动----->");
     }
 
     @Override
@@ -111,12 +107,12 @@ public class DataService extends Service {
         super.onDestroy();
         Intent intent = new Intent("com.anji.service.dataService.destory");
         sendBroadcast(intent);
-        Log.v(TAG, "onDestroy 服务关闭时");
+        Log.v(TAG, "DataService服务关闭");
     }
 
     @Override
     public boolean onUnbind(Intent intent) {
-        Log.v(TAG, "onDestroy 服务关闭时");
+        Log.v(TAG, "onUnbind 服务关闭时");
         return super.onUnbind(intent);
 
     }
@@ -124,7 +120,6 @@ public class DataService extends Service {
     @Nullable
     @Override
     public IBinder onBind(Intent intent) {
-        Log.v(TAG, "onDestroy 服务关闭时");
         return null;
     }
 
@@ -137,47 +132,41 @@ public class DataService extends Service {
     /**
      * 启动程序开始扫描
      */
-    private void startup() {
+    private boolean startup() {
 
         //如果设备在连接状态，则直接退出
-        if (connector.isConnected()) {
-            return;
+        boolean isConnected = connector.isConnected();
+        if (isConnected) {
+            return false;
         }
 
         //连接RFID设备
-        if (!connector.connectCom(VehicleContanst.TTYMXC2, VehicleContanst.baud)) {
-            return;
+        boolean connectStatus = connector.connectCom(VehicleContanst.TTYMXC2,
+                VehicleContanst.baud);
+        if (!connectStatus) {
+            return false;
         }
 
         ModuleManager.newInstance().setUHFStatus(true);
 
         try {
             mReader = RFIDReaderHelper.getDefaultHelper();
+            //注册监听器
             mReader.registerObserver(rxObserver);
-            //Thread.currentThread().sleep(500);
-            //mReader.setWorkAntenna((byte) 0xff, (byte) 0x01);
             //设定读取间隔时间
-            //Thread.currentThread().sleep(500);
             Thread.sleep(500);
-            //mReader.realTimeInventory((byte) 0xff, (byte) 0x01);
+            //群读模式
             mReader.customizedSessionTargetInventory((byte) 0xff, (byte) 0x01, (byte) 0x00,
                     (byte) 0x01);
             //设置工作天线频率
-            //mReader.setOutputPower();
             mReader.setOutputPower((byte) 0xff, (byte) 21, (byte) 21, (byte) 0, (byte) 0);
         } catch (Exception e) {
             Log.v(TAG, "RFID设备调取失败" + e.getMessage());
             e.printStackTrace();
-            return;
+            return false;
         }
-    }
 
-    /**
-     * RFID模块下线
-     */
-    private void shutdown() {
-        ModuleManager.newInstance().setUHFStatus(false);
-        ModuleManager.newInstance().release();
+        return true;
     }
 
     /**
@@ -188,59 +177,51 @@ public class DataService extends Service {
     private void submitInventory(final String epcCode) {
 
         HashMap<String, String> headerMap = new HashMap<>();
-        HashMap<String, Object> paramsMap = new HashMap<>();
         //头部信息
         headerMap.put("Content-Type", OkhttpUtil.CONTENT_TYPE);
 
-        //客户ID
-        paramsMap.put("uid", "3");
-        //数据来源3=无人车
-        paramsMap.put("channel", "3");
-        paramsMap.put("time", System.currentTimeMillis());
-        paramsMap.put("warehouseId", "3");
-        paramsMap.put("sign", "c0618a58bd9559c9f5ce78961529448e");
+        String timeStr = String.valueOf(System.currentTimeMillis()).substring(0, 10);
+        final String vehicleCode = ASCUtil.str12to17("1C 8E 64 D2 09 E8 06 61 E0 02 93 14");
 
-        HashMap<String, List<Map<String, Object>>> dataMap = new HashMap<>();
+        String reqDataStr = "\"reqData\": {"
+                                    + "\"cars\": [{"
+                                        + "\"vin\": \"" + vehicleCode + "\","
+                                        + "\"GPS\": [{"
+                                            + "\"latitude\": \"0\","
+                                            + "\"longitude\": \"0\""
+                                        + "}]"
+                                        + "}]"
+                             + "},";
 
-        ArrayList<Map<String, Object>> carsList = new ArrayList<>();
+        String paramJsonStr =
+                "{\"uid\": \"3\","
+                        + "\"identity\": \"" + MD5Utils.encryptMd5(VehicleContanst.IDENGITY) + "\","
+                        + "\"channel\": \"3\","
+                        + "\"time\": \"" + String.valueOf(System.currentTimeMillis()).substring(0
+                        , 10) + "\","
+                        + "\"warehouseId\": \"3\","
+                        + reqDataStr
+                        + "\"sign\": \"" + MD5Utils.encryptMd5(reqDataStr + "&time=" + timeStr) + "\""
+                        + "}";
 
-        //经纬度存储为0
-        List<Map<String, Object>> gpsList = new ArrayList<>();
-        Map<String, Object> gpsMap = new HashMap<>();
-        gpsMap.put("latitude", "0");
-        gpsMap.put("longitude", "0");
-        gpsList.add(gpsMap);
-
-        Map<String, Object> carInfoMap = new HashMap<>();
-        //12位ASC码转换为17位的字符串
-        final String vehicleCode=ASCUtil.str12to17(epcCode);
-        carInfoMap.put("vin", vehicleCode);
-        carInfoMap.put("GPS", gpsList);
-
-        carsList.add(carInfoMap);
-
-        dataMap.put("cars", carsList);
-        paramsMap.put("reqData", dataMap);
-
-        String paramJsonStr=JSON.toJSONString(paramsMap);
-
-        Log.d("------------->"+TAG, paramJsonStr);
+        Log.d("------------->" + TAG, paramJsonStr);
 
         OkhttpUtil.okHttpPostJson(VehicleContanst.VEHICLE_INVENTORY_ACCESSDATA,
                 paramJsonStr, headerMap, new CallBackUtil.CallBackString() {
 
                     @Override
                     public void onFailure(Call call, Exception e) {
-                        Log.d(TAG, e.getMessage());
-                        Log.d(TAG, "[" + epcCode + "]+["+vehicleCode+"]盘点结果提交失败");
+                        Log.d(TAG, "[" + epcCode + "]+[" + vehicleCode + "]" +
+                                "盘点结果提交失败[错误信息]" + e.getMessage());
                     }
 
                     @Override
                     public void onResponse(String response) {
                         try {
-                            ResultBean resultBean = JSON.parseObject(response, ResultBean.class);
-                            String respMsg = resultBean.getRepCode() == "0000" ? "成功" : "失败";
-                            Log.d(TAG, "[\" + epcCode + \"]+[\"+vehicleCode+\"]盘点结果提交" + respMsg);
+                            HashMap<String, Object> respMap = JSON.parseObject(response,
+                                    HashMap.class);
+                            Log.d(TAG, "[\" + epcCode + \"]+[\"+vehicleCode+\"]盘点提交结果[响应码]" +
+                                    respMap.get("repCode").equals("0000") + "&响应消息[repMsg]" + respMap.get("repMsg"));
                         } catch (Exception e) {
                             Log.d(TAG, "[\" + epcCode + \"]+[\"+vehicleCode+\"]盘点结果提交失败");
                             Log.d(TAG, e.toString());
@@ -250,4 +231,38 @@ public class DataService extends Service {
                 });
     }
 
+    public static void main(String[] args) {
+        long time = System.currentTimeMillis();
+        HashMap<String, String> headerMap = new HashMap<>();
+        //HashMap<String, Object> paramsMap = new HashMap<>();
+        //头部信息
+        headerMap.put("Content-Type", OkhttpUtil.CONTENT_TYPE);
+
+        String timeStr = String.valueOf(System.currentTimeMillis()).substring(0, 10);
+        String reqDataStr = "\"reqData\": {"
+                + "\"cars\": [{"
+                + "\"vin\": \"" + ASCUtil.str12to17("1C 8E 64 D2 09 E8 06 61 E0 02 93 14") + "\","
+                + "\"GPS\": [{"
+                + "\"latitude\": \"0\","
+                + "\"longitude\": \"0\""
+                + "}]"
+                + "}]"
+                + "},";
+        String param =
+                "{\"uid\": \"3\","
+                        + "\"identity\": \"" + MD5Utils.encryptMd5(VehicleContanst.IDENGITY) + "\","
+                        + "\"channel\": \"3\","
+                        + "\"time\": \"" + String.valueOf(System.currentTimeMillis()).substring(0
+                        , 10) + "\","
+                        + "\"warehouseId\": \"3\","
+                        + reqDataStr
+                        + "\"sign\": \"" + MD5Utils.encryptMd5(reqDataStr + "&time=" + timeStr) + "\""
+                        + "}";
+
+        System.out.println("{\"Content-Type\":\"" + OkhttpUtil.CONTENT_TYPE + "\"}");
+
+        System.out.println(System.currentTimeMillis() - time);
+
+        System.out.println(param);
+    }
 }

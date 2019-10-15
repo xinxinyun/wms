@@ -10,7 +10,6 @@ import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
 
-import com.birbit.android.jobqueue.JobManager;
 import com.anji.reader.base.ERROR;
 import com.anji.util.Beeper;
 import com.anji.util.PreferenceUtil;
@@ -35,8 +34,6 @@ public class VehicleApplication extends Application {
 
     public ArrayList<CharSequence> mMonitorListItem = new ArrayList<CharSequence>();
 
-    private static JobManager jobManager;
-
     public final void writeMonitor(String strLog, int type) {
         Date now = new Date();
         SimpleDateFormat temp = new SimpleDateFormat("kk:mm:ss");
@@ -46,8 +43,8 @@ public class VehicleApplication extends Application {
                         : Color.RED), 0, tSS.length(),
                 Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         mMonitorListItem.add(tSS);
-        if (mMonitorListItem.size() > 1000)
-            mMonitorListItem.remove(0);
+        if (mMonitorListItem.size() > 1000){
+            mMonitorListItem.remove(0);}
     }
 
     private List<Activity> activities = new ArrayList<Activity>();
@@ -131,9 +128,5 @@ public class VehicleApplication extends Application {
         return mContext;
     }
 
-
-    public static JobManager getJobManager() {
-        return jobManager;
-    }
 
 }
