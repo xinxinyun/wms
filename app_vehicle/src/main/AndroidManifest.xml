@@ -47,6 +47,11 @@
             android:enabled="true"
             android:exported="true"
             android:priority="1000"/>
+        <service
+            android:name="com.anji.service.BackService"
+            android:enabled="true"
+            android:exported="true"
+            android:priority="999"/>
 
         <receiver
             android:name="com.anji.receiver.DataReceiver"
@@ -64,6 +69,7 @@
             </intent-filter>
             <intent-filter>
                 <action android:name="com.anji.service.dataService.destory"/>
+                <action android:name="com.anji.service.backService.destory"/>
             </intent-filter>
         </receiver>
 
