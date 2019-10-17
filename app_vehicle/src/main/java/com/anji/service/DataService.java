@@ -9,6 +9,7 @@ import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.anji.contants.VehicleContanst;
 import com.anji.util.ASCUtil;
 import com.anji.util.CallBackUtil;
@@ -183,38 +184,31 @@ public class DataService extends Service {
         String timeStr = String.valueOf(System.currentTimeMillis()).substring(0, 10);
         final String vehicleCode = ASCUtil.str12to17("1C 8E 64 D2 09 E8 06 61 E0 02 93 14");
 
-        String reqDataStr = "\"reqData\": {"
-                                    + "\"cars\": [{"
-                                        + "\"vin\": \"" + vehicleCode + "\","
-                                        + "\"GPS\": [{"
-                                            + "\"latitude\": \"0\","
-                                            + "\"longitude\": \"0\""
-                                        + "}]"
-                                        + "}]"
-                             + "},";
+        JSONObject paramObj = new JSONObject();
 
-        String paramJsonStr =
-                "{\"uid\": \"3\","
-                        + "\"identity\": \"" + MD5Utils.encryptMd5(VehicleContanst.IDENGITY) + "\","
-                        + "\"channel\": \"3\","
-                        + "\"time\": \"" + String.valueOf(System.currentTimeMillis()).substring(0
-                        , 10) + "\","
-                        + "\"warehouseId\": \"3\","
-                        + reqDataStr
-                        + "\"sign\": \"" + MD5Utils.encryptMd5(reqDataStr + "&time=" + timeStr) + "\""
-                        + "}";
+        JSONObject dataObj = new JSONObject();
 
-        Log.d("------------->" + TAG, paramJsonStr);
+        dataObj.put("identity", "87082d29af4cb1cfd26ad32fafd806ad");
+        dataObj.put("warehouseId", "1");
+        dataObj.put("inventoryPlanId", "65");
+        dataObj.put("inventoryMethod", "1");
+        dataObj.put("vin", vehicleCode);
+        dataObj.put("longitude", "0");
+        dataObj.put("latitude", "0");
+
+        paramObj.put("reqData", dataObj);
+        paramObj.put("time", timeStr);
+        paramObj.put("sign", MD5Utils.getMD5("reqData="+dataObj+"&time="+timeStr));
+        paramObj.put("token", "");
+        paramObj.put("userId", "3");
 
         OkhttpUtil.okHttpPostJson(VehicleContanst.VEHICLE_INVENTORY_ACCESSDATA,
-                paramJsonStr, headerMap, new CallBackUtil.CallBackString() {
-
+                paramObj.toString(), headerMap, new CallBackUtil.CallBackString() {
                     @Override
                     public void onFailure(Call call, Exception e) {
                         Log.d(TAG, "[" + epcCode + "]+[" + vehicleCode + "]" +
                                 "盘点结果提交失败[错误信息]" + e.getMessage());
                     }
-
                     @Override
                     public void onResponse(String response) {
                         try {
@@ -232,37 +226,35 @@ public class DataService extends Service {
     }
 
     public static void main(String[] args) {
+
         long time = System.currentTimeMillis();
         HashMap<String, String> headerMap = new HashMap<>();
-        //HashMap<String, Object> paramsMap = new HashMap<>();
+
         //头部信息
         headerMap.put("Content-Type", OkhttpUtil.CONTENT_TYPE);
 
         String timeStr = String.valueOf(System.currentTimeMillis()).substring(0, 10);
-        String reqDataStr = "\"reqData\": {"
-                + "\"cars\": [{"
-                + "\"vin\": \"" + ASCUtil.str12to17("1C 8E 64 D2 09 E8 06 61 E0 02 93 14") + "\","
-                + "\"GPS\": [{"
-                + "\"latitude\": \"0\","
-                + "\"longitude\": \"0\""
-                + "}]"
-                + "}]"
-                + "},";
-        String param =
-                "{\"uid\": \"3\","
-                        + "\"identity\": \"" + MD5Utils.encryptMd5(VehicleContanst.IDENGITY) + "\","
-                        + "\"channel\": \"3\","
-                        + "\"time\": \"" + String.valueOf(System.currentTimeMillis()).substring(0
-                        , 10) + "\","
-                        + "\"warehouseId\": \"3\","
-                        + reqDataStr
-                        + "\"sign\": \"" + MD5Utils.encryptMd5(reqDataStr + "&time=" + timeStr) + "\""
-                        + "}";
 
-        System.out.println("{\"Content-Type\":\"" + OkhttpUtil.CONTENT_TYPE + "\"}");
+        JSONObject paramObj = new JSONObject();
 
-        System.out.println(System.currentTimeMillis() - time);
+        JSONObject dataObj = new JSONObject();
 
-        System.out.println(param);
+        final String vehicleCode = ASCUtil.str12to17("1C 8E 64 D2 09 E8 06 61 E0 02 93 14");
+
+        dataObj.put("identity", "87082d29af4cb1cfd26ad32fafd806ad");
+        dataObj.put("warehouseId", "1");
+        dataObj.put("inventoryPlanId", "65");
+        dataObj.put("inventoryMethod", "1");
+        dataObj.put("vin", vehicleCode);
+        dataObj.put("longitude", "0");
+        dataObj.put("latitude", "0");
+
+        paramObj.put("reqData", dataObj);
+        paramObj.put("time", timeStr);
+        paramObj.put("sign", MD5Utils.getMD5("reqData="+dataObj+"&time="+timeStr));
+        paramObj.put("token", "");
+        paramObj.put("userId", "3");
+
+        System.out.println(paramObj.toString());
     }
 }

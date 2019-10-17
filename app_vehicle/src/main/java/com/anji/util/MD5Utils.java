@@ -12,48 +12,40 @@ import java.security.MessageDigest;
  */
 public class MD5Utils {
 
-    /**
-     * MD5加密算法
-     *
-     * @param digestValue
-     * @return
-     */
-    public final static String encryptMd5(String digestValue) {
+    public static void main(String[] args) {
+        //String pwd = getMD5("99991");
+        System.out.println(String.valueOf(System.currentTimeMillis()).substring(0, 10));
+    }
 
-        //如果为空，则返回""
-        String s = digestValue == null ? "" : digestValue;
-        //字典
-        char hexDigists[] = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd',
-                'e', 'f'};
-
+    //生成MD5
+    public static String getMD5(String message) {
+        String md5 = "";
         try {
-
-            //获取二进制
-            byte[] strTemp = s.getBytes();
-            MessageDigest mdTemp = MessageDigest.getInstance("MD5");
-            //执行加密
-            mdTemp.update(strTemp);
-            //加密结果
-            byte[] md = mdTemp.digest();
-            //结果长度
-            int j = md.length;
-            //字符数组
-            char str[] = new char[j * 2];
-
-            int k = 0;
-            //将二进制加密结果转化为字符
-            for (int i = 0; i < j; i++) {
-                byte byte0 = md[i];
-                str[k++] = hexDigists[byte0 >>> 4 & 0xf];
-                str[k++] = hexDigists[byte0 & 0xf];
-            }
-
-            //输出加密后的字符
-            return new String(str);
-
+            MessageDigest md = MessageDigest.getInstance("MD5");  // 创建一个md5算法对象
+            byte[] messageByte = message.getBytes("UTF-8");
+            byte[] md5Byte = md.digest(messageByte);              // 获得MD5字节数组,16*8=128位
+            md5 = bytesToHex(md5Byte);                            // 转换为16进制字符串
         } catch (Exception e) {
-            return null;
+            e.printStackTrace();
         }
+        return md5;
+    }
+
+    // 二进制转十六进制
+    public static String bytesToHex(byte[] bytes) {
+        StringBuffer hexStr = new StringBuffer();
+        int num;
+        for (int i = 0; i < bytes.length; i++) {
+            num = bytes[i];
+            if(num < 0) {
+                num += 256;
+            }
+            if(num < 16){
+                hexStr.append("0");
+            }
+            hexStr.append(Integer.toHexString(num));
+        }
+        return hexStr.toString();
     }
 
 }
