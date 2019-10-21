@@ -13,8 +13,7 @@ public interface VehicleContanst {
     /**
      * 车辆盘点结果提交
      */
-    public static final String VEHICLE_INVENTORY_ACCESSDATA = HOST + "/business/ " +
-            "inventoryCar/accessData";
+    public static final String VEHICLE_INVENTORY_ACCESSDATA = HOST + "/business/service/inventory/detail/receiveInventoryDetail";
 
     /**
      * 波特率

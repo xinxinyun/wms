@@ -2,6 +2,7 @@ package com.anji.service;
 
 import android.app.Service;
 import android.content.Intent;
+import android.media.MediaPlayer;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
@@ -10,11 +11,13 @@ import android.util.Log;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.anji.R;
 import com.anji.contants.VehicleContanst;
 import com.anji.util.ASCUtil;
 import com.anji.util.CallBackUtil;
 import com.anji.util.MD5Utils;
 import com.anji.util.OkhttpUtil;
+import com.anji.util.PreferenceUtil;
 import com.module.interaction.ModuleConnector;
 import com.nativec.tools.ModuleManager;
 import com.rfid.RFIDReaderHelper;
@@ -99,7 +102,15 @@ public class DataService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
-        startup();
+        //startup();
+        MediaPlayer player = MediaPlayer.create(getApplicationContext(),
+                R.raw.begin_voice);
+        if (!player.isPlaying()) {
+            player.start();
+        }
+
+        testSubmit();
+
         Log.v(TAG, "DataService服务启动----->");
     }
 
@@ -127,6 +138,7 @@ public class DataService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         super.onStartCommand(intent, flags, startId);
+        testSubmit();
         return START_STICKY;
     }
 
@@ -150,17 +162,27 @@ public class DataService extends Service {
 
         ModuleManager.newInstance().setUHFStatus(true);
 
+        MediaPlayer player = MediaPlayer.create(getApplicationContext(),
+                R.raw.begin_voice);
+        if (!player.isPlaying()) {
+            player.start();
+        }
+        player.stop();
+
         try {
+
             mReader = RFIDReaderHelper.getDefaultHelper();
             //注册监听器
             mReader.registerObserver(rxObserver);
             //设定读取间隔时间
             Thread.sleep(500);
             //群读模式
-            mReader.customizedSessionTargetInventory((byte) 0xff, (byte) 0x01, (byte) 0x00,
+            mReader.customizedSessionTargetInventory((byte) 0xff,
+                    (byte) 0x01, (byte) 0x00,
                     (byte) 0x01);
             //设置工作天线频率
-            mReader.setOutputPower((byte) 0xff, (byte) 21, (byte) 21, (byte) 0, (byte) 0);
+            mReader.setOutputPower((byte) 0xff, (byte) 21,
+                    (byte) 21, (byte) 0, (byte) 0);
         } catch (Exception e) {
             Log.v(TAG, "RFID设备调取失败" + e.getMessage());
             e.printStackTrace();
@@ -189,8 +211,8 @@ public class DataService extends Service {
         JSONObject dataObj = new JSONObject();
 
         dataObj.put("identity", "87082d29af4cb1cfd26ad32fafd806ad");
-        dataObj.put("warehouseId", "1");
-        dataObj.put("inventoryPlanId", "65");
+        dataObj.put("warehouseId", PreferenceUtil.getLong("warehouseId", 0));
+        dataObj.put("inventoryPlanId", PreferenceUtil.getLong("inventoryPlanId", 0));
         dataObj.put("inventoryMethod", "1");
         dataObj.put("vin", vehicleCode);
         dataObj.put("longitude", "0");
@@ -198,7 +220,7 @@ public class DataService extends Service {
 
         paramObj.put("reqData", dataObj);
         paramObj.put("time", timeStr);
-        paramObj.put("sign", MD5Utils.getMD5("reqData="+dataObj+"&time="+timeStr));
+        paramObj.put("sign", MD5Utils.getMD5("reqData=" + dataObj + "&time=" + timeStr));
         paramObj.put("token", "");
         paramObj.put("userId", "3");
 
@@ -209,6 +231,7 @@ public class DataService extends Service {
                         Log.d(TAG, "[" + epcCode + "]+[" + vehicleCode + "]" +
                                 "盘点结果提交失败[错误信息]" + e.getMessage());
                     }
+
                     @Override
                     public void onResponse(String response) {
                         try {
@@ -225,9 +248,8 @@ public class DataService extends Service {
                 });
     }
 
-    public static void main(String[] args) {
+    public void testSubmit() {
 
-        long time = System.currentTimeMillis();
         HashMap<String, String> headerMap = new HashMap<>();
 
         //头部信息
@@ -242,8 +264,8 @@ public class DataService extends Service {
         final String vehicleCode = ASCUtil.str12to17("1C 8E 64 D2 09 E8 06 61 E0 02 93 14");
 
         dataObj.put("identity", "87082d29af4cb1cfd26ad32fafd806ad");
-        dataObj.put("warehouseId", "1");
-        dataObj.put("inventoryPlanId", "65");
+        dataObj.put("warehouseId", PreferenceUtil.getLong("warehouseId", 0));
+        dataObj.put("inventoryPlanId", PreferenceUtil.getLong("inventoryPlanId", 0));
         dataObj.put("inventoryMethod", "1");
         dataObj.put("vin", vehicleCode);
         dataObj.put("longitude", "0");
@@ -251,10 +273,33 @@ public class DataService extends Service {
 
         paramObj.put("reqData", dataObj);
         paramObj.put("time", timeStr);
-        paramObj.put("sign", MD5Utils.getMD5("reqData="+dataObj+"&time="+timeStr));
+        paramObj.put("sign", MD5Utils.getMD5("reqData=" + dataObj + "&time=" + timeStr));
         paramObj.put("token", "");
         paramObj.put("userId", "3");
 
         System.out.println(paramObj.toString());
+
+        OkhttpUtil.okHttpPostJson(VehicleContanst.VEHICLE_INVENTORY_ACCESSDATA,
+                paramObj.toString(), headerMap, new CallBackUtil.CallBackString() {
+                    @Override
+                    public void onFailure(Call call, Exception e) {
+                        Log.d(TAG, "[" + vehicleCode + "]+[" + vehicleCode + "]" +
+                                "盘点结果提交失败[错误信息]" + e.getMessage());
+                    }
+
+                    @Override
+                    public void onResponse(String response) {
+                        try {
+                            HashMap<String, Object> respMap = JSON.parseObject(response,
+                                    HashMap.class);
+                            Log.d(TAG, "[" + vehicleCode + "]+[" + vehicleCode + "]盘点提交结果[响应码]" +
+                                    respMap.get("repCode").equals("0000") + "&响应消息[repMsg]" + respMap.get("repMsg"));
+                        } catch (Exception e) {
+                            Log.d(TAG, "[" + vehicleCode + "]+[" + vehicleCode + "]盘点结果提交失败");
+                            Log.d(TAG, e.toString());
+                        }
+                    }
+
+                });
     }
 }

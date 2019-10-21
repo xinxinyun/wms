@@ -4,6 +4,21 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/mainpic"
     tools:context="com.anji.ui.MainActivity">
-
+    <TextView
+        android:id="@+id/app_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_200"
+        android:layout_gravity="center_horizontal"
+        android:textSize="@dimen/dp_32"
+        android:text="@string/app_name" />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/dp_16"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="250dp"
+        android:text="版权所有©2019-2022 安吉加加信息技术有限公司" />
 </android.support.design.widget.CoordinatorLayout>

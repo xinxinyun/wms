@@ -18,7 +18,7 @@ public class BackService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
-        InitSocketThread initSocketThread=new InitSocketThread();
+        InitSocketThread initSocketThread=new InitSocketThread(this);
         initSocketThread.start();
     }
 

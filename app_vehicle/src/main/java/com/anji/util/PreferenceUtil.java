@@ -4,6 +4,10 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 
+/**
+ * @author 周宇
+ * @description 持久化工具类
+ */
 public class PreferenceUtil {
 
     private static SharedPreferences mSharedPreferences = null;

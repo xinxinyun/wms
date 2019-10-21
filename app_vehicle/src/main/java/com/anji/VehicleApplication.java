@@ -11,10 +11,11 @@ import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
 
 import com.anji.reader.base.ERROR;
-import com.anji.util.Beeper;
-import com.anji.util.PreferenceUtil;
 import com.anji.reader.helper.ReaderHelper;
+import com.anji.util.Beeper;
 import com.anji.util.OtgStreamManage;
+import com.anji.util.PreferenceUtil;
+import com.orm.SugarContext;
 
 import java.io.IOException;
 import java.net.Socket;
@@ -54,7 +55,6 @@ public class VehicleApplication extends Application {
         super.onCreate();
         try {
             ReaderHelper.setContext(getApplicationContext());
-
         } catch (Exception e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -69,7 +69,7 @@ public class VehicleApplication extends Application {
         } catch (Exception ex) {
             ex.printStackTrace();
         }
-
+        SugarContext.init(this);
         //configureJobManager();//2. 配置JobMananger
 		/*CrashHandler crashHandler = CrashHandler.getInstance();
 		crashHandler.init(getApplicationContext());*/
@@ -111,6 +111,7 @@ public class VehicleApplication extends Application {
         if (BluetoothAdapter.getDefaultAdapter() != null) {
             BluetoothAdapter.getDefaultAdapter().disable();
         }
+        SugarContext.terminate();
         System.exit(0);
     }
 
