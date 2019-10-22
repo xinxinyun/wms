@@ -14,6 +14,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.anji.R;
 import com.anji.contants.VehicleContanst;
 import com.anji.util.ASCUtil;
+import com.anji.util.Beeper;
 import com.anji.util.CallBackUtil;
 import com.anji.util.MD5Utils;
 import com.anji.util.OkhttpUtil;
@@ -68,10 +69,10 @@ public class DataService extends Service {
             //防止重复读取RFID信息
             if (!epcCodeList.contains(epcCode)) {
                 Log.i(TAG, "------------------>" + epcCode);
-                epcCode = "LSGKE54H7HW09946";
+                ///epcCode = "LSGKE54H7HW09946";
                 epcCodeList.add(epcCode);
                 //调用蜂鸣声提示已扫描到商品
-                //Beeper.beep(Beeper.BEEPER_SHORT);
+                Beeper.beep(Beeper.BEEPER_SHORT);
                 Message message = Message.obtain();
                 message.what = 1;
                 message.obj = epcCode;
@@ -102,14 +103,14 @@ public class DataService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
-        //startup();
-        MediaPlayer player = MediaPlayer.create(getApplicationContext(),
-                R.raw.begin_voice);
-        if (!player.isPlaying()) {
-            player.start();
-        }
-
-        testSubmit();
+        startup();
+//        MediaPlayer player = MediaPlayer.create(getApplicationContext(),
+//                R.raw.begin_voice);
+//        if (!player.isPlaying()) {
+//            player.start();
+//        }
+//
+//        testSubmit();
 
         Log.v(TAG, "DataService服务启动----->");
     }
@@ -117,8 +118,8 @@ public class DataService extends Service {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        Intent intent = new Intent("com.anji.service.dataService.destory");
-        sendBroadcast(intent);
+        //Intent intent = new Intent("com.anji.service.dataService.destory");
+        //sendBroadcast(intent);
         Log.v(TAG, "DataService服务关闭");
     }
 
@@ -138,7 +139,7 @@ public class DataService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         super.onStartCommand(intent, flags, startId);
-        testSubmit();
+        //testSubmit();
         return START_STICKY;
     }
 
@@ -146,6 +147,13 @@ public class DataService extends Service {
      * 启动程序开始扫描
      */
     private boolean startup() {
+
+       /* MediaPlayer player = MediaPlayer.create(getApplicationContext(),
+                R.raw.begin_voice);
+        if (!player.isPlaying()) {
+            player.start();
+        }
+        player.stop();*/
 
         //如果设备在连接状态，则直接退出
         boolean isConnected = connector.isConnected();
@@ -204,7 +212,8 @@ public class DataService extends Service {
         headerMap.put("Content-Type", OkhttpUtil.CONTENT_TYPE);
 
         String timeStr = String.valueOf(System.currentTimeMillis()).substring(0, 10);
-        final String vehicleCode = ASCUtil.str12to17("1C 8E 64 D2 09 E8 06 61 E0 02 93 14");
+        //final String vehicleCode = ASCUtil.str12to17("1C 8E 64 D2 09 E8 06 61 E0 02 93 14");
+        final String vehicleCode = ASCUtil.str12to17(epcCode);
 
         JSONObject paramObj = new JSONObject();
 
@@ -231,7 +240,6 @@ public class DataService extends Service {
                         Log.d(TAG, "[" + epcCode + "]+[" + vehicleCode + "]" +
                                 "盘点结果提交失败[错误信息]" + e.getMessage());
                     }
-
                     @Override
                     public void onResponse(String response) {
                         try {
