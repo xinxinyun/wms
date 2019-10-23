@@ -117,9 +117,12 @@ public class InitSocketThread extends Thread {
 
             @Override
             public void onMessage(WebSocket webSocket, String text) {
+
                 Log.d(TAG, text);
+
                 //接收消息的回调
                 super.onMessage(webSocket, text);
+
                 if (!JSON.isValid(text)) {
                     return;
                 }
@@ -144,6 +147,7 @@ public class InitSocketThread extends Thread {
 
                     PreferenceUtil.commitLong("inventoryPlanId", checkPlan.getPlanId());
                     PreferenceUtil.commitLong("warehouseId", checkPlan.getWarehouseId());
+
                     //判断RFID盘点服务是否在运行
                     if (!ServiceUtils.isServiceRunning(service.getApplicationContext(), "com.anji" +
                             ".service.dataService")) {

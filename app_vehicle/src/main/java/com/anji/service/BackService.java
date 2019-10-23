@@ -33,9 +33,6 @@ public class BackService extends Service {
         super.onDestroy();
         Intent intent = new Intent("com.anji.service.backService.destory");
         sendBroadcast(intent);
-//        if (initSocketThread != null) {
-//            initSocketThread.closeWebSocket();
-//        }
     }
 
 }

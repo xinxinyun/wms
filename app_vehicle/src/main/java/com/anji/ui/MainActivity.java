@@ -7,7 +7,7 @@ import android.view.Window;
 import android.view.WindowManager;
 
 import com.anji.R;
-import com.anji.service.DataService;
+import com.anji.service.BackService;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -27,7 +27,7 @@ public class MainActivity extends AppCompatActivity {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                Intent intent=new Intent(MainActivity.this, DataService.class);
+                Intent intent=new Intent(MainActivity.this, BackService.class);
                 startService(intent);
             }
         }).start();

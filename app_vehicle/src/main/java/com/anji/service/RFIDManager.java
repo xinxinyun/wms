@@ -57,7 +57,7 @@ public class RFIDManager extends RXObserver {
             switch (msg.what) {
                 case 1:
                     String epcCode = (String) msg.obj;
-                    //submitInventory(epcCode);
+                    submitInventory(epcCode);
 
             }
         }
