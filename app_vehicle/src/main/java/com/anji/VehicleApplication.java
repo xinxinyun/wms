@@ -69,7 +69,6 @@ public class VehicleApplication extends Application {
         } catch (Exception ex) {
             ex.printStackTrace();
         }
-        SugarContext.init(this);
         //configureJobManager();//2. 配置JobMananger
 		/*CrashHandler crashHandler = CrashHandler.getInstance();
 		crashHandler.init(getApplicationContext());*/

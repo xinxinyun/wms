@@ -17,6 +17,7 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN"/>
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission android:name="android.permission.RESTART_PACKAGES" />
 
     <application
         android:name=".VehicleApplication"
@@ -69,8 +70,8 @@
                 <data android:scheme="package" />
             </intent-filter>
             <intent-filter>
-                <!--<action android:name="com.anji.service.dataService.destory"/>-->
-                <action android:name="com.anji.service.backService.destory"/>
+                <action android:name="com.anji.service.dataService.destory"/>
+               <!-- <action android:name="com.anji.service.backService.destory"/>-->
             </intent-filter>
         </receiver>
 

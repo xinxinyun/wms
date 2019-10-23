@@ -7,6 +7,7 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
 import android.util.Log;
 
 import com.alibaba.fastjson.JSON;
@@ -32,6 +33,7 @@ import java.util.HashMap;
 import okhttp3.Call;
 
 /**
+ * @author 周宇
  * 数据服务
  */
 public class DataService extends Service {
@@ -43,7 +45,7 @@ public class DataService extends Service {
     /**
      * 缓存EPC码
      */
-    private ArrayList<String> epcCodeList = new ArrayList<>();
+    private ArrayList<String> epcCodeList = new ArrayList<>(1000);
 
     private Handler handler = new Handler() {
         @Override
@@ -64,15 +66,24 @@ public class DataService extends Service {
 
         @Override
         protected void onInventoryTag(RXInventoryTag tag) {
+
             String epcCode = tag.strEPC;
-            //Log.i(TAG, "------------------>" + epcCode);
+
+            if(TextUtils.isEmpty(epcCode)){
+                return;
+            }
+
             //防止重复读取RFID信息
             if (!epcCodeList.contains(epcCode)) {
+
                 Log.i(TAG, "------------------>" + epcCode);
+
                 ///epcCode = "LSGKE54H7HW09946";
                 epcCodeList.add(epcCode);
+
                 //调用蜂鸣声提示已扫描到商品
                 Beeper.beep(Beeper.BEEPER_SHORT);
+
                 Message message = Message.obtain();
                 message.what = 1;
                 message.obj = epcCode;
@@ -83,7 +94,7 @@ public class DataService extends Service {
         @Override
         protected void onInventoryTagEnd(RXInventoryTag.RXInventoryTagEnd endTag) {
             //当前工作天线
-            int antId = endTag.mCurrentAnt;
+           /* int antId = endTag.mCurrentAnt;
             //Log.d(TAG, "当前工作天线------>[" + antId + "]");
             //动态切换，如果在1号天线工作，当前盘存结束后切换到2号天线
             mReader.setWorkAntenna((byte) 0xff, antId == 0 ? (byte) 0x01 : (byte) 0x00);
@@ -92,10 +103,9 @@ public class DataService extends Service {
                 Thread.sleep(60);
             } catch (Exception e) {
                 Log.d(TAG, "设置天线失败");
-            }
-            //mReader.realTimeInventory((byte) 0xff, (byte) 0x01);
-            mReader.customizedSessionTargetInventory((byte) 0xff, (byte) 0x01, (byte) 0x00,
-                    (byte) 0x01);
+            }*/
+            mReader.realTimeInventory((byte) 0xff, (byte) 0x01);
+            //mReader.customizedSessionTargetInventory((byte) 0xff, (byte) 0x01, (byte) 0x00,(byte) 0x01);
         }
     };
 
@@ -104,22 +114,12 @@ public class DataService extends Service {
     public void onCreate() {
         super.onCreate();
         startup();
-//        MediaPlayer player = MediaPlayer.create(getApplicationContext(),
-//                R.raw.begin_voice);
-//        if (!player.isPlaying()) {
-//            player.start();
-//        }
-//
-//        testSubmit();
-
         Log.v(TAG, "DataService服务启动----->");
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        //Intent intent = new Intent("com.anji.service.dataService.destory");
-        //sendBroadcast(intent);
         Log.v(TAG, "DataService服务关闭");
     }
 
@@ -148,13 +148,6 @@ public class DataService extends Service {
      */
     private boolean startup() {
 
-       /* MediaPlayer player = MediaPlayer.create(getApplicationContext(),
-                R.raw.begin_voice);
-        if (!player.isPlaying()) {
-            player.start();
-        }
-        player.stop();*/
-
         //如果设备在连接状态，则直接退出
         boolean isConnected = connector.isConnected();
         if (isConnected) {
@@ -170,27 +163,31 @@ public class DataService extends Service {
 
         ModuleManager.newInstance().setUHFStatus(true);
 
-        MediaPlayer player = MediaPlayer.create(getApplicationContext(),
-                R.raw.begin_voice);
-        if (!player.isPlaying()) {
-            player.start();
-        }
-        player.stop();
-
         try {
+
+            MediaPlayer player = MediaPlayer.create(getApplicationContext(),
+                    R.raw.begin_voice);
+            if (!player.isPlaying()) {
+                player.start();
+            }
+            Thread.sleep(3500);
+            player.stop();
 
             mReader = RFIDReaderHelper.getDefaultHelper();
             //注册监听器
             mReader.registerObserver(rxObserver);
             //设定读取间隔时间
             Thread.sleep(500);
+            mReader.realTimeInventory((byte) 0xff,(byte)0x01);
+            mReader.setOutputPower((byte) 0xff,(byte) 30);
+
             //群读模式
-            mReader.customizedSessionTargetInventory((byte) 0xff,
+            /*mReader.customizedSessionTargetInventory((byte) 0xff,
                     (byte) 0x01, (byte) 0x00,
                     (byte) 0x01);
             //设置工作天线频率
             mReader.setOutputPower((byte) 0xff, (byte) 21,
-                    (byte) 21, (byte) 0, (byte) 0);
+                    (byte) 21, (byte) 0, (byte) 0);*/
         } catch (Exception e) {
             Log.v(TAG, "RFID设备调取失败" + e.getMessage());
             e.printStackTrace();
@@ -245,10 +242,10 @@ public class DataService extends Service {
                         try {
                             HashMap<String, Object> respMap = JSON.parseObject(response,
                                     HashMap.class);
-                            Log.d(TAG, "[\" + epcCode + \"]+[\"+vehicleCode+\"]盘点提交结果[响应码]" +
+                            Log.d(TAG, "[" + epcCode + "]+["+vehicleCode+"]盘点提交结果[响应码]" +
                                     respMap.get("repCode").equals("0000") + "&响应消息[repMsg]" + respMap.get("repMsg"));
                         } catch (Exception e) {
-                            Log.d(TAG, "[\" + epcCode + \"]+[\"+vehicleCode+\"]盘点结果提交失败");
+                            Log.d(TAG, "[" + epcCode + "]+["+vehicleCode+"]盘点结果提交失败");
                             Log.d(TAG, e.toString());
                         }
                     }
@@ -309,5 +306,9 @@ public class DataService extends Service {
                     }
 
                 });
+    }
+
+    public static void main(String[] args) {
+        System.out.println(String.valueOf(System.currentTimeMillis()).substring(0,10));
     }
 }

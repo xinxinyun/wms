@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 
-import com.anji.service.BackService;
 import com.anji.ui.MainActivity;
 
 public class DataReceiver extends BroadcastReceiver {
@@ -27,8 +26,8 @@ public class DataReceiver extends BroadcastReceiver {
             context.startActivity(launchIntent);
         }
 
-        Intent backIntent = new Intent(context, BackService.class);
-        context.startService(backIntent);
+       /* Intent backIntent = new Intent(context, BackService.class);
+        context.startService(backIntent);*/
 
 
     }

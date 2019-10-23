@@ -10,6 +10,7 @@ import android.util.Log;
 
 import com.alibaba.fastjson.JSON;
 import com.bean.ResultBean;
+import com.com.tools.Beeper;
 import com.contants.WmsContanst;
 import com.module.interaction.ModuleConnector;
 import com.nativec.tools.ModuleManager;
@@ -60,13 +61,14 @@ public class DataService extends Service {
         @Override
         protected void onInventoryTag(RXInventoryTag tag) {
             String epcCode = tag.strEPC;
+            Log.v(TAG, "识别到RFID码[" + epcCode + "]");
             if (!epcCodeList.contains(epcCode)) {
-                Log.v(TAG, "识别到RFID码[" + epcCode + "]");
+                Log.v(TAG, "去重识别到RFID码[" + epcCode + "]");
                 epcCodeList.add(epcCode);
                 //添加识别码到消息队列。
                 //jobManager.addJobInBackground(new StorgeJob(epcCode));
                 //调用蜂鸣声提示已扫描到商品
-                // Beeper.beep(Beeper.BEEPER_SHORT);
+                Beeper.beep(Beeper.BEEPER_SHORT);
                 Message message = Message.obtain();
                 message.what = 1;
                 message.obj = epcCode;
