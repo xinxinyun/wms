@@ -45,7 +45,7 @@ public class InitSocketThread extends Thread {
      * websocket连接地址
      */
     private static final String WEBSOCKET_HOST_AND_PORT = "ws://visp.anji-logistics" +
-            ".com/websocket/sys001";
+            ".com/websocket/anjiwuhan01";
 
     private WebSocket mWebSocket;
 
@@ -71,7 +71,7 @@ public class InitSocketThread extends Thread {
                 boolean isSuccess = mWebSocket.send("");
                 if (!isSuccess) {//长连接已断开
                     mHandler.removeCallbacks(heartBeatRunnable);
-                    if(mWebSocket!=null) {
+                    if (mWebSocket != null) {
                         //取消掉以前的长连接
                         mWebSocket.cancel();
                     }
@@ -99,12 +99,13 @@ public class InitSocketThread extends Thread {
 
     /**
      * 初始化socket
+     *
      * @throws UnknownHostException
      * @throws IOException
      */
     private void initSocket() throws UnknownHostException, IOException {
-        OkHttpClient client =
-                new OkHttpClient.Builder().readTimeout(0, TimeUnit.MILLISECONDS).build();
+        OkHttpClient client = new OkHttpClient.Builder().readTimeout(0,
+                TimeUnit.MILLISECONDS).build();
         Request request = new Request.Builder().url(WEBSOCKET_HOST_AND_PORT).build();
         client.newWebSocket(request, new WebSocketListener() {
             @Override
@@ -122,19 +123,30 @@ public class InitSocketThread extends Thread {
                 if (!JSON.isValid(text)) {
                     return;
                 }
+
                 //收到服务器端传过来的消息text
                 CheckPlan checkPlan = JSON.parseObject(text, CheckPlan.class);
+
                 //如果开关打开，则启动RFID读写器开始盘点
                 if (checkPlan.getRfSwitch()) {
+                    //语音播报上电成功
+                    MediaPlayer player = MediaPlayer.create(service,
+                            R.raw.begin_voice);
+                    if (!player.isPlaying()) {
+                        player.start();
+                    }
+                    try {
+                        Thread.sleep(3500);
+                    }catch (Exception e){
+                        Log.d(TAG,"语音播报上电成功");
+                    }
+                    player.stop();
+
+                    PreferenceUtil.commitLong("inventoryPlanId", checkPlan.getPlanId());
+                    PreferenceUtil.commitLong("warehouseId", checkPlan.getWarehouseId());
+                    //判断RFID盘点服务是否在运行
                     if (!ServiceUtils.isServiceRunning(service.getApplicationContext(), "com.anji" +
                             ".service.dataService")) {
-                        PreferenceUtil.commitLong("inventoryPlanId", checkPlan.getPlanId());
-                        PreferenceUtil.commitLong("warehouseId", checkPlan.getWarehouseId());
-                        Intent intent = new Intent(service, DataService.class);
-                        service.startService(intent);
-                    } else {
-                        PreferenceUtil.commitLong("inventoryPlanId", checkPlan.getPlanId());
-                        PreferenceUtil.commitLong("warehouseId", checkPlan.getWarehouseId());
                         Intent intent = new Intent(service, DataService.class);
                         service.startService(intent);
                     }
@@ -146,6 +158,9 @@ public class InitSocketThread extends Thread {
                         player.start();
                     }
                     player.stop();
+                    //服务台关闭盘点开关，客户端清除盘点去重缓存
+                    RFIDManager rfidManager = new RFIDManager();
+                    rfidManager.clearEpcCache();
                 }
             }
 

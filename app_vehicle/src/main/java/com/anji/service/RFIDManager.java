@@ -1,5 +1,6 @@
 package com.anji.service;
 
+import android.app.Service;
 import android.os.Handler;
 import android.os.Message;
 import android.text.TextUtils;
@@ -9,7 +10,6 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.anji.contants.VehicleContanst;
 import com.anji.util.ASCUtil;
-import com.anji.util.Beeper;
 import com.anji.util.CallBackUtil;
 import com.anji.util.MD5Utils;
 import com.anji.util.OkhttpUtil;
@@ -41,6 +41,15 @@ public class RFIDManager extends RXObserver {
 
     private ArrayList<String> epcCodeList = new ArrayList<>(1000);
 
+    private Service service;
+
+    public RFIDManager() {
+    }
+
+    public RFIDManager(Service service) {
+        this.service = service;
+    }
+
     private Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
@@ -48,7 +57,7 @@ public class RFIDManager extends RXObserver {
             switch (msg.what) {
                 case 1:
                     String epcCode = (String) msg.obj;
-                    submitInventory(epcCode);
+                    //submitInventory(epcCode);
 
             }
         }
@@ -56,20 +65,17 @@ public class RFIDManager extends RXObserver {
 
     @Override
     protected void onInventoryTag(RXInventoryTag tag) {
-
         String epcCode = tag.strEPC;
-
         if (TextUtils.isEmpty(epcCode)) {
             return;
         }
-
         //防止重复读取RFID信息
         if (!epcCodeList.contains(epcCode)) {
             Log.i(TAG, "------------------>" + epcCode);
             ///epcCode = "LSGKE54H7HW09946";
             epcCodeList.add(epcCode);
             //调用蜂鸣声提示已扫描到商品
-            Beeper.beep(Beeper.BEEPER_SHORT);
+            //Beeper.beep(Beeper.BEEPER_SHORT);
             Message message = Message.obtain();
             message.what = 1;
             message.obj = epcCode;
@@ -98,7 +104,7 @@ public class RFIDManager extends RXObserver {
     /**
      * 启动程序开始扫描
      */
-    private boolean startup() {
+    public boolean startupRfidDevice() throws Exception {
 
         //如果设备在连接状态，则直接退出
         boolean isConnected = connector.isConnected();
@@ -115,36 +121,22 @@ public class RFIDManager extends RXObserver {
 
         ModuleManager.newInstance().setUHFStatus(true);
 
-        try {
+        mReader = RFIDReaderHelper.getDefaultHelper();
+        //注册监听器
+        mReader.registerObserver(this);
+        //设定读取间隔时间
+        Thread.sleep(500);
+        mReader.realTimeInventory((byte) 0xff, (byte) 0x01);
+        mReader.setOutputPower((byte) 0xff, (byte) 30);
 
-//            MediaPlayer player = MediaPlayer.create(getApplicationContext(),
-//                    R.raw.begin_voice);
-//            if (!player.isPlaying()) {
-//                player.start();
-//            }
-//            Thread.sleep(3500);
-//            player.stop();
-
-            mReader = RFIDReaderHelper.getDefaultHelper();
-            //注册监听器
-            mReader.registerObserver(this);
-            //设定读取间隔时间
-            Thread.sleep(500);
-            mReader.realTimeInventory((byte) 0xff, (byte) 0x01);
-            mReader.setOutputPower((byte) 0xff, (byte) 30);
-
-            //群读模式
-            /*mReader.customizedSessionTargetInventory((byte) 0xff,
+        //群读模式
+        /*mReader.customizedSessionTargetInventory((byte) 0xff,
                     (byte) 0x01, (byte) 0x00,
                     (byte) 0x01);
-            //设置工作天线频率
-            mReader.setOutputPower((byte) 0xff, (byte) 21,
+        //设置工作天线频率
+        mReader.setOutputPower((byte) 0xff, (byte) 21,
                     (byte) 21, (byte) 0, (byte) 0);*/
-        } catch (Exception e) {
-            Log.v(TAG, "RFID设备调取失败" + e.getMessage());
-            e.printStackTrace();
-            return false;
-        }
+
 
         return true;
     }
@@ -205,4 +197,22 @@ public class RFIDManager extends RXObserver {
 
                 });
     }
+
+    /**
+     * 清空EPC码重复内容
+     *
+     * @return
+     */
+    public boolean clearEpcCache() {
+        epcCodeList.clear();
+        return true;
+    }
+
+    /*public static void main(String[] args) {
+        String str= "1C 8D 76 D5 14 40 44 6E 70 C7 05 58,1C 8D 7A A2 14 31 45 6D 80 45 85 06,1C 8D 77 9C 20 37 06 71 10 04 05 72,1C 8D 79 51 20 47 08 6D 60 05 40 40,1C 8D 79 51 20 47 03 6D 60 06 45 38,1C 8D 7A A2 14 31 45 6D 80 40 98 55,1C 8D 7A 9A 14 37 07 71 80 01 91 62,1C 8D 77 9C 20 37 00 71 10 02 25 19,1C 8D 76 E2 14 37 05 71 10 03 62 06,1C 8D 7A 97 14 37 01 6E 30 40 71 41";
+        String[] aa=str.split(",");
+        for(String s:aa){
+            System.out.println(ASCUtil.str12to17(s));
+        }
+    }*/
 }

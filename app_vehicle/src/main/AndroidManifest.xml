@@ -48,12 +48,15 @@
             android:enabled="true"
             android:exported="true"
             android:priority="1000"/>
-
         <service
             android:name="com.anji.service.BackService"
             android:enabled="true"
             android:exported="true"
             android:priority="999"/>
+        <service
+            android:name="com.ble.ble.BleService"
+            android:enabled="true"
+            android:exported="false" />
 
         <receiver
             android:name="com.anji.receiver.DataReceiver"
@@ -69,16 +72,8 @@
                 <action android:name="android.intent.action.PACKAGE_REPLACED" />
                 <data android:scheme="package" />
             </intent-filter>
-            <intent-filter>
-                <action android:name="com.anji.service.dataService.destory"/>
-               <!-- <action android:name="com.anji.service.backService.destory"/>-->
-            </intent-filter>
         </receiver>
 
-        <service
-            android:name="com.ble.ble.BleService"
-            android:enabled="true"
-            android:exported="false" />
     </application>
 
 </manifest>
