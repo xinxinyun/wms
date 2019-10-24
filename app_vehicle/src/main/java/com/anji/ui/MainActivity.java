@@ -9,9 +9,11 @@ import android.view.WindowManager;
 import com.anji.R;
 import com.anji.service.BackService;
 
+/**
+ * @author 周宇
+ * @Description 主界面
+ */
 public class MainActivity extends AppCompatActivity {
-
-    private static final String TAG = "仓储实时库存监听";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

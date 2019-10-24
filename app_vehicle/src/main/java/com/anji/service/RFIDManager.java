@@ -39,7 +39,7 @@ public class RFIDManager extends RXObserver {
     private ModuleConnector connector = new ReaderConnector();
     private RFIDReaderHelper mReader;
 
-    private ArrayList<String> epcCodeList = new ArrayList<>(1000);
+    private ArrayList<String> epcCodeList = new ArrayList<>(5000);
 
     private Service service;
 
@@ -190,8 +190,7 @@ public class RFIDManager extends RXObserver {
                             Log.d(TAG, "[" + epcCode + "]+[" + vehicleCode + "]盘点提交结果[响应码]" +
                                     respMap.get("repCode").equals("0000") + "&响应消息[repMsg]" + respMap.get("repMsg"));
                         } catch (Exception e) {
-                            Log.d(TAG, "[" + epcCode + "]+[" + vehicleCode + "]盘点结果提交失败");
-                            Log.d(TAG, e.toString());
+                            Log.d(TAG, "[" + epcCode + "]+[" + vehicleCode + "]盘点结果提交失败,[错误信息]"+e.getMessage());
                         }
                     }
 

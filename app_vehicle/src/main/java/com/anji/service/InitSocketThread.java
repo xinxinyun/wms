@@ -90,9 +90,7 @@ public class InitSocketThread extends Thread {
         super.run();
         try {
             initSocket();
-        } catch (UnknownHostException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -103,7 +101,7 @@ public class InitSocketThread extends Thread {
      * @throws UnknownHostException
      * @throws IOException
      */
-    private void initSocket() throws UnknownHostException, IOException {
+    private void initSocket() throws Exception {
         OkHttpClient client = new OkHttpClient.Builder().readTimeout(0,
                 TimeUnit.MILLISECONDS).build();
         Request request = new Request.Builder().url(WEBSOCKET_HOST_AND_PORT).build();
@@ -132,6 +130,7 @@ public class InitSocketThread extends Thread {
 
                 //如果开关打开，则启动RFID读写器开始盘点
                 if (checkPlan.getRfSwitch()) {
+
                     //语音播报上电成功
                     MediaPlayer player = MediaPlayer.create(service,
                             R.raw.begin_voice);
@@ -140,8 +139,8 @@ public class InitSocketThread extends Thread {
                     }
                     try {
                         Thread.sleep(3500);
-                    }catch (Exception e){
-                        Log.d(TAG,"语音播报上电成功");
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
                     }
                     player.stop();
 
@@ -150,7 +149,7 @@ public class InitSocketThread extends Thread {
 
                     //判断RFID盘点服务是否在运行
                     if (!ServiceUtils.isServiceRunning(service.getApplicationContext(), "com.anji" +
-                            ".service.dataService")) {
+                            ".service.DataService")) {
                         Intent intent = new Intent(service, DataService.class);
                         service.startService(intent);
                     }
@@ -161,10 +160,15 @@ public class InitSocketThread extends Thread {
                     if (!player.isPlaying()) {
                         player.start();
                     }
+                    try {
+                        Thread.sleep(3500);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
                     player.stop();
                     //服务台关闭盘点开关，客户端清除盘点去重缓存
-                    RFIDManager rfidManager = new RFIDManager();
-                    rfidManager.clearEpcCache();
+                    //RFIDManager rfidManager = new RFIDManager();
+                    //rfidManager.clearEpcCache();
                 }
             }
 
