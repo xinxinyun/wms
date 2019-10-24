@@ -15,7 +15,6 @@ import com.anji.reader.helper.ReaderHelper;
 import com.anji.util.Beeper;
 import com.anji.util.OtgStreamManage;
 import com.anji.util.PreferenceUtil;
-import com.orm.SugarContext;
 
 import java.io.IOException;
 import java.net.Socket;
@@ -26,10 +25,7 @@ import java.util.List;
 
 public class VehicleApplication extends Application {
 
-    //add by lei.li 2016/11/12
     private static Context mContext;
-    //add by lei.li 2016/11/12
-
     private Socket mTcpSocket = null;
     private BluetoothSocket mBtSocket = null;
 
@@ -44,8 +40,9 @@ public class VehicleApplication extends Application {
                         : Color.RED), 0, tSS.length(),
                 Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         mMonitorListItem.add(tSS);
-        if (mMonitorListItem.size() > 1000){
-            mMonitorListItem.remove(0);}
+        if (mMonitorListItem.size() > 1000) {
+            mMonitorListItem.remove(0);
+        }
     }
 
     private List<Activity> activities = new ArrayList<Activity>();
@@ -56,12 +53,9 @@ public class VehicleApplication extends Application {
         try {
             ReaderHelper.setContext(getApplicationContext());
         } catch (Exception e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
-
         mContext = getApplicationContext();
-        // add by lei.li support OTG
         OtgStreamManage.newInstance().init(mContext);
         PreferenceUtil.init(mContext);
         try {
@@ -69,9 +63,6 @@ public class VehicleApplication extends Application {
         } catch (Exception ex) {
             ex.printStackTrace();
         }
-        //configureJobManager();//2. 配置JobMananger
-		/*CrashHandler crashHandler = CrashHandler.getInstance();
-		crashHandler.init(getApplicationContext());*/
     }
 
     public void addActivity(Activity activity) {
@@ -81,7 +72,6 @@ public class VehicleApplication extends Application {
     @Override
     public void onTerminate() {
         super.onTerminate();
-        //ControlGPIO.newInstance().JNIwriteGPIO(0);
         for (Activity activity : activities) {
             try {
                 activity.finish();
@@ -89,7 +79,6 @@ public class VehicleApplication extends Application {
 
             }
         }
-
         try {
             if (mTcpSocket != null) {
                 mTcpSocket.close();
@@ -102,19 +91,11 @@ public class VehicleApplication extends Application {
 
         mTcpSocket = null;
         mBtSocket = null;
-		/*if (ConnectRs232.mSerialPort != null) {
-			Log.e("close serial", "serial");
-			ConnectRs232.mSerialPort.close();
-		}
-*/
         if (BluetoothAdapter.getDefaultAdapter() != null) {
             BluetoothAdapter.getDefaultAdapter().disable();
         }
-        SugarContext.terminate();
         System.exit(0);
     }
-
-    ;
 
     public void setTcpSocket(Socket socket) {
         this.mTcpSocket = socket;
