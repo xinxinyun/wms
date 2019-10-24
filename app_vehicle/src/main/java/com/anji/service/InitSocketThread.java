@@ -115,60 +115,31 @@ public class InitSocketThread extends Thread {
 
             @Override
             public void onMessage(WebSocket webSocket, String text) {
-
-                Log.d(TAG, text);
-
+                Log.d("---->websocket长连接响应消息", text);
                 //接收消息的回调
                 super.onMessage(webSocket, text);
-
                 if (!JSON.isValid(text)) {
                     return;
                 }
-
                 //收到服务器端传过来的消息text
                 CheckPlan checkPlan = JSON.parseObject(text, CheckPlan.class);
 
                 //如果开关打开，则启动RFID读写器开始盘点
                 if (checkPlan.getRfSwitch()) {
-
-                    //语音播报上电成功
-                    MediaPlayer player = MediaPlayer.create(service,
-                            R.raw.begin_voice);
-                    if (!player.isPlaying()) {
-                        player.start();
-                    }
-                    try {
-                        Thread.sleep(3500);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                    player.stop();
-
                     PreferenceUtil.commitLong("inventoryPlanId", checkPlan.getPlanId());
                     PreferenceUtil.commitLong("warehouseId", checkPlan.getWarehouseId());
-
                     //判断RFID盘点服务是否在运行
-                    if (!ServiceUtils.isServiceRunning(service.getApplicationContext(), "com.anji" +
+                    if (!ServiceUtils.isServiceRunning(service.getApplicationContext(), "com" +
+                            ".anji" +
                             ".service.DataService")) {
                         Intent intent = new Intent(service, DataService.class);
                         service.startService(intent);
+                    }else{
+                        initMediaPlayer(R.raw.begin_voice);
                     }
                 } else {
                     //远程开关未打开则语音播报提示打开远程开关
-                    MediaPlayer player = MediaPlayer.create(service.getApplicationContext(),
-                            R.raw.open_rfid);
-                    if (!player.isPlaying()) {
-                        player.start();
-                    }
-                    try {
-                        Thread.sleep(3500);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                    player.stop();
-                    //服务台关闭盘点开关，客户端清除盘点去重缓存
-                    //RFIDManager rfidManager = new RFIDManager();
-                    //rfidManager.clearEpcCache();
+                    initMediaPlayer(R.raw.open_rfid);
                 }
             }
 
@@ -213,4 +184,24 @@ public class InitSocketThread extends Thread {
         return flag;
     }
 
+    /**
+     * 打开音频控制器播放音频并关闭
+     *
+     * @param sourceId
+     */
+    private void initMediaPlayer(int sourceId) {
+        //语音播报上电成功
+        MediaPlayer player = MediaPlayer.create(service,
+                sourceId);
+        if (!player.isPlaying()) {
+            player.start();
+        }
+        try {
+            Thread.sleep(3500);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        player.stop();
+        player.release();
+    }
 }

@@ -64,13 +64,13 @@
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
-                <!--<category android:name="android.intent.category.HOME" />-->
+                <category android:name="android.intent.category.HOME" />
             </intent-filter>
             <intent-filter>
                 <action android:name="android.intent.action.MEDIA_MOUNTED" />
                 <action android:name="android.intent.action.MEDIA_UNMOUNTED" />
                 <action android:name="android.intent.action.PACKAGE_REPLACED" />
-                <!--<data android:scheme="package" />-->
+                <data android:scheme="package" />
             </intent-filter>
         </receiver>
 

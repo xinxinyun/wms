@@ -1,6 +1,7 @@
 package com.anji.service;
 
 import android.app.Service;
+import android.media.MediaPlayer;
 import android.os.Handler;
 import android.os.Message;
 import android.text.TextUtils;
@@ -8,6 +9,7 @@ import android.util.Log;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.anji.R;
 import com.anji.contants.VehicleContanst;
 import com.anji.util.ASCUtil;
 import com.anji.util.CallBackUtil;
@@ -121,6 +123,9 @@ public class RFIDManager extends RXObserver {
 
         ModuleManager.newInstance().setUHFStatus(true);
 
+        //语音播报已打开开关可以进行盘点
+        initMediaPlayer(R.raw.begin_voice);
+
         mReader = RFIDReaderHelper.getDefaultHelper();
         //注册监听器
         mReader.registerObserver(this);
@@ -205,6 +210,27 @@ public class RFIDManager extends RXObserver {
     public boolean clearEpcCache() {
         epcCodeList.clear();
         return true;
+    }
+
+    /**
+     * 打开音频控制器播放音频并关闭
+     *
+     * @param sourceId
+     */
+    private void initMediaPlayer(int sourceId) {
+        //语音播报上电成功
+        MediaPlayer player = MediaPlayer.create(service,
+                sourceId);
+        if (!player.isPlaying()) {
+            player.start();
+        }
+        try {
+            Thread.sleep(3500);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        player.stop();
+        player.release();
     }
 
     /*public static void main(String[] args) {
