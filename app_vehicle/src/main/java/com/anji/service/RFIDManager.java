@@ -72,7 +72,7 @@ public class RFIDManager extends RXObserver {
             return;
         }
         //防止重复读取RFID信息
-        if (!epcCodeList.contains(epcCode)) {
+        if (!epcCodeList.contains(epcCode)&&epcCode.length()==35) {
             Log.i(TAG, "------------------>" + epcCode);
             ///epcCode = "LSGKE54H7HW09946";
             epcCodeList.add(epcCode);

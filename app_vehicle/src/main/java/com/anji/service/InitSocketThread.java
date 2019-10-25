@@ -68,17 +68,17 @@ public class InitSocketThread extends Thread {
         public void run() {
             if (System.currentTimeMillis() - sendTime >= HEART_BEAT_RATE) {
                 //发送一个空消息给服务器，通过发送消息的成功失败来判断长连接的连接状态
-                boolean isSuccess = mWebSocket.send("");
-                if (!isSuccess) {//长连接已断开
-                    mHandler.removeCallbacks(heartBeatRunnable);
-                    if (mWebSocket != null) {
+                if (mWebSocket != null) {
+                    boolean isSuccess = mWebSocket.send("");
+                    if (!isSuccess) {//长连接已断开
+                        mHandler.removeCallbacks(heartBeatRunnable);
                         //取消掉以前的长连接
                         mWebSocket.cancel();
+                        //创建一个新的连接
+                        new InitSocketThread().start();
                     }
-                    //创建一个新的连接
-                    new InitSocketThread().start();
+                    sendTime = System.currentTimeMillis();
                 }
-                sendTime = System.currentTimeMillis();
             }
             //每隔一定的时间，对长连接进行一次心跳检测
             mHandler.postDelayed(this, HEART_BEAT_RATE);
@@ -118,28 +118,29 @@ public class InitSocketThread extends Thread {
                 Log.d("---->websocket长连接响应消息", text);
                 //接收消息的回调
                 super.onMessage(webSocket, text);
-                if (!JSON.isValid(text)) {
-                    return;
-                }
-                //收到服务器端传过来的消息text
-                CheckPlan checkPlan = JSON.parseObject(text, CheckPlan.class);
-
-                //如果开关打开，则启动RFID读写器开始盘点
-                if (checkPlan.getRfSwitch()) {
-                    PreferenceUtil.commitLong("inventoryPlanId", checkPlan.getPlanId());
-                    PreferenceUtil.commitLong("warehouseId", checkPlan.getWarehouseId());
-                    //判断RFID盘点服务是否在运行
-                    if (!ServiceUtils.isServiceRunning(service.getApplicationContext(), "com" +
-                            ".anji" +
-                            ".service.DataService")) {
-                        Intent intent = new Intent(service, DataService.class);
-                        service.startService(intent);
-                    }else{
-                        initMediaPlayer(R.raw.begin_voice);
+//                if (!JSON.isValid(text) && "0\r\n".equals(text)) {
+//                    return;
+//                }
+                if (text.contains("inventoryPlanId")) {
+                    //收到服务器端传过来的消息text
+                    CheckPlan checkPlan = JSON.parseObject(text, CheckPlan.class);
+                    //如果开关打开，则启动RFID读写器开始盘点
+                    if (checkPlan.getRfSwitch()) {
+                        PreferenceUtil.commitLong("inventoryPlanId", checkPlan.getPlanId());
+                        PreferenceUtil.commitLong("warehouseId", checkPlan.getWarehouseId());
+                        //判断RFID盘点服务是否在运行
+                        if (!ServiceUtils.isServiceRunning(service.getApplicationContext(), "com" +
+                                ".anji" +
+                                ".service.DataService")) {
+                            Intent intent = new Intent(service, DataService.class);
+                            service.startService(intent);
+                        } else {
+                            initMediaPlayer(R.raw.begin_voice);
+                        }
+                    } else {
+                        //远程开关未打开则语音播报提示打开远程开关
+                        initMediaPlayer(R.raw.open_rfid);
                     }
-                } else {
-                    //远程开关未打开则语音播报提示打开远程开关
-                    initMediaPlayer(R.raw.open_rfid);
                 }
             }
 
@@ -163,7 +164,9 @@ public class InitSocketThread extends Thread {
             @Override
             public void onFailure(WebSocket webSocket, Throwable t, @Nullable Response response) {
                 //长连接连接失败的回调
-                Log.e(TAG, "reason--->" + response.message());
+                if (response != null) {
+                    Log.e(TAG, "reason--->" + response.message());
+                }
                 super.onFailure(webSocket, t, response);
             }
         });
