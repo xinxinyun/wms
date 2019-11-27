@@ -165,7 +165,7 @@ public class RFIDManager extends RXObserver {
 
         JSONObject dataObj = new JSONObject();
 
-        dataObj.put("identity", "87082d29af4cb1cfd26ad32fafd806ad");
+        dataObj.put("identity", VehicleContanst.IDENGITY);
         dataObj.put("warehouseId", PreferenceUtil.getLong("warehouseId", 0));
         dataObj.put("inventoryPlanId", PreferenceUtil.getLong("inventoryPlanId", 0));
         dataObj.put("inventoryMethod", "1");
@@ -177,7 +177,7 @@ public class RFIDManager extends RXObserver {
         paramObj.put("time", timeStr);
         paramObj.put("sign", MD5Utils.getMD5("reqData=" + dataObj + "&time=" + timeStr));
         paramObj.put("token", "");
-        paramObj.put("userId", "3");
+        paramObj.put("userId",VehicleContanst.USER_ID);
 
         OkhttpUtil.okHttpPostJson(VehicleContanst.VEHICLE_INVENTORY_ACCESSDATA,
                 paramObj.toString(), headerMap, new CallBackUtil.CallBackString() {

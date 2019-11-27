@@ -39,13 +39,13 @@ public class InitSocketThread extends Thread {
      * 每隔15秒进行一次对长连接的心跳检测
      * 心跳检测时间
      */
-    private static final long HEART_BEAT_RATE = 15 * 1000;
+    private static final long HEART_BEAT_RATE = 5 * 1000;
 
     /**
      * websocket连接地址
      */
     private static final String WEBSOCKET_HOST_AND_PORT = "ws://visp.anji-logistics" +
-            ".com/websocket/anjiwuhan01";
+            ".com/websocket/SGM20191128C";
 
     private WebSocket mWebSocket;
 

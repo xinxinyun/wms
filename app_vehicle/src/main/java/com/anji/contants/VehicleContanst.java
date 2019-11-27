@@ -30,6 +30,11 @@ public interface VehicleContanst {
     /**
      * 接口调用身份凭证
      */
-    //public static final String IDENGITY="userId=3&key=b4c3c30bd53782599f277c34ba13835d";
+    String IDENGITY="35c35a6e925ff3a57252672c99ffa718";
+
+    /**
+     * 用户身份号
+     */
+    String USER_ID="3";
 
 }
