@@ -36,7 +36,7 @@ public class InitSocketThread extends Thread {
     private static final String TAG = "InitSocketThread";
 
     /**
-     * 每隔15秒进行一次对长连接的心跳检测
+     * 每隔5秒进行一次对长连接的心跳检测
      * 心跳检测时间
      */
     private static final long HEART_BEAT_RATE = 5 * 1000;
