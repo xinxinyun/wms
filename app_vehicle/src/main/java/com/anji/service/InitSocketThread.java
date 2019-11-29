@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.media.MediaPlayer;
 import android.os.Handler;
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
 import android.util.Log;
 
 import com.alibaba.fastjson.JSON;
@@ -37,17 +38,16 @@ public class InitSocketThread extends Thread {
 
     /**
      * 每隔5秒进行一次对长连接的心跳检测
-     * 心跳检测时间
      */
     private static final long HEART_BEAT_RATE = 5 * 1000;
 
     /**
-     * websocket连接地址
+     * WebSocket连接地址
      */
     private static final String WEBSOCKET_HOST_AND_PORT = "ws://visp.anji-logistics" +
             ".com/websocket/SGM20191128C";
 
-    private WebSocket mWebSocket;
+    private volatile WebSocket mWebSocket;
 
     private long sendTime = 0L;
 
@@ -69,16 +69,18 @@ public class InitSocketThread extends Thread {
             if (System.currentTimeMillis() - sendTime >= HEART_BEAT_RATE) {
                 //发送一个空消息给服务器，通过发送消息的成功失败来判断长连接的连接状态
                 if (mWebSocket != null) {
-                    boolean isSuccess = mWebSocket.send("");
-                    if (!isSuccess) {//长连接已断开
-                        mHandler.removeCallbacks(heartBeatRunnable);
-                        //取消掉以前的长连接
-                        mWebSocket.cancel();
+                    boolean isSuccess = mWebSocket.send("SGM20191128C");
+                    Log.d(TAG, "isOpen=true[消息发送结果]" + isSuccess);
+                    //长连接已断开
+                    if (!isSuccess) {
+                        closeWebSocket();
                         //创建一个新的连接
                         new InitSocketThread().start();
                     }
-                    sendTime = System.currentTimeMillis();
+                } else {
+                    new InitSocketThread().start();
                 }
+                sendTime = System.currentTimeMillis();
             }
             //每隔一定的时间，对长连接进行一次心跳检测
             mHandler.postDelayed(this, HEART_BEAT_RATE);
@@ -91,6 +93,7 @@ public class InitSocketThread extends Thread {
         try {
             initSocket();
         } catch (Exception e) {
+            Log.e(TAG, "WebSocket长连接连接失败,错误信息" + e.getMessage());
             e.printStackTrace();
         }
     }
@@ -101,7 +104,7 @@ public class InitSocketThread extends Thread {
      * @throws UnknownHostException
      * @throws IOException
      */
-    private void initSocket() throws Exception {
+    private synchronized void initSocket() throws Exception {
         OkHttpClient client = new OkHttpClient.Builder().readTimeout(0,
                 TimeUnit.MILLISECONDS).build();
         Request request = new Request.Builder().url(WEBSOCKET_HOST_AND_PORT).build();
@@ -115,13 +118,10 @@ public class InitSocketThread extends Thread {
 
             @Override
             public void onMessage(WebSocket webSocket, String text) {
-                Log.d("---->websocket长连接响应消息", text);
+                Log.d("---->websocket长连接响应消息", "[onMessage]" + text);
                 //接收消息的回调
                 super.onMessage(webSocket, text);
-//                if (!JSON.isValid(text) && "0\r\n".equals(text)) {
-//                    return;
-//                }
-                if (text.contains("inventoryPlanId")) {
+                if (!TextUtils.isEmpty(text) && text.contains("inventoryPlanId")) {
                     //收到服务器端传过来的消息text
                     CheckPlan checkPlan = JSON.parseObject(text, CheckPlan.class);
                     //如果开关打开，则启动RFID读写器开始盘点
@@ -151,13 +151,14 @@ public class InitSocketThread extends Thread {
 
             @Override
             public void onClosing(WebSocket webSocket, int code, String reason) {
-                Log.e(TAG, "onClosing-->reason-[" + code + "]-->" + reason);
+                Log.e(TAG, "onClosing-->[" + code + "]-->reason[" + reason+"]");
+                closeWebSocket();
                 super.onClosing(webSocket, code, reason);
             }
 
             @Override
             public void onClosed(WebSocket webSocket, int code, String reason) {
-                Log.e(TAG, "onClosing-->reason-[" + code + "]-->" + reason);
+                Log.e(TAG, "onClosed-->[" + code + "]-->reason[" + reason+"]");
                 super.onClosed(webSocket, code, reason);
             }
 
@@ -165,26 +166,29 @@ public class InitSocketThread extends Thread {
             public void onFailure(WebSocket webSocket, Throwable t, @Nullable Response response) {
                 //长连接连接失败的回调
                 if (response != null) {
-                    Log.e(TAG, "reason--->" + response.message());
+                    Log.e(TAG, "onFailure-->reason--->" + response.message());
                 }
                 super.onFailure(webSocket, t, response);
             }
         });
         client.dispatcher().executorService().shutdown();
-        mHandler.postDelayed(heartBeatRunnable, HEART_BEAT_RATE);//开启心跳检测
+        //开启心跳检测
+        mHandler.postDelayed(heartBeatRunnable, HEART_BEAT_RATE);
     }
 
     /**
      * 关闭websocket连接
      *
-     * @return
+     * @return boolean
      */
-    public boolean closeWebSocket() {
-        boolean flag = false;
+    private void closeWebSocket() {
         if (mWebSocket != null) {
-            flag = mWebSocket.close(1000, null);
+            mHandler.removeCallbacks(heartBeatRunnable);
+            //取消掉以前的长连接
+            mWebSocket.cancel();
+            mWebSocket.close(1000, "WebSocket远程关闭");
+            mWebSocket = null;
         }
-        return flag;
     }
 
     /**

@@ -23,15 +23,17 @@ import com.rfid.ReaderConnector;
 import com.rfid.rxobserver.RXObserver;
 import com.rfid.rxobserver.bean.RXInventoryTag;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Scanner;
 
 import okhttp3.Call;
 
 /**
  * @author 周宇
  * 版本：1.0
- * 创建日期：${date}
+ * 创建日期：20191128
  * 描述：
  */
 public class RFIDManager extends RXObserver {
@@ -72,7 +74,7 @@ public class RFIDManager extends RXObserver {
             return;
         }
         //防止重复读取RFID信息
-        if (!epcCodeList.contains(epcCode)&&epcCode.length()==35) {
+        if (!epcCodeList.contains(epcCode) && epcCode.length() == 35) {
             Log.i(TAG, "------------------>" + epcCode);
             ///epcCode = "LSGKE54H7HW09946";
             epcCodeList.add(epcCode);
@@ -88,19 +90,19 @@ public class RFIDManager extends RXObserver {
     @Override
     protected void onInventoryTagEnd(RXInventoryTag.RXInventoryTagEnd endTag) {
         //当前工作天线
-           /* int antId = endTag.mCurrentAnt;
-            //Log.d(TAG, "当前工作天线------>[" + antId + "]");
-            //动态切换，如果在1号天线工作，当前盘存结束后切换到2号天线
-            mReader.setWorkAntenna((byte) 0xff, antId == 0 ? (byte) 0x01 : (byte) 0x00);
-            try {
-                //Thread.currentThread().sleep(60);
-                Thread.sleep(60);
-            } catch (Exception e) {
-                Log.d(TAG, "设置天线失败");
-            }*/
-        mReader.realTimeInventory((byte) 0xff, (byte) 0x01);
-        //mReader.customizedSessionTargetInventory((byte) 0xff, (byte) 0x01, (byte) 0x00,(byte)
-        // 0x01);
+        int antId = endTag.mCurrentAnt;
+        //Log.d(TAG, "当前工作天线------>[" + antId + "]");
+        //动态切换，如果在1号天线工作，当前盘存结束后切换到2号天线
+        mReader.setWorkAntenna((byte) 0xff, antId == 0 ? (byte) 0x01 : (byte) 0x00);
+        try {
+            //Thread.currentThread().sleep(60);
+            Thread.sleep(60);
+        } catch (Exception e) {
+            Log.d(TAG, "设置天线失败");
+        }
+        //mReader.realTimeInventory((byte) 0xff, (byte) 0x01);
+        mReader.customizedSessionTargetInventory((byte) 0xff, (byte) 0x01, (byte) 0x00, (byte)
+                0x01);
     }
 
     /**
@@ -131,16 +133,16 @@ public class RFIDManager extends RXObserver {
         mReader.registerObserver(this);
         //设定读取间隔时间
         Thread.sleep(500);
-        mReader.realTimeInventory((byte) 0xff, (byte) 0x01);
-        mReader.setOutputPower((byte) 0xff, (byte) 30);
+        //mReader.realTimeInventory((byte) 0xff, (byte) 0x01);
+        //mReader.setOutputPower((byte) 0xff, (byte) 30);
 
         //群读模式
-        /*mReader.customizedSessionTargetInventory((byte) 0xff,
+        mReader.customizedSessionTargetInventory((byte) 0xff,
                     (byte) 0x01, (byte) 0x00,
                     (byte) 0x01);
         //设置工作天线频率
-        mReader.setOutputPower((byte) 0xff, (byte) 21,
-                    (byte) 21, (byte) 0, (byte) 0);*/
+        mReader.setOutputPower((byte) 0xff, (byte) 33,
+                    (byte) 33, (byte) 0, (byte) 0);
 
 
         return true;
@@ -165,7 +167,7 @@ public class RFIDManager extends RXObserver {
 
         JSONObject dataObj = new JSONObject();
 
-        dataObj.put("identity", VehicleContanst.IDENGITY);
+        dataObj.put("identity", MD5Utils.getMD5(VehicleContanst.IDENGITY));
         dataObj.put("warehouseId", PreferenceUtil.getLong("warehouseId", 0));
         dataObj.put("inventoryPlanId", PreferenceUtil.getLong("inventoryPlanId", 0));
         dataObj.put("inventoryMethod", "1");
@@ -177,7 +179,7 @@ public class RFIDManager extends RXObserver {
         paramObj.put("time", timeStr);
         paramObj.put("sign", MD5Utils.getMD5("reqData=" + dataObj + "&time=" + timeStr));
         paramObj.put("token", "");
-        paramObj.put("userId",VehicleContanst.USER_ID);
+        paramObj.put("userId", VehicleContanst.USER_ID);
 
         OkhttpUtil.okHttpPostJson(VehicleContanst.VEHICLE_INVENTORY_ACCESSDATA,
                 paramObj.toString(), headerMap, new CallBackUtil.CallBackString() {
@@ -195,7 +197,8 @@ public class RFIDManager extends RXObserver {
                             Log.d(TAG, "[" + epcCode + "]+[" + vehicleCode + "]盘点提交结果[响应码]" +
                                     respMap.get("repCode").equals("0000") + "&响应消息[repMsg]" + respMap.get("repMsg"));
                         } catch (Exception e) {
-                            Log.d(TAG, "[" + epcCode + "]+[" + vehicleCode + "]盘点结果提交失败,[错误信息]"+e.getMessage());
+                            Log.d(TAG,
+                                    "[" + epcCode + "]+[" + vehicleCode + "]盘点结果提交失败,[错误信息]" + e.getMessage());
                         }
                     }
 
@@ -233,11 +236,31 @@ public class RFIDManager extends RXObserver {
         player.release();
     }
 
-    /*public static void main(String[] args) {
-        String str= "1C 8D 76 D5 14 40 44 6E 70 C7 05 58,1C 8D 7A A2 14 31 45 6D 80 45 85 06,1C 8D 77 9C 20 37 06 71 10 04 05 72,1C 8D 79 51 20 47 08 6D 60 05 40 40,1C 8D 79 51 20 47 03 6D 60 06 45 38,1C 8D 7A A2 14 31 45 6D 80 40 98 55,1C 8D 7A 9A 14 37 07 71 80 01 91 62,1C 8D 77 9C 20 37 00 71 10 02 25 19,1C 8D 76 E2 14 37 05 71 10 03 62 06,1C 8D 7A 97 14 37 01 6E 30 40 71 41";
-        String[] aa=str.split(",");
-        for(String s:aa){
-            System.out.println(ASCUtil.str12to17(s));
+    public static void main(String[] args) throws Exception {
+//        String str= "1C 8D 76 D2 14 40 43 6E 60 C6 61 89,1C 8D 75 5E 14 44 46 71 40 41 50 50,1C
+//        8D 76 D2 14 44 49 6E 60 C7 17 36,1C 8D 7A A2 14 31 44 6D 80 48 58 43";
+//        String[] aa=str.split(",");
+//        for(String s:aa){
+//            System.out.println(ASCUtil.str12to17(s));
+//        }
+
+        String path = "D:/a.txt";
+        Scanner in = new Scanner(new File(path));
+        //List data = new ArrayList();
+        while (in.hasNextLine()) {
+            // 取第一行
+            String s = in.nextLine();
+            char[] sstr = s.toCharArray();
+            String afterStr = "";
+            for (int i = 0; i < sstr.length; i++) {
+                afterStr += sstr[i];
+                if (i % 2 == 1 && i != 0) {
+                    afterStr += " ";
+                }
+            }
+            System.out.println("------------>" + afterStr);
+            //System.out.println(ASCUtil.str12to17(afterStr));
         }
-    }*/
+
+    }
 }
