@@ -10,6 +10,8 @@ import android.util.Log;
 import com.alibaba.fastjson.JSON;
 import com.anji.R;
 import com.anji.bean.CheckPlan;
+import com.anji.contants.VehicleContanst;
+import com.anji.util.LogUtil;
 import com.anji.util.PreferenceUtil;
 import com.anji.util.ServiceUtils;
 
@@ -36,17 +38,6 @@ public class InitSocketThread extends Thread {
 
     private static final String TAG = "InitSocketThread";
 
-    /**
-     * 每隔5秒进行一次对长连接的心跳检测
-     */
-    private static final long HEART_BEAT_RATE = 5 * 1000;
-
-    /**
-     * WebSocket连接地址
-     */
-    private static final String WEBSOCKET_HOST_AND_PORT = "ws://visp.anji-logistics" +
-            ".com/websocket/SGM20191128C";
-
     private volatile WebSocket mWebSocket;
 
     private long sendTime = 0L;
@@ -66,11 +57,11 @@ public class InitSocketThread extends Thread {
     private Runnable heartBeatRunnable = new Runnable() {
         @Override
         public void run() {
-            if (System.currentTimeMillis() - sendTime >= HEART_BEAT_RATE) {
+            if (System.currentTimeMillis() - sendTime >= VehicleContanst.HEART_BEAT_RATE) {
                 //发送一个空消息给服务器，通过发送消息的成功失败来判断长连接的连接状态
                 if (mWebSocket != null) {
-                    boolean isSuccess = mWebSocket.send("SGM20191128C");
-                    Log.d(TAG, "isOpen=true[消息发送结果]" + isSuccess);
+                    boolean isSuccess = mWebSocket.send(VehicleContanst.DEVICE_ID);
+                    LogUtil.d(TAG, "isOpen=true[消息发送结果]" + isSuccess);
                     //长连接已断开
                     if (!isSuccess) {
                         closeWebSocket();
@@ -83,7 +74,7 @@ public class InitSocketThread extends Thread {
                 sendTime = System.currentTimeMillis();
             }
             //每隔一定的时间，对长连接进行一次心跳检测
-            mHandler.postDelayed(this, HEART_BEAT_RATE);
+            mHandler.postDelayed(this, VehicleContanst.HEART_BEAT_RATE);
         }
     };
 
@@ -107,7 +98,8 @@ public class InitSocketThread extends Thread {
     private synchronized void initSocket() throws Exception {
         OkHttpClient client = new OkHttpClient.Builder().readTimeout(0,
                 TimeUnit.MILLISECONDS).build();
-        Request request = new Request.Builder().url(WEBSOCKET_HOST_AND_PORT).build();
+        Request request =
+                new Request.Builder().url(VehicleContanst.WEBSOCKET_HOST_AND_PORT).build();
         client.newWebSocket(request, new WebSocketListener() {
             @Override
             public void onOpen(WebSocket webSocket, Response response) {
@@ -118,7 +110,7 @@ public class InitSocketThread extends Thread {
 
             @Override
             public void onMessage(WebSocket webSocket, String text) {
-                Log.d("---->websocket长连接响应消息", "[onMessage]" + text);
+                LogUtil.d("---->websocket长连接响应消息", "[onMessage]" + text);
                 //接收消息的回调
                 super.onMessage(webSocket, text);
                 if (!TextUtils.isEmpty(text) && text.contains("inventoryPlanId")) {
@@ -151,14 +143,14 @@ public class InitSocketThread extends Thread {
 
             @Override
             public void onClosing(WebSocket webSocket, int code, String reason) {
-                Log.e(TAG, "onClosing-->[" + code + "]-->reason[" + reason+"]");
+                Log.e(TAG, "onClosing-->[" + code + "]-->reason[" + reason + "]");
                 closeWebSocket();
                 super.onClosing(webSocket, code, reason);
             }
 
             @Override
             public void onClosed(WebSocket webSocket, int code, String reason) {
-                Log.e(TAG, "onClosed-->[" + code + "]-->reason[" + reason+"]");
+                Log.e(TAG, "onClosed-->[" + code + "]-->reason[" + reason + "]");
                 super.onClosed(webSocket, code, reason);
             }
 
@@ -173,7 +165,7 @@ public class InitSocketThread extends Thread {
         });
         client.dispatcher().executorService().shutdown();
         //开启心跳检测
-        mHandler.postDelayed(heartBeatRunnable, HEART_BEAT_RATE);
+        mHandler.postDelayed(heartBeatRunnable, VehicleContanst.HEART_BEAT_RATE);
     }
 
     /**

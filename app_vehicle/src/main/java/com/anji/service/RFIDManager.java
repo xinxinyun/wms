@@ -13,6 +13,7 @@ import com.anji.R;
 import com.anji.contants.VehicleContanst;
 import com.anji.util.ASCUtil;
 import com.anji.util.CallBackUtil;
+import com.anji.util.LogUtil;
 import com.anji.util.MD5Utils;
 import com.anji.util.OkhttpUtil;
 import com.anji.util.PreferenceUtil;
@@ -23,10 +24,8 @@ import com.rfid.ReaderConnector;
 import com.rfid.rxobserver.RXObserver;
 import com.rfid.rxobserver.bean.RXInventoryTag;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Scanner;
 
 import okhttp3.Call;
 
@@ -40,7 +39,7 @@ public class RFIDManager extends RXObserver {
 
     private static final String TAG = "车辆盘点后台服务RFID管理器";
 
-    private ModuleConnector connector = new ReaderConnector();
+    private ModuleConnector connector;
     private RFIDReaderHelper mReader;
 
     private ArrayList<String> epcCodeList = new ArrayList<>(5000);
@@ -75,7 +74,7 @@ public class RFIDManager extends RXObserver {
         }
         //防止重复读取RFID信息
         if (!epcCodeList.contains(epcCode) && epcCode.length() == 35) {
-            Log.i(TAG, "------------------>" + epcCode);
+            LogUtil.d(TAG, "------------------>" + epcCode);
             ///epcCode = "LSGKE54H7HW09946";
             epcCodeList.add(epcCode);
             //调用蜂鸣声提示已扫描到商品
@@ -98,7 +97,7 @@ public class RFIDManager extends RXObserver {
             //Thread.currentThread().sleep(60);
             Thread.sleep(60);
         } catch (Exception e) {
-            Log.d(TAG, "设置天线失败");
+            Log.e(TAG, "设置天线失败"+e.getMessage());
         }
         //mReader.realTimeInventory((byte) 0xff, (byte) 0x01);
         mReader.customizedSessionTargetInventory((byte) 0xff, (byte) 0x01, (byte) 0x00, (byte)
@@ -108,7 +107,9 @@ public class RFIDManager extends RXObserver {
     /**
      * 启动程序开始扫描
      */
-    public boolean startupRfidDevice() throws Exception {
+    public boolean startupRFIDDevice() throws Exception {
+
+        connector=new ReaderConnector();
 
         //如果设备在连接状态，则直接退出
         boolean isConnected = connector.isConnected();
@@ -138,11 +139,11 @@ public class RFIDManager extends RXObserver {
 
         //群读模式
         mReader.customizedSessionTargetInventory((byte) 0xff,
-                    (byte) 0x01, (byte) 0x00,
-                    (byte) 0x01);
+                (byte) 0x01, (byte) 0x00,
+                (byte) 0x01);
         //设置工作天线频率
         mReader.setOutputPower((byte) 0xff, (byte) 33,
-                    (byte) 33, (byte) 0, (byte) 0);
+                (byte) 33, (byte) 0, (byte) 0);
 
 
         return true;
@@ -185,7 +186,7 @@ public class RFIDManager extends RXObserver {
                 paramObj.toString(), headerMap, new CallBackUtil.CallBackString() {
                     @Override
                     public void onFailure(Call call, Exception e) {
-                        Log.d(TAG, "[" + epcCode + "]+[" + vehicleCode + "]" +
+                        Log.e(TAG, "[" + epcCode + "]+[" + vehicleCode + "]" +
                                 "盘点结果提交失败[错误信息]" + e.getMessage());
                     }
 
@@ -194,10 +195,10 @@ public class RFIDManager extends RXObserver {
                         try {
                             HashMap<String, Object> respMap = JSON.parseObject(response,
                                     HashMap.class);
-                            Log.d(TAG, "[" + epcCode + "]+[" + vehicleCode + "]盘点提交结果[响应码]" +
+                            LogUtil.d(TAG, "[" + epcCode + "]+[" + vehicleCode + "]盘点提交结果[响应码]" +
                                     respMap.get("repCode").equals("0000") + "&响应消息[repMsg]" + respMap.get("repMsg"));
                         } catch (Exception e) {
-                            Log.d(TAG,
+                            LogUtil.e(TAG,
                                     "[" + epcCode + "]+[" + vehicleCode + "]盘点结果提交失败,[错误信息]" + e.getMessage());
                         }
                     }
@@ -234,33 +235,5 @@ public class RFIDManager extends RXObserver {
         }
         player.stop();
         player.release();
-    }
-
-    public static void main(String[] args) throws Exception {
-//        String str= "1C 8D 76 D2 14 40 43 6E 60 C6 61 89,1C 8D 75 5E 14 44 46 71 40 41 50 50,1C
-//        8D 76 D2 14 44 49 6E 60 C7 17 36,1C 8D 7A A2 14 31 44 6D 80 48 58 43";
-//        String[] aa=str.split(",");
-//        for(String s:aa){
-//            System.out.println(ASCUtil.str12to17(s));
-//        }
-
-        String path = "D:/a.txt";
-        Scanner in = new Scanner(new File(path));
-        //List data = new ArrayList();
-        while (in.hasNextLine()) {
-            // 取第一行
-            String s = in.nextLine();
-            char[] sstr = s.toCharArray();
-            String afterStr = "";
-            for (int i = 0; i < sstr.length; i++) {
-                afterStr += sstr[i];
-                if (i % 2 == 1 && i != 0) {
-                    afterStr += " ";
-                }
-            }
-            System.out.println("------------>" + afterStr);
-            //System.out.println(ASCUtil.str12to17(afterStr));
-        }
-
     }
 }

@@ -13,7 +13,8 @@ public interface VehicleContanst {
     /**
      * 车辆盘点结果提交
      */
-    String VEHICLE_INVENTORY_ACCESSDATA = HOST + "/business/service/inventory/detail/receiveInventoryDetail";
+    String VEHICLE_INVENTORY_ACCESSDATA = HOST + "/business/service/inventory/detail" +
+            "/receiveInventoryDetail";
 
     /**
      * 波特率
@@ -30,11 +31,27 @@ public interface VehicleContanst {
     /**
      * 接口调用身份凭证
      */
-    String IDENGITY="uid=17&key=baca04516e91c31087e60ea9fc662000";
+    String IDENGITY = "uid=19&key=76363ff4516bd6edd9f37b6af46ccaf7";
 
     /**
      * 用户身份号
      */
-    String USER_ID="17";
+    String USER_ID = "19";
+
+    /**
+     * WebSocket设备号
+     */
+    String DEVICE_ID = "SGM20191202C";
+
+    /**
+     * WebSocket连接地址
+     */
+    String WEBSOCKET_HOST_AND_PORT = "ws://visp.anji-logistics" +
+            ".com/websocket/" + DEVICE_ID;
+
+    /**
+     * 每隔5秒进行一次对长连接的心跳检测
+     */
+    long HEART_BEAT_RATE = 5 * 1000;
 
 }

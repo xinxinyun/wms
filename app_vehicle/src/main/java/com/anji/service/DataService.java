@@ -4,7 +4,8 @@ import android.app.Service;
 import android.content.Intent;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
-import android.util.Log;
+
+import com.anji.util.LogUtil;
 
 /**
  * @author 周宇
@@ -19,23 +20,23 @@ public class DataService extends Service {
         super.onCreate();
         RFIDManager rfidManager = new RFIDManager(this);
         try {
-            rfidManager.startupRfidDevice();
+            rfidManager.startupRFIDDevice();
         } catch (Exception e) {
-            Log.v(TAG, "RFID设备调取失败" + e.getMessage());
+            LogUtil.e(TAG, "RFID设备调取失败" + e.getMessage());
             e.printStackTrace();
         }
-        Log.v(TAG, "DataService服务启动----->");
+        LogUtil.d(TAG, "DataService服务启动----->");
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        Log.v(TAG, "DataService服务关闭");
+        LogUtil.d(TAG, "DataService服务关闭");
     }
 
     @Override
     public boolean onUnbind(Intent intent) {
-        Log.v(TAG, "onUnbind 服务关闭时");
+        LogUtil.d(TAG, "onUnbind 服务关闭时");
         return super.onUnbind(intent);
 
     }
