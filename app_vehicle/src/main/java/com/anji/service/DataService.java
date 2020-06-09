@@ -15,10 +15,12 @@ public class DataService extends Service {
 
     private static final String TAG = "车辆盘点后台服务";
 
+    private RFIDManager rfidManager;
+
     @Override
     public void onCreate() {
         super.onCreate();
-        RFIDManager rfidManager = new RFIDManager(this);
+        rfidManager = new RFIDManager(this);
         try {
             rfidManager.startupRFIDDevice();
         } catch (Exception e) {
@@ -31,6 +33,12 @@ public class DataService extends Service {
     @Override
     public void onDestroy() {
         super.onDestroy();
+        //如果设备管理器未关闭，则关闭设备管理器
+        if(rfidManager!=null){
+            //清空RFID码缓存
+            rfidManager.clearEpcCache();
+            rfidManager.shutdownRFIDevice();
+        }
         LogUtil.d(TAG, "DataService服务关闭");
     }
 

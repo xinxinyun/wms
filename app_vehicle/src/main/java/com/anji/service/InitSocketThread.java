@@ -120,17 +120,19 @@ public class InitSocketThread extends Thread {
                     if (checkPlan.getRfSwitch()) {
                         PreferenceUtil.commitLong("inventoryPlanId", checkPlan.getPlanId());
                         PreferenceUtil.commitLong("warehouseId", checkPlan.getWarehouseId());
+                        //打开开关语音播报
+                        initMediaPlayer(R.raw.begin_voice);
                         //判断RFID盘点服务是否在运行
                         if (!ServiceUtils.isServiceRunning(service.getApplicationContext(), "com" +
                                 ".anji" +
                                 ".service.DataService")) {
                             Intent intent = new Intent(service, DataService.class);
                             service.startService(intent);
-                        } else {
-                            initMediaPlayer(R.raw.begin_voice);
                         }
                     } else {
-                        //远程开关未打开则语音播报提示打开远程开关
+                        Intent stopIntent = new Intent(service, DataService.class);
+                        service.stopService(stopIntent);
+                        //远程开关关闭盘点
                         initMediaPlayer(R.raw.open_rfid);
                     }
                 }

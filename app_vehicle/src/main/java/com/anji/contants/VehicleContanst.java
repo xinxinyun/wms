@@ -31,17 +31,17 @@ public interface VehicleContanst {
     /**
      * 接口调用身份凭证
      */
-    String IDENGITY = "uid=19&key=76363ff4516bd6edd9f37b6af46ccaf7";
+    String IDENGITY = "uid=53&key=e4fae1d7a2bec9b99931828148584789";
 
     /**
      * 用户身份号
      */
-    String USER_ID = "19";
+    String USER_ID = "53";
 
     /**
      * WebSocket设备号
      */
-    String DEVICE_ID = "SGM20191202C";
+    String DEVICE_ID = "SGM20200609C";
 
     /**
      * WebSocket连接地址

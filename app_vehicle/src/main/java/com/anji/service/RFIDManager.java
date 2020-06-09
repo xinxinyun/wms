@@ -42,9 +42,13 @@ public class RFIDManager extends RXObserver {
     private ModuleConnector connector;
     private RFIDReaderHelper mReader;
 
-    private ArrayList<String> epcCodeList = new ArrayList<>(5000);
+    private static ArrayList<String> epcCodeList = new ArrayList<>(5000);
 
     private Service service;
+
+    private JSONObject paramObj = new JSONObject();
+
+    private JSONObject dataObj = new JSONObject();
 
     public RFIDManager() {
     }
@@ -61,7 +65,6 @@ public class RFIDManager extends RXObserver {
                 case 1:
                     String epcCode = (String) msg.obj;
                     submitInventory(epcCode);
-
             }
         }
     };
@@ -97,7 +100,7 @@ public class RFIDManager extends RXObserver {
             //Thread.currentThread().sleep(60);
             Thread.sleep(60);
         } catch (Exception e) {
-            Log.e(TAG, "设置天线失败"+e.getMessage());
+            Log.e(TAG, "设置天线失败" + e.getMessage());
         }
         //mReader.realTimeInventory((byte) 0xff, (byte) 0x01);
         mReader.customizedSessionTargetInventory((byte) 0xff, (byte) 0x01, (byte) 0x00, (byte)
@@ -109,7 +112,7 @@ public class RFIDManager extends RXObserver {
      */
     public boolean startupRFIDDevice() throws Exception {
 
-        connector=new ReaderConnector();
+        connector = new ReaderConnector();
 
         //如果设备在连接状态，则直接退出
         boolean isConnected = connector.isConnected();
@@ -146,7 +149,25 @@ public class RFIDManager extends RXObserver {
                 (byte) 33, (byte) 0, (byte) 0);
 
 
+        this.initParam();
+
         return true;
+    }
+
+    /**
+     * 部分参数提前初始化，减少GC性能抖动
+     */
+    private void initParam() {
+        dataObj.put("identity", MD5Utils.getMD5(VehicleContanst.IDENGITY));
+        dataObj.put("warehouseId", PreferenceUtil.getLong("warehouseId", 0));
+        dataObj.put("inventoryPlanId", PreferenceUtil.getLong("inventoryPlanId", 0));
+        dataObj.put("inventoryMethod", "1");
+        dataObj.put("longitude", "0");
+        dataObj.put("latitude", "0");
+
+        paramObj.put("reqData", dataObj);
+        paramObj.put("token", "");
+        paramObj.put("userId", VehicleContanst.USER_ID);
     }
 
     /**
@@ -164,23 +185,13 @@ public class RFIDManager extends RXObserver {
         //final String vehicleCode = ASCUtil.str12to17("1C 8E 64 D2 09 E8 06 61 E0 02 93 14");
         final String vehicleCode = ASCUtil.str12to17(epcCode);
 
-        JSONObject paramObj = new JSONObject();
+        //JSONObject paramObj = new JSONObject();
 
-        JSONObject dataObj = new JSONObject();
+        //JSONObject dataObj = new JSONObject();
 
-        dataObj.put("identity", MD5Utils.getMD5(VehicleContanst.IDENGITY));
-        dataObj.put("warehouseId", PreferenceUtil.getLong("warehouseId", 0));
-        dataObj.put("inventoryPlanId", PreferenceUtil.getLong("inventoryPlanId", 0));
-        dataObj.put("inventoryMethod", "1");
         dataObj.put("vin", vehicleCode);
-        dataObj.put("longitude", "0");
-        dataObj.put("latitude", "0");
-
-        paramObj.put("reqData", dataObj);
         paramObj.put("time", timeStr);
         paramObj.put("sign", MD5Utils.getMD5("reqData=" + dataObj + "&time=" + timeStr));
-        paramObj.put("token", "");
-        paramObj.put("userId", VehicleContanst.USER_ID);
 
         OkhttpUtil.okHttpPostJson(VehicleContanst.VEHICLE_INVENTORY_ACCESSDATA,
                 paramObj.toString(), headerMap, new CallBackUtil.CallBackString() {
@@ -235,5 +246,15 @@ public class RFIDManager extends RXObserver {
         }
         player.stop();
         player.release();
+    }
+
+    /**
+     * 关闭RFID设备
+     */
+    public void shutdownRFIDevice() {
+        if (connector != null) {
+            connector.disConnect();
+        }
+        ModuleManager.newInstance().setUHFStatus(false);
     }
 }
