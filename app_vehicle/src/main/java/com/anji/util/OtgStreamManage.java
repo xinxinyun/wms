@@ -21,7 +21,6 @@ import java.util.Map;
 /**
  * Created by Administrator on 7/14/2017.
  */
-
 public class OtgStreamManage {
 
     public static final String ACTION_USB_PERMISSION = "com.android.example.USB_PERMISSION";

@@ -2,6 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/AndroidWorkSpace.wms.iml" filepath="$PROJECT_DIR$/AndroidWorkSpace.wms.iml" group="wms" />
+      <module fileurl="file://$PROJECT_DIR$/usbSerialForAndroid/AndroidWorkSpace.wms.usbSerialForAndroid.iml" filepath="$PROJECT_DIR$/usbSerialForAndroid/AndroidWorkSpace.wms.usbSerialForAndroid.iml" group="wms/usbSerialForAndroid" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
       <module fileurl="file://$PROJECT_DIR$/app_alarm/app_alarm.iml" filepath="$PROJECT_DIR$/app_alarm/app_alarm.iml" />
       <module fileurl="file://$PROJECT_DIR$/app_base/app_base.iml" filepath="$PROJECT_DIR$/app_base/app_base.iml" />
@@ -12,6 +14,15 @@
       <module fileurl="file://$PROJECT_DIR$/app_vehicle/app_vehicle.iml" filepath="$PROJECT_DIR$/app_vehicle/app_vehicle.iml" />
       <module fileurl="file://$PROJECT_DIR$/usbSerialForAndroid/usbSerialForAndroid.iml" filepath="$PROJECT_DIR$/usbSerialForAndroid/usbSerialForAndroid.iml" />
       <module fileurl="file://$PROJECT_DIR$/wms.iml" filepath="$PROJECT_DIR$/wms.iml" />
+      <module fileurl="file://$PROJECT_DIR$/app/wms.app.iml" filepath="$PROJECT_DIR$/app/wms.app.iml" group="wms/app" />
+      <module fileurl="file://$PROJECT_DIR$/app_alarm/wms.app_alarm.iml" filepath="$PROJECT_DIR$/app_alarm/wms.app_alarm.iml" group="wms/app_alarm" />
+      <module fileurl="file://$PROJECT_DIR$/app_base/wms.app_base.iml" filepath="$PROJECT_DIR$/app_base/wms.app_base.iml" group="wms/app_base" />
+      <module fileurl="file://$PROJECT_DIR$/app_check/wms.app_check.iml" filepath="$PROJECT_DIR$/app_check/wms.app_check.iml" group="wms/app_check" />
+      <module fileurl="file://$PROJECT_DIR$/app_data50/wms.app_data50.iml" filepath="$PROJECT_DIR$/app_data50/wms.app_data50.iml" group="wms/app_data50" />
+      <module fileurl="file://$PROJECT_DIR$/app_sale/wms.app_sale.iml" filepath="$PROJECT_DIR$/app_sale/wms.app_sale.iml" group="wms/app_sale" />
+      <module fileurl="file://$PROJECT_DIR$/app_storge/wms.app_storge.iml" filepath="$PROJECT_DIR$/app_storge/wms.app_storge.iml" group="wms/app_storge" />
+      <module fileurl="file://$PROJECT_DIR$/app_vehicle/wms.app_vehicle.iml" filepath="$PROJECT_DIR$/app_vehicle/wms.app_vehicle.iml" group="wms/app_vehicle" />
+      <module fileurl="file://$PROJECT_DIR$/usbSerialForAndroid/wms.usbSerialForAndroid.iml" filepath="$PROJECT_DIR$/usbSerialForAndroid/wms.usbSerialForAndroid.iml" group="wms/usbSerialForAndroid" />
     </modules>
   </component>
 </project>

@@ -50,6 +50,8 @@ public class RFIDManager extends RXObserver {
 
     private JSONObject dataObj = new JSONObject();
 
+    private HashMap<String, String> headerMap = new HashMap<>();
+
     public RFIDManager() {
     }
 
@@ -72,11 +74,10 @@ public class RFIDManager extends RXObserver {
     @Override
     protected void onInventoryTag(RXInventoryTag tag) {
         String epcCode = tag.strEPC;
-        if (TextUtils.isEmpty(epcCode)) {
-            return;
-        }
         //防止重复读取RFID信息
-        if (!epcCodeList.contains(epcCode) && epcCode.length() == 35) {
+        if (!TextUtils.isEmpty(epcCode) &&
+                !epcCodeList.contains(epcCode)
+                && epcCode.length() == 35) {
             LogUtil.d(TAG, "------------------>" + epcCode);
             ///epcCode = "LSGKE54H7HW09946";
             epcCodeList.add(epcCode);
@@ -158,6 +159,10 @@ public class RFIDManager extends RXObserver {
      * 部分参数提前初始化，减少GC性能抖动
      */
     private void initParam() {
+
+        //头部信息
+        headerMap.put("Content-Type", OkhttpUtil.CONTENT_TYPE);
+
         dataObj.put("identity", MD5Utils.getMD5(VehicleContanst.IDENGITY));
         dataObj.put("warehouseId", PreferenceUtil.getLong("warehouseId", 0));
         dataObj.put("inventoryPlanId", PreferenceUtil.getLong("inventoryPlanId", 0));
@@ -165,7 +170,6 @@ public class RFIDManager extends RXObserver {
         dataObj.put("longitude", "0");
         dataObj.put("latitude", "0");
 
-        paramObj.put("reqData", dataObj);
         paramObj.put("token", "");
         paramObj.put("userId", VehicleContanst.USER_ID);
     }
@@ -176,20 +180,11 @@ public class RFIDManager extends RXObserver {
      * @param epcCode
      */
     private void submitInventory(final String epcCode) {
-
-        HashMap<String, String> headerMap = new HashMap<>();
-        //头部信息
-        headerMap.put("Content-Type", OkhttpUtil.CONTENT_TYPE);
-
         String timeStr = String.valueOf(System.currentTimeMillis()).substring(0, 10);
         //final String vehicleCode = ASCUtil.str12to17("1C 8E 64 D2 09 E8 06 61 E0 02 93 14");
         final String vehicleCode = ASCUtil.str12to17(epcCode);
-
-        //JSONObject paramObj = new JSONObject();
-
-        //JSONObject dataObj = new JSONObject();
-
         dataObj.put("vin", vehicleCode);
+        paramObj.put("reqData", dataObj);
         paramObj.put("time", timeStr);
         paramObj.put("sign", MD5Utils.getMD5("reqData=" + dataObj + "&time=" + timeStr));
 
@@ -256,5 +251,10 @@ public class RFIDManager extends RXObserver {
             connector.disConnect();
         }
         ModuleManager.newInstance().setUHFStatus(false);
+    }
+
+    public static void main(String[] args) {
+        System.out.println(ASCUtil.str12to17("1C 8E 69 5A 18 09 00 70 20 06 22 73"));
+        //System.out.println("1C 8E 64 D2 09 E8 06 61 E0 02 93 14".length());
     }
 }

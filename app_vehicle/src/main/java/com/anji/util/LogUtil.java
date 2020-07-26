@@ -57,4 +57,9 @@ public class LogUtil {
             Log.e(tag, msg);
         }
     }
+
+    public static void main(String[] args) {
+        //LogUtil.d("111","2222222222");
+        System.out.println("22222222222");
+    }
 }
