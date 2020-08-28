@@ -442,7 +442,7 @@ public class ZrcListView extends ZrcAbsListView {
     private void measureScrapChild(View child, int position, int widthMeasureSpec) {
         LayoutParams p = (LayoutParams) child.getLayoutParams();
         if (p == null) {
-            p = (ZrcAbsListView.LayoutParams) generateDefaultLayoutParams();
+            p = (LayoutParams) generateDefaultLayoutParams();
             child.setLayoutParams(p);
         }
         p.viewType = mAdapter.getItemViewType(position);
@@ -485,7 +485,7 @@ public class ZrcListView extends ZrcAbsListView {
 
         // mItemCount - 1 since endPosition parameter is inclusive
         endPosition = (endPosition == NO_POSITION) ? adapter.getCount() - 1 : endPosition;
-        final ZrcAbsListView.RecycleBin recycleBin = mRecycler;
+        final RecycleBin recycleBin = mRecycler;
         final boolean recyle = recycleOnMeasure();
         final boolean[] isScrap = mIsScrap;
 
@@ -731,9 +731,9 @@ public class ZrcListView extends ZrcAbsListView {
         // Respect layout params that are already in the view. Otherwise make
         // some up...
         // noinspection unchecked
-        ZrcAbsListView.LayoutParams p = (ZrcAbsListView.LayoutParams) child.getLayoutParams();
+        LayoutParams p = (LayoutParams) child.getLayoutParams();
         if (p == null) {
-            p = (ZrcAbsListView.LayoutParams) generateDefaultLayoutParams();
+            p = (LayoutParams) generateDefaultLayoutParams();
         }
         p.viewType = mAdapter.getItemViewType(position);
 
@@ -790,7 +790,7 @@ public class ZrcListView extends ZrcAbsListView {
         }
 
         if (recycled &&
-                (((ZrcAbsListView.LayoutParams) child.getLayoutParams()).scrappedFromPosition) !=
+                (((LayoutParams) child.getLayoutParams()).scrappedFromPosition) !=
                         position) {
             if (APIUtil.isSupport(11)) {
                 child.jumpDrawablesToCurrentState();
@@ -814,7 +814,7 @@ public class ZrcListView extends ZrcAbsListView {
 
         final int listBottom = getHeight() - mListPadding.bottom - mLastBottomOffset;
         final int listTop = mListPadding.top + mFirstTopOffset;
-        final ZrcAbsListView.RecycleBin recycleBin = mRecycler;
+        final RecycleBin recycleBin = mRecycler;
 
         if (amount < 0) {
             // shifted items up
@@ -842,7 +842,7 @@ public class ZrcListView extends ZrcAbsListView {
             // top views may be panned off screen
             View first = getChildAt(0);
             while (first.getBottom() < listTop) {
-                ZrcAbsListView.LayoutParams layoutParams = (LayoutParams) first.getLayoutParams();
+                LayoutParams layoutParams = (LayoutParams) first.getLayoutParams();
                 if (recycleBin.shouldRecycleViewType(layoutParams.viewType)) {
                     recycleBin.addScrapView(first, mFirstPosition);
                 }
@@ -871,7 +871,7 @@ public class ZrcListView extends ZrcAbsListView {
 
             // bottom view may be panned off screen
             while (last.getTop() > listBottom) {
-                ZrcAbsListView.LayoutParams layoutParams = (LayoutParams) last.getLayoutParams();
+                LayoutParams layoutParams = (LayoutParams) last.getLayoutParams();
                 if (recycleBin.shouldRecycleViewType(layoutParams.viewType)) {
                     recycleBin.addScrapView(last, mFirstPosition + lastIndex);
                 }
